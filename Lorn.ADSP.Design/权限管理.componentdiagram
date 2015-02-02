@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<componentModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" dslVersion="1.0.0.0" Id="d784f536-f42e-4676-bf63-8035b3a7efa9" name="权限管理" linkedPackageId="31424f78-a632-414c-9699-cab4d420e458" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner">
+  <packagedElements>
+    <componentModelHasComponents>
+      <component Id="a9bdf419-cea9-4ec0-bd61-82dca2b92273" name="PermissionEngine" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="bba69aa6-68c9-448e-af10-a3584102b960" />
+        <ownedAttributesInternal>
+          <requiredInterface Id="c18d42ac-cdf5-417b-9f8d-a0c6e7db54e0" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="87fa50f0-d0da-41e8-86eb-2496d3dabdfd" />
+            <suppliersInternal>
+              <dependency Id="58d1cf64-b91e-4c25-bd8b-a118ad64ef79">
+                <providedInterfaceMoniker Id="fe33da17-8586-4eae-ac9b-f2ddd1923c23" LastKnownName="Port1" />
+                <elementDefinition Id="b3662c1a-d91b-49a8-a8ea-3a383b135bef" />
+              </dependency>
+            </suppliersInternal>
+            <type_NamedElement>
+              <interfaceMoniker Id="2988a996-a8b3-4c5a-94ab-0adecf7fc90e" LastKnownName="IPermissionDatabase" />
+            </type_NamedElement>
+          </requiredInterface>
+          <requiredInterface Id="aa230ccd-3199-4a74-83df-66c9298f689d" name="Port2" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="d058b97a-085b-4e4c-a0b3-e649533ea224" />
+            <suppliersInternal>
+              <dependency Id="5578babb-7621-4208-9642-ffc1f4d59288">
+                <providedInterfaceMoniker Id="d2606bcd-ea0e-49d3-b820-11610a1d2122" LastKnownName="Port1" />
+                <elementDefinition Id="90105deb-7eb4-4c2a-9ab7-b49fb8ff4808" />
+              </dependency>
+            </suppliersInternal>
+            <type_NamedElement>
+              <interfaceMoniker Id="a71ed0e6-5b9f-4152-a7c5-51ef2a7463c9" LastKnownName="IProvideBusinessObject" />
+            </type_NamedElement>
+          </requiredInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <componentModelHasComponents>
+      <component Id="93d7ee1e-5729-44ec-a957-e56a56da9dc4" name="PermissionDatabase" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="168ca655-75c4-4bd9-a08b-1a00bd636035" />
+        <ownedAttributesInternal>
+          <providedInterface Id="fe33da17-8586-4eae-ac9b-f2ddd1923c23" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="51a734ba-b80e-4c67-9ea9-33591645ea90" />
+            <type_NamedElement>
+              <interfaceMoniker Id="2348b832-4b61-471c-a246-6b880caab9b6" LastKnownName="IPermissionDatabase" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <modelContainsNamedElements>
+      <Interface Id="2348b832-4b61-471c-a246-6b880caab9b6" name="IPermissionDatabase" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="72033d13-2d34-4753-bc7f-94ef40c7ca94" />
+      </Interface>
+    </modelContainsNamedElements>
+    <modelContainsNamedElements>
+      <Interface Id="2988a996-a8b3-4c5a-94ab-0adecf7fc90e" name="IPermissionDatabase" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="18f0dceb-2ec2-42f1-b59e-fd13505a2cb8" />
+      </Interface>
+    </modelContainsNamedElements>
+    <componentModelHasComponents>
+      <component Id="426b040b-98f1-4aec-bb03-492a334428b9" name="BusinessObjectProvider" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="948a538b-47af-45ea-b19d-952e2e3bc21c" />
+        <ownedAttributesInternal>
+          <providedInterface Id="d2606bcd-ea0e-49d3-b820-11610a1d2122" name="Port1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isService="false" isBehavior="false">
+            <elementDefinition Id="f0592790-17a0-42af-b5f3-7e5c488c07da" />
+            <type_NamedElement>
+              <interfaceMoniker Id="ac5521f0-13b3-4ef7-9cdf-f527840c4e78" LastKnownName="IProvideBusinessObject" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </componentModelHasComponents>
+    <modelContainsNamedElements>
+      <Interface Id="ac5521f0-13b3-4ef7-9cdf-f527840c4e78" name="IProvideBusinessObject" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="9170d745-94d8-4394-bad4-6cef86047243" />
+      </Interface>
+    </modelContainsNamedElements>
+    <modelContainsNamedElements>
+      <Interface Id="a71ed0e6-5b9f-4152-a7c5-51ef2a7463c9" name="IProvideBusinessObject" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="a628328b-7305-42d6-aa78-e1536bcc6df6" />
+      </Interface>
+    </modelContainsNamedElements>
+  </packagedElements>
+  <package Id="31424f78-a632-414c-9699-cab4d420e458" name="LornADSP">
+    <elementDefinition Id="ceb26981-4f7a-4a52-8bb0-bd2b2cd43668" />
+    <profileInstances>
+      <packageHasProfileInstances Id="b94e1e87-c8ad-49f7-9b47-d30f612268ce">
+        <profileInstance Id="12235b34-0c11-404e-a6f6-53387f7f984b" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="92aebb5c-29a5-4088-8a32-e86056334a70">
+        <profileInstance Id="4c837b4e-8bdc-4a40-910b-95deb1e14f4d" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</componentModel>

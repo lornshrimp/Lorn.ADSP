@@ -1,0 +1,1078 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<useCaseModelRoot xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="437e2fb0-6c05-4ee7-ac96-d1181114a526" name="AM" linkedPackageId="922f5b64-6dd1-4c53-b0f3-a34f0bb37026" xmlns="http://schemas.microsoft.com/dsltools/UseCaseModel">
+  <packagedElements>
+    <useCaseModelRootHasTypes>
+      <actor Id="535fa649-2ae2-4290-a503-57f022b85fbc" name="系统管理员" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="803d7c26-18c4-4a59-9de7-186d929ef4b3" />
+        <targetEnds>
+          <association Id="16d951cc-5b35-4eec-8f28-16c591bf7f48" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="c7efb05e-a4ce-4515-a4fa-d6cda33e8102" LastKnownName="管理广告位信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0988dc43-5c61-4bda-acb7-0b20fcaf3322" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="241c4886-e80b-42e7-94f4-ad8cec1c2670" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2d9dbd04-5b30-4923-b798-50ced0e6f912" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6ddf3b8b-a50c-4008-84bf-cb10a465850b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="89678a2f-24ab-4290-8015-e0c827c9891d" />
+          </association>
+          <association Id="29155450-84dd-4130-82c7-0166e9dc1a95" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="管理广告位组" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="e96a65ca-f2ea-4d3d-b63e-9665c777b54f" LastKnownName="管理广告位组" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="32479780-e9c9-41f2-9fbb-b4f4b5d8bea7" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="958a8249-1648-4c14-9d1d-6a5815659e4f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="fb8fc378-f769-413f-af21-65d47d9f22e1" name="管理广告位组" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="99ea7e93-460a-434b-ba55-d366db8abba5" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="76e779c9-3e63-41f4-901c-38cbcdd00b77" />
+          </association>
+          <association Id="eb0fa028-d96b-44b4-9853-28389813ef67" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="广告位关联到广告位组" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="5cc3926d-eaae-41eb-ae6a-9feacf4cab36" LastKnownName="广告位关联到广告位组" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="68bc81da-c830-4f3e-8bf9-bda996223660" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="740d31d5-8038-4ea4-9a87-d0da3be550cc" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="91c651ff-441e-4ef1-bd78-2e0df05ec11b" name="广告位关联到广告位组" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="833bdb13-6002-40f4-bef6-1d2d2a49100c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="0bce5eae-121e-4182-853a-d9ff3429b4c2" />
+          </association>
+          <association Id="357453ea-de21-48a9-955f-fc85bc1dc18d" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理广告位尺寸" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="a5e36921-6217-46a5-b4bb-8b98c25cee78" LastKnownName="管理广告位尺寸" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e6834e42-4bfa-4735-ba59-3de1cbc19ed6" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="9c26b044-babc-49be-9e6e-af437d64e068" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="177b3f04-33e2-4ab2-9406-2b90e361110c" name="管理广告位尺寸" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="be7f12f1-cfd2-4676-a612-911bec2e7654" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="6b8cfc1b-7349-4d60-bf74-10f3fe420863" />
+          </association>
+          <association Id="2f09d9b8-0a87-4c6b-a291-894466a58b01" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="UseCase1" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="24bab65d-95b6-4161-9ba6-82074f4b044c" LastKnownName="管理创意形式" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="151e1788-f208-4b92-a9c3-ebcc8a3005aa" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="983195a7-f049-4b2d-9243-79edb360b11b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ddfe3dcd-2d7a-448e-a9ff-5945a2a9d790" name="UseCase1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="3850d4e0-8608-4e20-9965-80ed2034f896" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="c5162278-11e1-4a36-a9dd-7d7ede3a21a8" />
+          </association>
+          <association Id="b63f535a-9c0b-4069-bc69-b9ac333e2feb" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="广告媒体管理" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="bb1634c5-c8fb-4c40-b76c-563fa00d4ecb" LastKnownName="管理广告媒体" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="be8e3d0f-328d-4b64-b6bb-0bc401b454fb" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="acda4174-f01c-4ecf-a0b3-16481d5baa42" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="471d6538-ff45-4ba7-8a89-bc24545bfade" name="广告媒体管理" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9d133595-9e14-4fb2-8c39-57537c972c23" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="4a03d4f7-359a-4111-9b1d-a3824b483ded" />
+          </association>
+          <association Id="e62a1997-78c6-4a80-a22f-a74cb34cfe57" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理广告页" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="03ffa839-133c-4ac5-8dec-857b401c3c0a" LastKnownName="管理广告页" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="1cc4728f-5f1f-424e-8d7c-89b1f5eb317d" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="6d72c4d1-d5e8-49fd-babc-0d1eb5c6e7b6" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="074489fd-eb5b-4e08-99b6-4a3667fa2b4b" name="管理广告页" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="53603908-1049-4020-8945-2de94d91cd98" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="b80c66c0-0c53-40e1-82b6-91e7fa90303f" />
+          </association>
+          <association Id="67324571-89c2-4532-a07c-fa296b163e39" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理广告资源包" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="2a344a51-90b5-4ca5-a704-e953e22a8d6b" LastKnownName="管理广告资源包" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ae468334-ae67-4b78-9bbc-69b544989364" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="110804df-e4e4-41d5-87db-e86ef7b1341f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="6ebb33d7-c484-4539-b449-02abaab3d02d" name="管理广告资源包" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="3f64ae8e-e01c-4141-a555-3356fceb15d5" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="28f4665c-ea66-4e69-bd11-1d961e334f76" />
+          </association>
+          <association Id="7e7fbbed-0a5f-43f0-9d44-598fa3162852" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理创意模板" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="2b62f5bf-4fbf-4e04-ad18-92f6470a77bb" LastKnownName="管理创意模板" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="29679102-d1de-4598-8449-3b48e18c9e62" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="de9b2858-d55c-4b40-840d-20e08e6d3001" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0769bf4e-20a3-4eb7-9b05-004a30768fb5" name="管理创意模板" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="917849f9-be14-4e30-9f86-04d2550288ec" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="c6ab062c-b73c-4fe0-aae8-9f0cfc228425" />
+          </association>
+          <association Id="a74c3f03-dc31-4a1e-909c-271a87b336e3" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="清洗导入IP库" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="a80028c0-46d9-40c4-9991-418354f8f767" LastKnownName="清洗导入IP库" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="5eb47d12-0a2d-411e-a86f-7c5402262328" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="da536ba8-cc47-47c5-93e8-c841a652f35f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="cfff75f1-7e4c-4cb3-bc0c-ec3fd951a7f4" name="清洗导入IP库" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="0ff03f9f-6d3d-4e7c-afbd-4afd20386c32" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="9799d73c-40d9-4ef6-88a9-c11619c32e97" />
+          </association>
+          <association Id="f6235287-6ab4-4300-b9ad-6326adcffa35" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理地域维度信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="75801520-4184-4ebd-861a-7cb7a51158f6" LastKnownName="管理地域维度信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="146dc52e-76a0-427b-9bc8-7691b58ef682" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="672dc9ed-ad3a-4448-840a-8c958fc2f880" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="3afc02bc-5bd7-4a4e-b407-54ab36a5a319" name="管理地域维度信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="37b1cc29-dddf-4b32-ad43-2229c7f2101b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="514a6488-a57d-4a47-9e6e-da4a63999fb0" />
+          </association>
+          <association Id="a23ad7cd-bbef-467b-84b7-0822aad06773" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="同步频道信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="3d9c1e0e-89c7-4f8e-a46b-9c3e53e4153f" LastKnownName="同步频道信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="809d4641-8014-4d49-885a-1dbea58651fe" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="2696fba0-e2f0-412a-9ec5-bafc5df81ddd" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b532485d-11a1-4d44-81bd-9cc2cf3256e9" name="同步频道信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9a5fdfe8-a440-4858-bcdf-4eb8888160e9" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="916c9566-6837-4274-b012-de4a94c0e851" />
+          </association>
+          <association Id="07137d3b-910d-4957-99bb-8769dd86487e" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="同步剧集信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="bf40c98f-66ea-458b-b043-1831f904ebc9" LastKnownName="同步剧集信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="92120272-3435-4b09-ab5d-17354a413b52" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="3fa9209d-2638-41c6-a7b5-b11572f4ea28" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="58d6c340-95da-4d41-8629-bd7f736bc7c2" name="同步剧集信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="60c182e4-5fe1-4729-9319-26d04f8c3006" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="b613e254-4700-48a0-a27d-741fc85b2113" />
+          </association>
+          <association Id="c0e23c07-26b4-4d92-b816-49a5f7c970bc" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="同步剧场信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="9259449d-6f87-416a-a239-c01d90919ad6" LastKnownName="同步剧场信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8f5d3fb4-dfb6-4cfc-90a1-7b16c970a3fc" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="60a03dd0-3733-48c7-a8e8-b2318f212e7b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="97e715d9-d375-4913-8234-6230b5f3b380" name="同步剧场信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="8e6eeca3-2499-4bd3-b814-da7b358c5e09" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="48c581cd-1d3e-4ecd-aa94-e028120b5ae1" />
+          </association>
+          <association Id="13532892-4a07-44c1-8e0a-f87787279940" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="UseCase1" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="b2772aaf-af6a-40c4-ada5-d01eab4b7804" LastKnownName="管理客户端维度信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e497b376-0671-41c0-b332-84373a5e4720" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5d986ce3-715e-4b4e-b7a7-5b4bbdf67d05" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="0b06e1f9-371e-4935-86f1-e93c5541056b" name="UseCase1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b246f387-e162-4240-b43d-9f361f79d155" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="43132acf-8e1b-4b51-b07f-6cb93ba216b8" />
+          </association>
+          <association Id="826d3086-c60d-4ebc-98c9-637b2ff6dc75" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理浏览器维度信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="0d2bd95c-e4b5-4130-81b3-6102b9c388c0" LastKnownName="管理浏览器维度信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="38585672-7df1-4cca-ba00-61bf15cc745a" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="fefa53ab-e51b-42c1-b148-40d5382f6748" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="6e8394c6-73fa-4269-9b05-3cf040da39fa" name="管理浏览器维度信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6cb3192c-cc93-438c-b8c9-dc603c13971f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="51ff18be-e88e-4952-8fad-d8615fd1dc97" />
+          </association>
+          <association Id="d78557d2-f40a-49e5-ae8c-9a3eaaefc9f6" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理屏幕比例信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="19bda075-aab3-4d7d-8cbc-7963b9a8c27e" LastKnownName="管理屏幕比例信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e63fc0e6-ba15-46b3-a8c5-e0b8821d9d01" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="80d6f31c-554f-433d-815a-d60f3afabceb" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2838e79d-9a82-4d0b-96b1-b5f0f34a132b" name="管理屏幕比例信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="39f0e614-6ba1-4577-b66b-3fa0c563cc4d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="d539f952-8f54-4363-9046-3608931e69cd" />
+          </association>
+          <association Id="0503e75f-d08a-42e8-a7ef-7ed0ca743fb8" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="UseCase1" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="89d3f20c-e43d-4b1f-b413-2a7f5bedb902" LastKnownName="同步视频标签信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="d899059d-0d56-41b9-96f9-2f4f15f83ed8" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="2e1e6185-c47a-4fd6-86db-0944d67bd4a9" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="bd05a1d4-44e7-43e1-af41-7dcc1c41501b" name="UseCase1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9b1c5255-5b6c-4f24-b319-131468b7e72c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="a4a84bfa-3a39-403b-b278-abfb667abe69" />
+          </association>
+          <association Id="14da1172-68ef-461c-a919-e4b04490d65e" isDerived="false" sourceEndRoleName="管理员" targetEndRoleName="管理合作播放器信息" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="712820b9-02d4-4353-a76b-bf499c52652c" LastKnownName="管理合作播放器信息" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="32a2d27c-41b5-4849-8f33-e20aa5329de1" name="管理员" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="838da6aa-ec66-4330-8043-b943bbd66b73" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="bb394f86-eafa-4167-b1c4-d8e0a43c7e8f" name="管理合作播放器信息" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="bd4e191c-4a72-434b-93c8-5a462e80a203" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="60ebeaa7-5635-462d-9520-0fdf918346ba" />
+          </association>
+        </targetEnds>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="c7efb05e-a4ce-4515-a4fa-d6cda33e8102" name="管理广告位信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="5ff28039-5653-4425-8d8a-d64e4e5fb754" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$93" tag="Work Item Reference">
+            <elementDefinition Id="93dfcee9-46b7-4c51-80b5-f7457088f02a" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="56d8849f-4967-4677-8313-0066bc4b1d22" />
+        <additions>
+          <include Id="061fa6dd-e9ab-4ff3-96ec-74e1ed8e9e62">
+            <useCaseMoniker Id="c6bdcdf2-fa46-4249-9c7d-755669e03c88" LastKnownName="设置广告位模板" />
+            <elementDefinition Id="6be2df85-7b53-4fa9-90b1-d7369e49abb9" />
+          </include>
+          <include Id="9f0784e4-00a2-4fa2-8c93-dcb843263848">
+            <useCaseMoniker Id="0b99bd39-8b04-4792-acf5-d28709e12548" LastKnownName="广告位页面代码生成" />
+            <elementDefinition Id="6673b69c-273f-448c-8e1b-8a9964495730" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="e96a65ca-f2ea-4d3d-b63e-9665c777b54f" name="管理广告位组" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="b33772ab-4920-4446-b172-111d49775f1f" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$95" tag="Work Item Reference">
+            <elementDefinition Id="0a97e13e-e185-4664-af70-06f6de421c01" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="a9c88e0c-4d12-47ee-908f-266e11784351" />
+        <extendedCases>
+          <extend Id="6632501b-3cd3-456b-b93d-1123b35084d0">
+            <useCaseMoniker Id="5cc3926d-eaae-41eb-ae6a-9feacf4cab36" LastKnownName="广告位关联到广告位组" />
+            <elementDefinition Id="b5ad31cb-2f6b-4904-b641-6f8b9a3903a7" />
+          </extend>
+        </extendedCases>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="5cc3926d-eaae-41eb-ae6a-9feacf4cab36" name="广告位关联到广告位组" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="6d141bc9-d003-4a49-8800-116ee659bd5b" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$96" tag="Work Item Reference">
+            <elementDefinition Id="674f0686-be4e-42e6-be6c-f002464694ed" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="1ad871f2-149c-40e9-a9cd-e2e1b3d26b7b" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="a5e36921-6217-46a5-b4bb-8b98c25cee78" name="管理广告位尺寸" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="28fa3289-8758-4150-ad36-f8118aff68fb" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$92" tag="Work Item Reference">
+            <elementDefinition Id="469b033a-5a01-4d5b-aa26-df54b98b617c" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="3be87b92-8e01-4e27-96e4-4f828c9af352" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="24bab65d-95b6-4161-9ba6-82074f4b044c" name="管理创意形式" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="3575b7b3-1832-4de1-be77-2497d39d7fb0" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$89" tag="Work Item Reference">
+            <elementDefinition Id="bc408955-71ba-4d39-b8b2-8b23b5dd41d9" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="c3022395-7c7f-4a9a-a175-ebd295f84fc2" />
+        <additions>
+          <include Id="8f8f5ab5-1abb-403d-9ff0-db25c209773c">
+            <useCaseMoniker Id="7e568447-4867-473e-9ff8-7e3814512504" LastKnownName="创意形式参数管理" />
+            <elementDefinition Id="0131bd8d-4567-46da-8d8f-f0b23d9ad813" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="7e568447-4867-473e-9ff8-7e3814512504" name="创意形式参数管理" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="5d9e1beb-247b-4fea-b2b0-52678a9de049" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$90" tag="Work Item Reference">
+            <elementDefinition Id="7639f9c6-afe2-436e-a60e-8373d7a25e2b" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="7741efa0-dac7-429a-94bd-00d783efc810" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="bb1634c5-c8fb-4c40-b76c-563fa00d4ecb" name="管理广告媒体" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="3b0624f6-91cd-404d-97fe-ba099bdcf882" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$97" tag="Work Item Reference">
+            <elementDefinition Id="e4123bcc-11b3-490c-bc5d-40c3175b4538" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="36652052-4b47-43e7-8528-0cd7ec469dca" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="03ffa839-133c-4ac5-8dec-857b401c3c0a" name="管理广告页" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="91245dbf-6ada-47cb-be5d-bc261c52bcb8" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$98" tag="Work Item Reference">
+            <elementDefinition Id="e81e5cd1-633e-4e26-afb9-c5dc98289933" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ddcce53b-e8a6-4b1d-b62b-e1d4aa053518" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="2a344a51-90b5-4ca5-a704-e953e22a8d6b" name="管理广告资源包" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="6fb95c47-3d99-447c-b441-08fa21f27bad" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$100" tag="Work Item Reference">
+            <elementDefinition Id="a88bb471-60a4-4a9e-800c-bd76b7966543" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="d99aa2a3-c1ae-46a5-a970-4c91198b178a" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="2b62f5bf-4fbf-4e04-ad18-92f6470a77bb" name="管理创意模板" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="79cb7cac-3f83-456e-b443-7141463aa4f1" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$91" tag="Work Item Reference">
+            <elementDefinition Id="b5713e39-6c4a-4360-aa55-488a9aafcc40" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="46db2526-3d69-4406-8944-b26e827ca08d" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="c6bdcdf2-fa46-4249-9c7d-755669e03c88" name="设置广告位模板" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="31305d34-6fe5-46dd-b0b2-d90ff5d201e2" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$94" tag="Work Item Reference">
+            <elementDefinition Id="8042344c-2953-411d-8f6d-dd11479c952f" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="c24a661c-9fc5-4d37-91e4-0cc635e22d5e" />
+        <suppliersInternal>
+          <dependency Id="20609348-a5cd-4c54-b54b-32c315163808">
+            <useCaseMoniker Id="24bab65d-95b6-4161-9ba6-82074f4b044c" LastKnownName="管理创意形式" />
+            <elementDefinition Id="6286c7b6-0d70-4e31-bed8-baf028cb8056" />
+          </dependency>
+          <dependency Id="e2eb424b-4e39-443d-9942-3f3ce3dbf012">
+            <useCaseMoniker Id="2b62f5bf-4fbf-4e04-ad18-92f6470a77bb" LastKnownName="管理创意模板" />
+            <elementDefinition Id="afd8fac6-7a7a-4fc9-8300-063f9e0224c9" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="a80028c0-46d9-40c4-9991-418354f8f767" name="清洗导入IP库" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="fe1ca320-930a-4d34-ad19-1bf8b54ab78d" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$101" tag="Work Item Reference">
+            <elementDefinition Id="bd0a244c-a216-4bb9-82fa-720a3e74355b" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="7040d46d-2619-4241-bda0-3b6650293b8b" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="e7a63c23-cf61-436b-b32a-39ffb2ca061f" name="AE" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="6639791b-de36-4e6c-a9a7-27846654e6a7" />
+        <targetEnds>
+          <association Id="8b71bdcd-af4a-4187-aeb3-f36865ce7cff" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="管理广告物料" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="a850827b-f99a-427a-b681-ee47f597add4" LastKnownName="管理广告物料" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="5d12c63c-10c5-4a03-8eec-56bd848cecf8" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="8c434a86-5ca7-49af-87e7-1ff125c1e08c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="68450e38-9ad2-450e-afb3-15d6dcacc836" name="管理广告物料" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6b35cac1-2fd3-4e67-b002-c9d85ef701fe" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="6b799737-a18e-4742-aa32-31dfaef5119b" />
+          </association>
+          <association Id="6b7f0d62-3d67-4a9a-aff9-979a421dd150" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="预览物料效果" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="bd6706c5-d26d-4be5-a44a-2df2a143b35a" LastKnownName="预览物料效果" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="9f0c150a-6297-4c39-b6b8-6cca0e2601c2" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="7dfcda9a-fbaf-4a13-b359-955c252e8ccd" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="303839e1-67a3-4064-ad9a-9aaf3d8128a7" name="预览物料效果" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="09fb3d1d-0c1a-4f8e-ab1b-73579b82c5f1" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="a8605f19-7e7f-4672-922b-0b06b68f1df4" />
+          </association>
+          <association Id="74d70f88-74cf-4627-a0fd-b8473532c68e" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="管理视频组" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="b6696dd4-2969-49a1-ab85-3a83ab9239d9" LastKnownName="管理视频组" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="878f1303-b7af-4e87-a057-7a0aa4325651" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="21ae7ad0-3427-4deb-8bee-1020e7c5efd6" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="6e0334cc-feb9-4a6e-896c-e5734550f7b0" name="管理视频组" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="6cce56d4-a142-49ed-8d39-904eb912a18c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="eba3ea42-e308-47f0-aef7-542fffec8c16" />
+          </association>
+          <association Id="c555fc36-5711-4817-bacb-78d392dad017" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="编辑投放计划" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="69560131-4771-4982-9728-ec7fdd422c97" LastKnownName="编辑投放计划" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="8dc933b5-63df-4b28-a21c-e233f73beb53" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="545c6fc4-85a7-4c17-a66e-0fd3b7675246" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="6a9ce38f-7d0b-4738-b7d9-ed6b7b1d654e" name="编辑投放计划" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="8a9c9d0e-0b91-464d-8e8d-205db69da4c1" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="fe9e7209-ff7c-43da-ad18-cc8d786b6c66" />
+          </association>
+          <association Id="fe8cf2e0-5435-4eab-bdec-fd37e7f1d05f" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="审核投放计划" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="13552adf-f356-4caf-b68f-b00efcdccc75" LastKnownName="审核投放计划" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="cffe345f-aec1-4651-b2ed-c3b07eafc71b" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="8914be7b-5b3c-4916-9bd7-409020067f8d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="cf64465c-1201-48ee-bb6b-ea90a7ce3edc" name="审核投放计划" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="16ad71de-cec8-4d69-9c11-b0ee14ef0064" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="87f3dd30-67c8-4235-843b-5bfe64dac17e" />
+          </association>
+          <association Id="c8b0e1e2-fc47-4748-80a2-5ac1c26b6fd4" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="暂停或停止投放计划" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="30ad7ad4-3bfe-4e01-b7f2-7908d5c77469" LastKnownName="暂停或停止投放计划" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a191a2ea-a839-4e07-8bb4-e4e713c2017c" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="e9438253-277c-4194-a031-307d3e2ae706" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e9100915-b5a5-4c07-9853-8a9af9d48040" name="暂停或停止投放计划" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="3862f8c9-cb77-4032-a114-79e22917a7f7" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="2adb628d-fce5-41e2-8382-f3e417d494cd" />
+          </association>
+          <association Id="4e746995-1d46-4e49-8da2-83986f1cdecd" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="执行中修改投放计划" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="068f0b2e-f565-4210-9f0d-00e019f68d27" LastKnownName="执行中修改投放计划" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="10b9577b-a1a9-4773-9f9f-90b8e5729d3f" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="f62fa9be-a681-46ad-bcf2-00a5b5bb86db" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="e57f531a-210b-4ba9-82ac-76cc95974c99" name="执行中修改投放计划" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="560a166e-a198-4d57-902c-7ae6c7ff3525" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="ac0572be-72cb-4d7f-ba97-48c2959ef871" />
+          </association>
+          <association Id="0679f3f3-5c29-44b0-9f98-560357506b0e" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="投放跟踪预警" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="d49e17c0-91dc-48e7-912c-8081edd8680a" LastKnownName="投放跟踪预警" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="74a6bf8d-5ed3-4e9d-b801-ded0ef668dab" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="e98f57ac-3342-4c70-8079-40ac912b8e23" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="d6c02c53-31a1-4fb1-babb-c1218efdf4a7" name="投放跟踪预警" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="434bbcf5-2549-4a78-a2ce-ba3468ac0534" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="e74908cb-a3dd-418d-a416-4cd380a29b73" />
+          </association>
+          <association Id="47027722-28aa-4d69-9d12-919c18b304b2" isDerived="false" sourceEndRoleName="AE" targetEndRoleName="推送计划管理" isLeaf="false" isAbstract="false">
+            <useCaseMoniker Id="5cf5a59b-56ab-44c2-a52b-55a239f438a3" LastKnownName="广告推送计划管理" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b64bed97-0cdb-450b-9784-bae64c11edc7" name="AE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="f1691694-c90b-4d6a-80bc-2d15e130429e" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="80d057b9-238b-4928-a9e8-497087811455" name="推送计划管理" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b99ade24-7286-4be6-8284-cba393845057" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="c7fec51f-9357-403e-90ff-765810d41b42" />
+          </association>
+        </targetEnds>
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="75801520-4184-4ebd-861a-7cb7a51158f6" name="管理地域维度信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="0ca2136f-92e5-42c7-bcb3-4db866641180" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$102" tag="Work Item Reference">
+            <elementDefinition Id="c628e737-79a6-4dcd-8a4e-ce6556f8bc21" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="fce40bb4-2317-4068-b187-2eabc43a53e5" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="3d9c1e0e-89c7-4f8e-a46b-9c3e53e4153f" name="同步频道信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="6bdc0d02-f808-40b9-9089-9e1c77b6cb18" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$103" tag="Work Item Reference">
+            <elementDefinition Id="ac8f5914-78f4-49a3-8cb2-76c6419bc1f5" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="c45f2bc6-5450-4f7d-9867-8a39a6337471" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="bf40c98f-66ea-458b-b043-1831f904ebc9" name="同步剧集信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="215d9dd2-619d-4d05-9e56-704efbfafc49" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$104" tag="Work Item Reference">
+            <elementDefinition Id="bafc3fc8-f59a-4ddb-b5f4-bd8a38171f1f" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="41a85bb5-2b83-4a94-9a39-9bd8e17431f4" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="9259449d-6f87-416a-a239-c01d90919ad6" name="同步剧场信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="e6cf9275-f331-4fc1-9f6e-b90fb0711d03" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$106" tag="Work Item Reference">
+            <elementDefinition Id="27bbc872-118c-4cd5-abf0-85e11d529d6a" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="aa642d70-a533-482c-91bf-e6af578a7002" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="b2772aaf-af6a-40c4-ada5-d01eab4b7804" name="管理客户端维度信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="7ce9e318-f084-4eb2-99cc-633524320821" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$107" tag="Work Item Reference">
+            <elementDefinition Id="1208b871-2c68-4d41-8b8a-2653707c3288" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ce039e54-04fa-4f0f-a7ba-18d4dadc7090" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="0d2bd95c-e4b5-4130-81b3-6102b9c388c0" name="管理浏览器维度信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="115f257d-f5c4-41fa-903a-00fb9c8af65d" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$108" tag="Work Item Reference">
+            <elementDefinition Id="4a997cf0-38c8-4d43-8bd2-fb50f55d9507" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="16313707-a461-42de-bc77-226c6480ad49" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="19bda075-aab3-4d7d-8cbc-7963b9a8c27e" name="管理屏幕比例信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="5651d871-1597-4447-8e89-12b2f6bf4dce" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$109" tag="Work Item Reference">
+            <elementDefinition Id="6aa06fb7-c0c7-4f41-be11-6e8bfd222ae8" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="5f60292f-ec9e-4961-82ce-54386d62e7f4" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="89d3f20c-e43d-4b1f-b413-2a7f5bedb902" name="同步视频标签信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="68c3c372-ce72-4918-b6c0-a0e25fac50b6" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$110" tag="Work Item Reference">
+            <elementDefinition Id="a242b4b0-1eda-47c8-91ce-2287142fc8be" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ea1a45c3-52ec-44da-9caf-866d0b822d26" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="712820b9-02d4-4353-a76b-bf499c52652c" name="管理合作播放器信息" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="4dcf1754-1b12-40e6-b3e5-ec27a1b1d925" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$111" tag="Work Item Reference">
+            <elementDefinition Id="ad07e641-5b36-4830-867e-440f8240a947" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ecde0fac-1b6c-4d18-9a99-14127619d434" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="a850827b-f99a-427a-b681-ee47f597add4" name="管理广告物料" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="422815ce-bbad-4c94-8be7-dd095874a822" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$112" tag="Work Item Reference">
+            <elementDefinition Id="80486cc6-6a40-4b68-8dba-3e001556f852" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="54a345ff-6d2e-4d5b-b519-be4b864b048f" />
+        <extendedCases>
+          <extend Id="7f4a2053-0511-4729-a62e-7c78c69eb2d6">
+            <useCaseMoniker Id="bd6706c5-d26d-4be5-a44a-2df2a143b35a" LastKnownName="预览物料效果" />
+            <elementDefinition Id="1f1e6af3-6d63-45fd-a0a0-d0b9d6d09cb9" />
+          </extend>
+        </extendedCases>
+        <additions>
+          <include Id="676189fb-7293-4f0c-bb32-2ef71f7984cc">
+            <useCaseMoniker Id="42dba8db-eede-4a7d-8b1c-922c7802fd8f" LastKnownName="上传下载素材" />
+            <elementDefinition Id="1e490a4a-5f29-4163-a85f-7c070daf9b12" />
+          </include>
+          <include Id="0ef2ac63-d74f-4ea5-96ef-410ff4ab8723">
+            <useCaseMoniker Id="acf2c3d9-1151-4f2d-a203-372f0086f44b" LastKnownName="编辑物料参数值" />
+            <elementDefinition Id="972663b4-c0e4-48e5-8399-0371432cf635" />
+          </include>
+          <include Id="1d5de6bf-5944-43ec-860f-2554175ee998">
+            <useCaseMoniker Id="f0f5b77d-70b4-4bcf-94a0-6520cab4574d" LastKnownName="分发物料" />
+            <elementDefinition Id="987e91f2-5eb2-45e8-83f6-a884e09c7ce5" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="42dba8db-eede-4a7d-8b1c-922c7802fd8f" name="上传下载素材" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="170c792c-74ea-462e-9959-aacd9b24b187" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$114" tag="Work Item Reference">
+            <elementDefinition Id="1d342898-c964-4245-89b1-6e674876b135" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="c01817c8-82c5-486d-96b5-6f595e5b4d4e" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="acf2c3d9-1151-4f2d-a203-372f0086f44b" name="编辑物料参数值" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="41a42ec7-ad12-4ce3-9934-5e12ee0e40f5" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$115" tag="Work Item Reference">
+            <elementDefinition Id="6f3c2640-24b4-4eed-852d-3e5eb489441a" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="8c5f47d8-c11a-44d1-9aad-eec08d487590" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="bd6706c5-d26d-4be5-a44a-2df2a143b35a" name="预览物料效果" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="06927a29-367d-4dfb-bdfb-29e88c666e59" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$113" tag="Work Item Reference">
+            <elementDefinition Id="77672b49-7ad3-4728-b12a-b10ce2de6ca2" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="eaf65785-3b89-408a-9f39-2ad5ebfc6fc9" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="f0f5b77d-70b4-4bcf-94a0-6520cab4574d" name="分发物料" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="9ea98ed0-5a1e-4606-9c00-dc95850af4c2" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$116" tag="Work Item Reference">
+            <elementDefinition Id="9b45742f-707f-4b3a-8fcd-bbd3ebc1487c" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="da9c18fe-05eb-4825-807b-b7d35aa8c4e0" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="b6696dd4-2969-49a1-ab85-3a83ab9239d9" name="管理视频组" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="b472a89d-4507-4dcd-b992-e0080fd61505" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$105" tag="Work Item Reference">
+            <elementDefinition Id="6f958b75-6a8d-4ccf-b61b-c0c2eadaac6a" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="b3e3624e-1ff9-4443-9f43-6241e345c6dc" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="69560131-4771-4982-9728-ec7fdd422c97" name="编辑投放计划" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="f52f1b3f-d47e-401e-b20f-38928b229a69" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$117" tag="Work Item Reference">
+            <elementDefinition Id="2d9d95d3-db3b-407e-9e34-f632d6a83127" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="c8f35a2b-e061-434d-9300-09f999d28ca4" />
+        <additions>
+          <include Id="f7b59e11-b97d-4046-b20d-0e7d441397fd">
+            <useCaseMoniker Id="7f593d8e-11bb-4b8d-88ea-ac5c2615877f" LastKnownName="分配广告物料" />
+            <elementDefinition Id="f8c38468-d38e-411a-b886-311bb700bae4" />
+          </include>
+          <include Id="f7eafce5-a532-46cf-873a-d84c9b8ed2e5">
+            <useCaseMoniker Id="4fb86aa4-d170-4e1f-a39d-3a3d4752225a" LastKnownName="监测代码生成" />
+            <elementDefinition Id="33615a46-ab5b-4569-ad30-15787b9f6fc4" />
+          </include>
+          <include Id="5505230f-b734-413c-b030-36005034b52d">
+            <useCaseMoniker Id="cdb95c6e-7f62-422d-a68b-bdad8774f92e" LastKnownName="Url Target代码生成" />
+            <elementDefinition Id="bec1615e-6819-467d-8140-a7614525c1bc" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="13552adf-f356-4caf-b68f-b00efcdccc75" name="审核投放计划" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="57801d1d-b49e-483d-b4dd-fd9d7476cc1e" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$119" tag="Work Item Reference">
+            <elementDefinition Id="dce67e86-12c2-4dde-9abe-18f19f72f80f" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="a98a0dae-aa6a-46b5-b7b4-6279969a1a73" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="7f593d8e-11bb-4b8d-88ea-ac5c2615877f" name="分配广告物料" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="4f045454-31e2-49d2-931f-90938c6076b9" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$118" tag="Work Item Reference">
+            <elementDefinition Id="b39b478d-8b0b-446e-bb1a-07db76923182" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="08895954-ff20-4da1-b7ed-e9f3f27b32c4" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="30ad7ad4-3bfe-4e01-b7f2-7908d5c77469" name="暂停或停止投放计划" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="a64716e6-f37f-4b64-968d-fb45b85e8012" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$120" tag="Work Item Reference">
+            <elementDefinition Id="e8734b27-c097-4d9a-80a4-c21b7816a3fc" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="b5a168c1-3f4e-49ad-a978-4a4b49beecd4" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="068f0b2e-f565-4210-9f0d-00e019f68d27" name="执行中修改投放计划" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="d1638fb6-1db6-4a07-81ee-a766bf4921b6" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$121" tag="Work Item Reference">
+            <elementDefinition Id="212292dd-642e-4a3a-bbbd-01f75a041924" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="bde5fd1a-cd18-41c8-acf0-69981f7677a6" />
+        <extendedCases>
+          <extend Id="e0ca8d90-fd2c-4e36-b2b9-7712accc75fa">
+            <useCaseMoniker Id="69560131-4771-4982-9728-ec7fdd422c97" LastKnownName="编辑投放计划" />
+            <elementDefinition Id="9d76e53d-0c74-4c53-bf35-b2551c94c33a" />
+          </extend>
+        </extendedCases>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="d49e17c0-91dc-48e7-912c-8081edd8680a" name="投放跟踪预警" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="5f8299d5-9599-4b7b-a81e-09850218ab78" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$122" tag="Work Item Reference">
+            <elementDefinition Id="e5104d0b-2c00-4071-9398-011fff11b1a2" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="0d3a6ab6-9782-485b-9e92-519fe38eaa6a" />
+        <extendedCases>
+          <extend Id="dd66c948-0e47-41e9-9a75-ec0650887509">
+            <useCaseMoniker Id="e2aab4f9-722f-4ce9-9a02-530221067954" LastKnownName="投放未达预期预警" />
+            <elementDefinition Id="d83ab0fe-16e1-4efc-acec-9f943c4835ee" />
+          </extend>
+        </extendedCases>
+        <additions>
+          <include Id="4bf256d0-e87f-4477-988d-8badf36ca8fc">
+            <useCaseMoniker Id="e8915740-7ec3-40e3-ba7d-227322d82f17" LastKnownName="投放未发布预警" />
+            <elementDefinition Id="62d4bf50-10ff-4a1e-9169-aed152a230ce" />
+          </include>
+          <include Id="1cb782d2-2c7b-4e73-a75e-ad9a4aded3c9">
+            <useCaseMoniker Id="ff3aca0b-eb97-4bd0-85e4-30c900e816fd" LastKnownName="素材未分配预警" />
+            <elementDefinition Id="c3a194ce-057c-4cf5-84bb-6516a15993f0" />
+          </include>
+          <include Id="6e73f63a-aca1-4379-93cf-301facd846b0">
+            <useCaseMoniker Id="b5435b63-def3-4af5-b2f6-25f21017d84f" LastKnownName="结束临近提醒" />
+            <elementDefinition Id="dd6fd484-f254-444a-8a92-a893c71d0560" />
+          </include>
+          <include Id="4469d5f0-d6e4-4fc7-92f1-1b66c18d7417">
+            <useCaseMoniker Id="04873f39-a4a6-4462-b04e-372044c69f60" LastKnownName="半实时投放效果跟踪" />
+            <elementDefinition Id="18109f3b-504b-4e3c-8752-ab176b90ace8" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="e8915740-7ec3-40e3-ba7d-227322d82f17" name="投放未发布预警" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="73b655dd-d132-40cf-8c82-a92347972576" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$162" tag="Work Item Reference">
+            <elementDefinition Id="565412e0-58d5-41b8-a1af-7300a33df21c" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="313889ed-e8f5-415c-9156-8572f9648378" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="ff3aca0b-eb97-4bd0-85e4-30c900e816fd" name="素材未分配预警" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="d3c64eab-28bb-4da6-927e-e13f6c1e26db" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$163" tag="Work Item Reference">
+            <elementDefinition Id="00ef0ae0-46ac-45cd-843f-6dc3308e3715" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="8f21895e-bd00-4055-b0d3-6471c0c204d0" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="e2aab4f9-722f-4ce9-9a02-530221067954" name="投放未达预期预警" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="25eb07f3-e0eb-4370-95e1-7b3c96cda12e" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$165" tag="Work Item Reference">
+            <elementDefinition Id="0b759bb8-c61c-472c-879c-d8b31a4d203d" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="671626e5-bc7b-4bf5-81c3-0a0b28cb7927" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="b5435b63-def3-4af5-b2f6-25f21017d84f" name="结束临近提醒" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="35dce477-d3aa-4c28-b227-2b8d65747557" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$166" tag="Work Item Reference">
+            <elementDefinition Id="8c92e966-dc1e-44f9-b869-c9cb975e92d0" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="a82f73f2-b37c-4190-8fef-def8901c6140" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="04873f39-a4a6-4462-b04e-372044c69f60" name="半实时投放效果跟踪" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="6334a616-dc4c-4362-9cbd-05966e5842df" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$167" tag="Work Item Reference">
+            <elementDefinition Id="1278f3d0-b2a9-47a0-aa90-1be309b5e154" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="614f3684-c2a2-4489-a7dd-d95e84ed317a" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="4fb86aa4-d170-4e1f-a39d-3a3d4752225a" name="监测代码生成" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="d9a99a0e-78a2-4c51-bae1-49a3f11c68d0" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$123" tag="Work Item Reference">
+            <elementDefinition Id="99feb46b-bc6e-406f-aaab-095e4fe8002a" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="d9da86e3-be60-4ec3-82cf-7ef7f1f7efc2" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="cdb95c6e-7f62-422d-a68b-bdad8774f92e" name="Url Target代码生成" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="ee749ba4-418d-4d05-934f-0a5d00bf1911" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$124" tag="Work Item Reference">
+            <elementDefinition Id="020856ef-2e3e-4783-9727-25466a8179b2" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ed9cafc4-6c64-479e-828e-144c93723fec" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="0b99bd39-8b04-4792-acf5-d28709e12548" name="广告位页面代码生成" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="3f9fef7a-0b29-4ee1-9aa5-f5e083e12a54" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$125" tag="Work Item Reference">
+            <elementDefinition Id="54dddf8b-cd0f-40b6-972d-f4d0648eaf4f" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ee4fb529-0371-433b-a73d-78fabddb3fd1" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="6e0e4d3f-5fed-438c-895f-d733e5d22060" name="投放预览" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="fb68fb1a-39cc-436a-8dba-f1afd905a8e4" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$126" tag="Work Item Reference">
+            <elementDefinition Id="0131efb9-b9ea-41ed-82e6-582f0cf4abec" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="cfc58fcc-c63c-414e-b5ad-258ba670e885" />
+        <extendedCases>
+          <extend Id="b1bf745f-d669-430d-a0c0-a6ba20823b8d">
+            <useCaseMoniker Id="69560131-4771-4982-9728-ec7fdd422c97" LastKnownName="编辑投放计划" />
+            <elementDefinition Id="bac6bf50-6180-4005-bfa3-240d56e92603" />
+          </extend>
+        </extendedCases>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="5103c61d-23a0-49d2-b8a1-8365865c83cd" name="投放计划智能分配" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="2ab3599c-83b6-4f55-862a-bcde88739030" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$159" tag="Work Item Reference">
+            <elementDefinition Id="c3eec21e-7b87-439b-9ffc-b67ecfdd7785" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="ce2b78e1-1e96-4c7d-924f-ba389ccfc959" />
+        <extendedCases>
+          <extend Id="71f86233-9404-496e-8e62-b0cc71e79a1c">
+            <useCaseMoniker Id="69560131-4771-4982-9728-ec7fdd422c97" LastKnownName="编辑投放计划" />
+            <elementDefinition Id="272a0ad6-d60d-410f-a45a-449c83c8baaa" />
+          </extend>
+        </extendedCases>
+        <additions>
+          <include Id="ccdd47e7-72a5-466f-8458-435c3e04da86">
+            <useCaseMoniker Id="18fb1b9a-8e46-4881-978e-95c917f27422" LastKnownName="非频次投放计划智能分配" />
+            <elementDefinition Id="39b7b39b-a91b-4ce8-9f9c-3fafced1c182" />
+          </include>
+          <include Id="3e4bec9b-6679-4c14-b1f2-f52741dcb019">
+            <useCaseMoniker Id="5f76f143-8241-4b4a-84cb-83a272389d66" LastKnownName="频次投放计划智能分配" />
+            <elementDefinition Id="968175da-685b-457c-a896-063cf8da7441" />
+          </include>
+        </additions>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="18fb1b9a-8e46-4881-978e-95c917f27422" name="非频次投放计划智能分配" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="034040d1-0356-4662-bf65-52695bddad29" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$161" tag="Work Item Reference">
+            <elementDefinition Id="679f734a-7adb-4f1c-ace9-88c989e024c8" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="a672958d-c82b-4e38-bbb3-e04a5c944727" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="5f76f143-8241-4b4a-84cb-83a272389d66" name="频次投放计划智能分配" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="453e3816-a51b-4f41-85de-3d267384907d" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$160" tag="Work Item Reference">
+            <elementDefinition Id="942c1794-4804-4e60-9eeb-042a4bf6c2ff" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="73315348-b66e-4f59-a316-d0fc6a47496c" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="adb3f073-ee1f-4a37-937b-12b1f38e4bb6" name="定向维度“或”关系支持" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="632bf5fc-a064-4412-bf94-a69f78ef9e30" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$164" tag="Work Item Reference">
+            <elementDefinition Id="e63b7d15-a671-42c0-ba0a-c6a242dee36c" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="a4a82223-06cb-46ff-a7f3-17a2c2f19952" />
+        <extendedCases>
+          <extend Id="bb98c53f-3e21-4559-8415-875f058c375f">
+            <useCaseMoniker Id="69560131-4771-4982-9728-ec7fdd422c97" LastKnownName="编辑投放计划" />
+            <elementDefinition Id="f297b6db-4125-4817-980d-b90e352e3fa6" />
+          </extend>
+        </extendedCases>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="5cf5a59b-56ab-44c2-a52b-55a239f438a3" name="广告推送计划管理" isAbstract="false" isLeaf="false">
+        <referencesInternal>
+          <reference Id="602cc963-d9c1-4152-9ecc-c89ccb26b14b" handle="%lornshrimp.visualstudio.com\DefaultCollection#7310dd47-f629-47f5-96a0-b8a2f9b4dede$168" tag="Work Item Reference">
+            <elementDefinition Id="ea44d80c-42a8-44b2-88cb-ecfe59a43512" />
+          </reference>
+        </referencesInternal>
+        <elementDefinition Id="59d71394-478e-4d5e-b802-0894193ca380" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+  </packagedElements>
+  <package Id="922f5b64-6dd1-4c53-b0f3-a34f0bb37026" name="LornADSP">
+    <elementDefinition Id="ceb26981-4f7a-4a52-8bb0-bd2b2cd43668" />
+    <profileInstances>
+      <packageHasProfileInstances Id="7e05374a-5bb1-4352-9b2d-31ff716ea363">
+        <profileInstance Id="1d16d6d0-c84a-41e9-90d6-2eda0b78aaf9" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="b093c875-bf69-49af-a3ad-6ba25d2c86cf">
+        <profileInstance Id="a5e91d40-a894-4423-bb01-0350710cc670" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</useCaseModelRoot>

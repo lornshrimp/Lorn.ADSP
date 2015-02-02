@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" xmlns:dm10="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner" dslVersion="1.0.0.0" Id="1b5b74b9-345a-45b2-af40-4049365424ee" name="广告调度中心数据结构" linkedPackageId="a9649cf5-5557-42a7-8c19-b9be5ff008dc" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="90d8fbfe-7f0c-43c7-bd02-b804d6e0e7ec">
+      <profileInstance Id="b14c7879-ca8a-45e7-b777-8f8d8505817d" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="2e855f33-0629-45cd-aaec-64f1643d5d35">
+      <profileInstance Id="076bd2ae-6243-46e3-8e01-3e8746a5bb61" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="df60588f-e8e0-4a8a-b7a2-a1edc9756a3e" name="广告调度计划" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a1eef90d-6dc4-4dbe-ad46-4f2583116649" />
+        <targetEnds>
+          <association Id="68ba806f-8a76-4dda-98d5-f4b47df0791f" isDerived="false" sourceEndRoleName="广告调度计划" targetEndRoleName="广告素材" isLeaf="false" isAbstract="false">
+            <classMoniker Id="0d19edeb-3c13-491d-9521-3fd13f45b55c" LastKnownName="广告素材" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="78341af4-bb54-4c8f-940d-d4d39fabd2a5" name="广告调度计划" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="Composite" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="66c9744f-a023-439b-a4c1-91ab6933c897" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="1202ab83-ae29-416d-b90e-63177bf12a11" name="广告素材" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="true">
+                  <lowerValueInternal>
+                    <literalString Id="30159c71-4bf7-484f-8afb-fbca595a7ffc" name="Lower" value="1">
+                      <elementDefinition Id="4101ee92-d37e-4a14-99dd-cd07000772ca" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="3a63d0a6-12b5-4ad0-aa0c-537f8b2058b1" name="Upper" value="*">
+                      <elementDefinition Id="726fc9ef-8f7c-49ce-8a3b-6bb2c5db19ed" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="87cfd84c-f6be-476e-9427-8e8d3d62e5d6" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="402fb9ad-b92d-4513-8123-98da723e9caa" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="f498655d-71b5-4294-b31e-5e2c477fa761" name="广告投放Id" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="3ad77e92-8eaf-480f-80d7-257b9f39f790" />
+          </property>
+          <property Id="91c1ec3f-39a9-4871-94f0-d612bf0b9d1d" name="广告位Id" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="71a94676-7d9b-4630-8599-1b9082f892ac" />
+          </property>
+          <property Id="f2264fd5-8929-4d80-b54c-12d67bec47c6" name="投放方式" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="fda36cf1-28a8-4de8-ba69-021308d6d830" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="0d19edeb-3c13-491d-9521-3fd13f45b55c" name="广告素材" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="9f564dfe-6721-41b5-8e8f-2cd9e68beb62" />
+        <ownedAttributesInternal>
+          <property Id="75105dac-4a18-49ff-9403-93f5a262a9d5" name="素材Id" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="48cb03ae-e02f-4656-adca-1740e141df7e" />
+          </property>
+        </ownedAttributesInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="a9649cf5-5557-42a7-8c19-b9be5ff008dc" name="LornADSP">
+    <elementDefinition Id="ceb26981-4f7a-4a52-8bb0-bd2b2cd43668" />
+  </package>
+</logicalClassDesignerModel>

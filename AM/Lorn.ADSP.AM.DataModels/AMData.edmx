@@ -1,0 +1,1635 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Lorn.ADSP.AM.DataModels.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="LornADSPAMDataModelsStoreContainer">
+    <EntitySet Name="AdMaterialFormInfoes" EntityType="Lorn.ADSP.AM.DataModels.Store.AdMaterialFormInfoes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdMaterials" EntityType="Lorn.ADSP.AM.DataModels.Store.AdMaterials" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanDetails" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanDetails" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanEditions" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RedirectConditionDetails" EntityType="Lorn.ADSP.AM.DataModels.Store.RedirectConditionDetails" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="RedirectConditions" EntityType="Lorn.ADSP.AM.DataModels.Store.RedirectConditions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanGroups" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlans" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlans" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanThirdMonitorCodes" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanThirdMonitorCodes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanTypes" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="IpLibraries" EntityType="Lorn.ADSP.AM.DataModels.Store.IpLibraries" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MonitorTypes" EntityType="Lorn.ADSP.AM.DataModels.Store.MonitorTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdMaterialAssigns" EntityType="Lorn.ADSP.AM.DataModels.Store.AdMaterialAssigns" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FrequencyControls" EntityType="Lorn.ADSP.AM.DataModels.Store.FrequencyControls" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FrequencyControlDetails" EntityType="Lorn.ADSP.AM.DataModels.Store.FrequencyControlDetails" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ThirdMonitorCodes" EntityType="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ThirdMonitorModes" EntityType="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorModes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ThirdMonitorCompanies" EntityType="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCompanies" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="FrequencyControlAdSpotPlanEdition" EntityType="Lorn.ADSP.AM.DataModels.Store.FrequencyControlAdSpotPlanEdition" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdSpotPlanGroupFrequencyControl" EntityType="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroupFrequencyControl" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="AdMaterialFrequencyControl" EntityType="Lorn.ADSP.AM.DataModels.Store.AdMaterialFrequencyControl" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_AdMaterialAdMaterialFormInfo" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdMaterialAdMaterialFormInfo">
+      <End Role="AdMaterials" EntitySet="AdMaterials" />
+      <End Role="AdMaterialFormInfoes" EntitySet="AdMaterialFormInfoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdMaterialThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdMaterialThirdMonitorCode">
+      <End Role="AdMaterials" EntitySet="AdMaterials" />
+      <End Role="AdSpotPlanThirdMonitorCodes" EntitySet="AdSpotPlanThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanDetails_AdSpotPlanGroups" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanDetails_AdSpotPlanGroups">
+      <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+      <End Role="AdSpotPlanDetails" EntitySet="AdSpotPlanDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanAdSpotPlanEdition">
+      <End Role="AdSpotPlans" EntitySet="AdSpotPlans" />
+      <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanEditionSpotPlanGroup" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanEditionSpotPlanGroup">
+      <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+      <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanEditionThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanEditionThirdMonitorCode">
+      <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+      <End Role="AdSpotPlanThirdMonitorCodes" EntitySet="AdSpotPlanThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanTypeAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanTypeAdSpotPlanEdition">
+      <End Role="AdSpotPlanTypes" EntitySet="AdSpotPlanTypes" />
+      <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_IpLibraryAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.Store.FK_IpLibraryAdSpotPlanEdition">
+      <End Role="IpLibraries" EntitySet="IpLibraries" />
+      <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1">
+      <End Role="AdSpotPlanGroupRedirctConditions" EntitySet="RedirectConditions" />
+      <End Role="AdSpotPlanGroupRedirctConditionDetails" EntitySet="RedirectConditionDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition" Association="Lorn.ADSP.AM.DataModels.Store.FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition">
+      <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+      <End Role="AdSpotPlanGroupRedirctConditions" EntitySet="RedirectConditions" />
+    </AssociationSet>
+    <AssociationSet Name="AdSpotPlanDetailMaterialAssign" Association="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanDetailMaterialAssign">
+      <End Role="AdSpotPlanDetail" EntitySet="AdSpotPlanDetails" />
+      <End Role="MaterialAssign" EntitySet="AdMaterialAssigns" />
+    </AssociationSet>
+    <AssociationSet Name="AdMaterialMaterialAssign" Association="Lorn.ADSP.AM.DataModels.Store.AdMaterialMaterialAssign">
+      <End Role="AdMaterial" EntitySet="AdMaterials" />
+      <End Role="MaterialAssign" EntitySet="AdMaterialAssigns" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FrequencyControlAdSpotPlanEdition_FrequencyControl" Association="Lorn.ADSP.AM.DataModels.Store.FK_FrequencyControlAdSpotPlanEdition_FrequencyControl">
+      <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+      <End Role="FrequencyControlAdSpotPlanEdition" EntitySet="FrequencyControlAdSpotPlanEdition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FrequencyControlAdSpotPlanEdition_AdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.Store.FK_FrequencyControlAdSpotPlanEdition_AdSpotPlanEdition">
+      <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+      <End Role="FrequencyControlAdSpotPlanEdition" EntitySet="FrequencyControlAdSpotPlanEdition" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanGroupFrequencyControl_AdSpotPlanGroup" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanGroupFrequencyControl_AdSpotPlanGroup">
+      <End Role="AdSpotPlanGroup" EntitySet="AdSpotPlanGroups" />
+      <End Role="AdSpotPlanGroupFrequencyControl" EntitySet="AdSpotPlanGroupFrequencyControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdSpotPlanGroupFrequencyControl_FrequencyControl" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdSpotPlanGroupFrequencyControl_FrequencyControl">
+      <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+      <End Role="AdSpotPlanGroupFrequencyControl" EntitySet="AdSpotPlanGroupFrequencyControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdMaterialFrequencyControl_AdMaterial" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdMaterialFrequencyControl_AdMaterial">
+      <End Role="AdMaterial" EntitySet="AdMaterials" />
+      <End Role="AdMaterialFrequencyControl" EntitySet="AdMaterialFrequencyControl" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AdMaterialFrequencyControl_FrequencyControl" Association="Lorn.ADSP.AM.DataModels.Store.FK_AdMaterialFrequencyControl_FrequencyControl">
+      <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+      <End Role="AdMaterialFrequencyControl" EntitySet="AdMaterialFrequencyControl" />
+    </AssociationSet>
+    <AssociationSet Name="FrequencyControlFrequencyControlDetail" Association="Lorn.ADSP.AM.DataModels.Store.FrequencyControlFrequencyControlDetail">
+      <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+      <End Role="FrequencyControlDetail" EntitySet="FrequencyControlDetails" />
+    </AssociationSet>
+    <AssociationSet Name="MonitorTypeAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.Store.MonitorTypeAdSpotPlanEdition">
+      <End Role="MonitorType" EntitySet="MonitorTypes" />
+      <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+    </AssociationSet>
+    <AssociationSet Name="MonitorTypeThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.MonitorTypeThirdMonitorCode">
+      <End Role="MonitorType" EntitySet="MonitorTypes" />
+      <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="ThirdMonitorCodeAdSpotPlanThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodeAdSpotPlanThirdMonitorCode">
+      <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+      <End Role="AdSpotPlanThirdMonitorCode" EntitySet="AdSpotPlanThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="ThirdMonitorTypeThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorTypeThirdMonitorCode">
+      <End Role="ThirdMonitorType" EntitySet="ThirdMonitorModes" />
+      <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="AdSpotPlanGroupAdSpotPlanThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroupAdSpotPlanThirdMonitorCode">
+      <End Role="AdSpotPlanGroup" EntitySet="AdSpotPlanGroups" />
+      <End Role="AdSpotPlanThirdMonitorCode" EntitySet="AdSpotPlanThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="ThirdMonitorCompanyThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCompanyThirdMonitorCode">
+      <End Role="ThirdMonitorCompany" EntitySet="ThirdMonitorCompanies" />
+      <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+    </AssociationSet>
+    <AssociationSet Name="AdSpotPlanEditionRedirctCondition" Association="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditionRedirctCondition">
+      <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+      <End Role="RedirctCondition" EntitySet="RedirectConditions" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AdMaterialFormInfoes">
+    <Key>
+      <PropertyRef Name="AdMaterialFormInfoId" />
+    </Key>
+    <Property Name="AdMaterialFormInfoId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CreativeTypeFormdefinitionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SortNo" Type="int" Nullable="true" />
+    <Property Name="AdMaterial_AdMaterialId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdMaterials">
+    <Key>
+      <PropertyRef Name="AdMaterialId" />
+    </Key>
+    <Property Name="AdMaterialId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdMasterPlanId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="MaterialCode" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Enabled" Type="bit" Nullable="false" />
+    <Property Name="CreativeTypeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="TimeLength" Type="time" Nullable="true" Precision="7" />
+    <Property Name="Height" Type="int" Nullable="true" />
+    <Property Name="Width" Type="int" Nullable="true" />
+    <Property Name="AspectRatioId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="ExtData" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="UpdateTime" Type="datetime" Nullable="true" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanDetails">
+    <Key>
+      <PropertyRef Name="AdPositionDetailId" />
+      <PropertyRef Name="SpotDate" />
+      <PropertyRef Name="AdSpotPlanGroupId" />
+    </Key>
+    <Property Name="AdPositionDetailId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SpotDate" Type="datetime" Nullable="false" />
+    <Property Name="AdSpotPlanGroupId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdPositionId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SaleType" Type="int" Nullable="false" />
+    <Property Name="AdPositionFormat" Type="nvarchar" Nullable="true" MaxLength="1024" />
+    <Property Name="AdPositionUrl" Type="nvarchar" Nullable="true" MaxLength="1024" />
+    <Property Name="PlanTrafficRatio" Type="int" Nullable="true" />
+    <Property Name="PlanImpressionNumber" Type="bigint" Nullable="true" />
+    <Property Name="PlanClickNumber" Type="bigint" Nullable="true" />
+    <Property Name="MacroSlideshowSequenceNo" Type="int" Nullable="true" />
+    <Property Name="MicroSlideshowType" Type="int" Nullable="true" />
+    <Property Name="PublishPrice" Type="decimal" Nullable="false" />
+    <Property Name="NetPrice" Type="decimal" Nullable="false" />
+    <Property Name="PriceType" Type="int" Nullable="false" />
+    <Property Name="ComsumeType" Type="int" Nullable="false" />
+    <Property Name="AdPositionSizeId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="AdLocationId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanEditions">
+    <Key>
+      <PropertyRef Name="AdSpotPlanEditionId" />
+    </Key>
+    <Property Name="AdSpotPlanEditionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="EditionNo" Type="int" Nullable="false" />
+    <Property Name="Priority" Type="int" Nullable="false" />
+    <Property Name="CategoryExclusive" Type="bit" Nullable="false" />
+    <Property Name="ProductCategoryId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="MonitorCompanyId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="StartDate" Type="datetime" Nullable="false" />
+    <Property Name="EndDate" Type="datetime" Nullable="false" />
+    <Property Name="EditionStatus" Type="int" Nullable="false" />
+    <Property Name="BudgetAmount" Type="decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="PackageDiscount" Type="decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="Remark" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="AdSpotPlan_AdSpotPlanId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdSpotPlanType_AdSpotPlanTypeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="IpLibrary_IpLibraryId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="ValuationMonitorType_MonitorTypeId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RedirectConditionDetails">
+    <Key>
+      <PropertyRef Name="RedirectConditionDetailId" />
+    </Key>
+    <Property Name="RedirectConditionDetailId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="StartValue" Type="float" Nullable="true" />
+    <Property Name="EndValue" Type="float" Nullable="true" />
+    <Property Name="RedirectCondition_RedirectConditionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CustomKey" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CustomValue" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="RedirectConditionDefinitionId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="RedirectConditions">
+    <Key>
+      <PropertyRef Name="RedirectConditionId" />
+    </Key>
+    <Property Name="RedirectConditionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="RedirectDimensionId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="IsExclude" Type="bit" Nullable="false" />
+    <Property Name="SpotPlanGroup_SpotPlanGroupId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="AdSpotPlanEdition_AdSpotPlanEditionId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanGroups">
+    <Key>
+      <PropertyRef Name="SpotPlanGroupId" />
+    </Key>
+    <Property Name="SpotPlanGroupId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SpotPlanGroupName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="AdSpotPlanEdition_AdSpotPlanEditionId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdSpotPlans">
+    <Key>
+      <PropertyRef Name="AdSpotPlanId" />
+    </Key>
+    <Property Name="AdSpotPlanId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdMasterPlanId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="AdSpotPlanName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanThirdMonitorCodes">
+    <Key>
+      <PropertyRef Name="SpotPlanThirdMonitorCodeId" />
+    </Key>
+    <Property Name="SpotPlanThirdMonitorCodeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdPositionId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="AdSpotPlanEdition_AdSpotPlanEditionId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="AdMaterial_AdMaterialId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="SpotDate" Type="datetime" Nullable="true" />
+    <Property Name="ThirdMonitorCode_ThirdMonitorCodeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdSpotPlanGroup_SpotPlanGroupId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanTypes">
+    <Key>
+      <PropertyRef Name="AdSpotPlanTypeId" />
+    </Key>
+    <Property Name="AdSpotPlanTypeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdSpotPlanTypeName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Priority" Type="smallint" Nullable="false" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="IpLibraries">
+    <Key>
+      <PropertyRef Name="IpLibraryId" />
+    </Key>
+    <Property Name="IpLibraryId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="IpLibraryCode" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="IpLibraryName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Enabled" Type="bit" Nullable="false" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="MonitorTypes">
+    <Key>
+      <PropertyRef Name="MonitorTypeId" />
+    </Key>
+    <Property Name="MonitorTypeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MonitorTypeName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="MonitorTypeCode" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="PriceUnit" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdMaterialAssigns">
+    <Key>
+      <PropertyRef Name="MaterialAssignId" />
+    </Key>
+    <Property Name="MaterialAssignId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MicroSlideshowSequenceNo" Type="int" Nullable="true" />
+    <Property Name="AdSpotPlanDetail_AdPositionDetailId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdSpotPlanDetail_SpotDate" Type="datetime" Nullable="false" />
+    <Property Name="AdSpotPlanDetail_AdSpotPlanGroupId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdMaterial_AdMaterialId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FrequencyControls">
+    <Key>
+      <PropertyRef Name="FrequencyControlId" />
+    </Key>
+    <Property Name="FrequencyControlId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FrequencyControlName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="FrequencyControlDetail" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FrequencyControlDetails">
+    <Key>
+      <PropertyRef Name="FrequencyControlDetailId" />
+    </Key>
+    <Property Name="FrequencyControlDetailId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FrequencyControlPeriod" Type="int" Nullable="false" />
+    <Property Name="PeriodNumber" Type="int" Nullable="false" />
+    <Property Name="MaxCount" Type="int" Nullable="true" />
+    <Property Name="MinCount" Type="int" Nullable="true" />
+    <Property Name="FrequencyControl_FrequencyControlId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ThirdMonitorCodes">
+    <Key>
+      <PropertyRef Name="ThirdMonitorCodeId" />
+    </Key>
+    <Property Name="ThirdMonitorCodeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdMasterPlanId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="MonitorCode" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Remark" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="MonitorType_MonitorTypeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ThirdMonitorMode_ThirdMonitorModeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ThirdMonitorCompany_ThirdMonitorCompanyId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ThirdMonitorModes">
+    <Key>
+      <PropertyRef Name="ThirdMonitorModeId" />
+    </Key>
+    <Property Name="ThirdMonitorModeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ThirdMonitorModeName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="ThirdMonitorCompanies">
+    <Key>
+      <PropertyRef Name="ThirdMonitorCompanyId" />
+    </Key>
+    <Property Name="ThirdMonitorCompanyId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MediaId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="ThirdMonitorCompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="FrequencyControlAdSpotPlanEdition">
+    <Key>
+      <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+      <PropertyRef Name="AdSpotPlanEditions_AdSpotPlanEditionId" />
+    </Key>
+    <Property Name="FrequencyControls_FrequencyControlId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="AdSpotPlanEditions_AdSpotPlanEditionId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdSpotPlanGroupFrequencyControl">
+    <Key>
+      <PropertyRef Name="AdSpotPlanGroups_SpotPlanGroupId" />
+      <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+    </Key>
+    <Property Name="AdSpotPlanGroups_SpotPlanGroupId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FrequencyControls_FrequencyControlId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="AdMaterialFrequencyControl">
+    <Key>
+      <PropertyRef Name="AdMaterials_AdMaterialId" />
+      <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+    </Key>
+    <Property Name="AdMaterials_AdMaterialId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FrequencyControls_FrequencyControlId" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_AdMaterialAdMaterialFormInfo">
+    <End Role="AdMaterials" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterials" Multiplicity="1" />
+    <End Role="AdMaterialFormInfoes" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterialFormInfoes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdMaterials">
+        <PropertyRef Name="AdMaterialId" />
+      </Principal>
+      <Dependent Role="AdMaterialFormInfoes">
+        <PropertyRef Name="AdMaterial_AdMaterialId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdMaterialThirdMonitorCode">
+    <End Role="AdMaterials" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterials" Multiplicity="0..1" />
+    <End Role="AdSpotPlanThirdMonitorCodes" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdMaterials">
+        <PropertyRef Name="AdMaterialId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanThirdMonitorCodes">
+        <PropertyRef Name="AdMaterial_AdMaterialId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanDetails_AdSpotPlanGroups">
+    <End Role="AdSpotPlanGroups" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" Multiplicity="1" />
+    <End Role="AdSpotPlanDetails" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanGroups">
+        <PropertyRef Name="SpotPlanGroupId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanDetails">
+        <PropertyRef Name="AdSpotPlanGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanAdSpotPlanEdition">
+    <End Role="AdSpotPlans" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlans" Multiplicity="1" />
+    <End Role="AdSpotPlanEditions" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlans">
+        <PropertyRef Name="AdSpotPlanId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanEditions">
+        <PropertyRef Name="AdSpotPlan_AdSpotPlanId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanEditionSpotPlanGroup">
+    <End Role="AdSpotPlanEditions" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="1" />
+    <End Role="AdSpotPlanGroups" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanEditions">
+        <PropertyRef Name="AdSpotPlanEditionId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanGroups">
+        <PropertyRef Name="AdSpotPlanEdition_AdSpotPlanEditionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanEditionThirdMonitorCode">
+    <End Role="AdSpotPlanEditions" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="0..1" />
+    <End Role="AdSpotPlanThirdMonitorCodes" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanEditions">
+        <PropertyRef Name="AdSpotPlanEditionId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanThirdMonitorCodes">
+        <PropertyRef Name="AdSpotPlanEdition_AdSpotPlanEditionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanTypeAdSpotPlanEdition">
+    <End Role="AdSpotPlanTypes" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanTypes" Multiplicity="1" />
+    <End Role="AdSpotPlanEditions" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanTypes">
+        <PropertyRef Name="AdSpotPlanTypeId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanEditions">
+        <PropertyRef Name="AdSpotPlanType_AdSpotPlanTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_IpLibraryAdSpotPlanEdition">
+    <End Role="IpLibraries" Type="Lorn.ADSP.AM.DataModels.Store.IpLibraries" Multiplicity="0..1" />
+    <End Role="AdSpotPlanEditions" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="IpLibraries">
+        <PropertyRef Name="IpLibraryId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanEditions">
+        <PropertyRef Name="IpLibrary_IpLibraryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1">
+    <End Role="AdSpotPlanGroupRedirctConditions" Type="Lorn.ADSP.AM.DataModels.Store.RedirectConditions" Multiplicity="1" />
+    <End Role="AdSpotPlanGroupRedirctConditionDetails" Type="Lorn.ADSP.AM.DataModels.Store.RedirectConditionDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanGroupRedirctConditions">
+        <PropertyRef Name="RedirectConditionId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanGroupRedirctConditionDetails">
+        <PropertyRef Name="RedirectCondition_RedirectConditionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition">
+    <End Role="AdSpotPlanGroups" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" Multiplicity="0..1" />
+    <End Role="AdSpotPlanGroupRedirctConditions" Type="Lorn.ADSP.AM.DataModels.Store.RedirectConditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanGroups">
+        <PropertyRef Name="SpotPlanGroupId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanGroupRedirctConditions">
+        <PropertyRef Name="SpotPlanGroup_SpotPlanGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AdSpotPlanDetailMaterialAssign">
+    <End Role="AdSpotPlanDetail" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanDetails" Multiplicity="1" />
+    <End Role="MaterialAssign" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterialAssigns" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanDetail">
+        <PropertyRef Name="AdPositionDetailId" />
+        <PropertyRef Name="SpotDate" />
+        <PropertyRef Name="AdSpotPlanGroupId" />
+      </Principal>
+      <Dependent Role="MaterialAssign">
+        <PropertyRef Name="AdSpotPlanDetail_AdPositionDetailId" />
+        <PropertyRef Name="AdSpotPlanDetail_SpotDate" />
+        <PropertyRef Name="AdSpotPlanDetail_AdSpotPlanGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AdMaterialMaterialAssign">
+    <End Role="AdMaterial" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterials" Multiplicity="1" />
+    <End Role="MaterialAssign" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterialAssigns" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdMaterial">
+        <PropertyRef Name="AdMaterialId" />
+      </Principal>
+      <Dependent Role="MaterialAssign">
+        <PropertyRef Name="AdMaterial_AdMaterialId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FrequencyControlFrequencyControlDetail">
+    <End Role="FrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControls" Multiplicity="1" />
+    <End Role="FrequencyControlDetail" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControlDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FrequencyControl">
+        <PropertyRef Name="FrequencyControlId" />
+      </Principal>
+      <Dependent Role="FrequencyControlDetail">
+        <PropertyRef Name="FrequencyControl_FrequencyControlId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MonitorTypeAdSpotPlanEdition">
+    <End Role="MonitorType" Type="Lorn.ADSP.AM.DataModels.Store.MonitorTypes" Multiplicity="1" />
+    <End Role="AdSpotPlanEdition" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MonitorType">
+        <PropertyRef Name="MonitorTypeId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanEdition">
+        <PropertyRef Name="ValuationMonitorType_MonitorTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MonitorTypeThirdMonitorCode">
+    <End Role="MonitorType" Type="Lorn.ADSP.AM.DataModels.Store.MonitorTypes" Multiplicity="1" />
+    <End Role="ThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MonitorType">
+        <PropertyRef Name="MonitorTypeId" />
+      </Principal>
+      <Dependent Role="ThirdMonitorCode">
+        <PropertyRef Name="MonitorType_MonitorTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ThirdMonitorCodeAdSpotPlanThirdMonitorCode">
+    <End Role="ThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodes" Multiplicity="1" />
+    <End Role="AdSpotPlanThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ThirdMonitorCode">
+        <PropertyRef Name="ThirdMonitorCodeId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanThirdMonitorCode">
+        <PropertyRef Name="ThirdMonitorCode_ThirdMonitorCodeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ThirdMonitorTypeThirdMonitorCode">
+    <End Role="ThirdMonitorType" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorModes" Multiplicity="1" />
+    <End Role="ThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ThirdMonitorType">
+        <PropertyRef Name="ThirdMonitorModeId" />
+      </Principal>
+      <Dependent Role="ThirdMonitorCode">
+        <PropertyRef Name="ThirdMonitorMode_ThirdMonitorModeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AdSpotPlanGroupAdSpotPlanThirdMonitorCode">
+    <End Role="AdSpotPlanGroup" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" Multiplicity="0..1" />
+    <End Role="AdSpotPlanThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanGroup">
+        <PropertyRef Name="SpotPlanGroupId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanThirdMonitorCode">
+        <PropertyRef Name="AdSpotPlanGroup_SpotPlanGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ThirdMonitorCompanyThirdMonitorCode">
+    <End Role="ThirdMonitorCompany" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCompanies" Multiplicity="1" />
+    <End Role="ThirdMonitorCode" Type="Lorn.ADSP.AM.DataModels.Store.ThirdMonitorCodes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ThirdMonitorCompany">
+        <PropertyRef Name="ThirdMonitorCompanyId" />
+      </Principal>
+      <Dependent Role="ThirdMonitorCode">
+        <PropertyRef Name="ThirdMonitorCompany_ThirdMonitorCompanyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AdSpotPlanEditionRedirctCondition">
+    <End Role="AdSpotPlanEdition" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="0..1" />
+    <End Role="RedirctCondition" Type="Lorn.ADSP.AM.DataModels.Store.RedirectConditions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanEdition">
+        <PropertyRef Name="AdSpotPlanEditionId" />
+      </Principal>
+      <Dependent Role="RedirctCondition">
+        <PropertyRef Name="AdSpotPlanEdition_AdSpotPlanEditionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FrequencyControlAdSpotPlanEdition_FrequencyControl">
+    <End Role="FrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControls" Multiplicity="1" />
+    <End Role="FrequencyControlAdSpotPlanEdition" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControlAdSpotPlanEdition" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FrequencyControl">
+        <PropertyRef Name="FrequencyControlId" />
+      </Principal>
+      <Dependent Role="FrequencyControlAdSpotPlanEdition">
+        <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FrequencyControlAdSpotPlanEdition_AdSpotPlanEdition">
+    <End Role="FrequencyControlAdSpotPlanEdition" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControlAdSpotPlanEdition" Multiplicity="*" />
+    <End Role="AdSpotPlanEdition" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanEditions" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanEdition">
+        <PropertyRef Name="AdSpotPlanEditionId" />
+      </Principal>
+      <Dependent Role="FrequencyControlAdSpotPlanEdition">
+        <PropertyRef Name="AdSpotPlanEditions_AdSpotPlanEditionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanGroupFrequencyControl_AdSpotPlanGroup">
+    <End Role="AdSpotPlanGroup" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroups" Multiplicity="1" />
+    <End Role="AdSpotPlanGroupFrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroupFrequencyControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdSpotPlanGroup">
+        <PropertyRef Name="SpotPlanGroupId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanGroupFrequencyControl">
+        <PropertyRef Name="AdSpotPlanGroups_SpotPlanGroupId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdSpotPlanGroupFrequencyControl_FrequencyControl">
+    <End Role="AdSpotPlanGroupFrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.AdSpotPlanGroupFrequencyControl" Multiplicity="*" />
+    <End Role="FrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControls" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="FrequencyControl">
+        <PropertyRef Name="FrequencyControlId" />
+      </Principal>
+      <Dependent Role="AdSpotPlanGroupFrequencyControl">
+        <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdMaterialFrequencyControl_AdMaterial">
+    <End Role="AdMaterial" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterials" Multiplicity="1" />
+    <End Role="AdMaterialFrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterialFrequencyControl" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AdMaterial">
+        <PropertyRef Name="AdMaterialId" />
+      </Principal>
+      <Dependent Role="AdMaterialFrequencyControl">
+        <PropertyRef Name="AdMaterials_AdMaterialId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AdMaterialFrequencyControl_FrequencyControl">
+    <End Role="AdMaterialFrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.AdMaterialFrequencyControl" Multiplicity="*" />
+    <End Role="FrequencyControl" Type="Lorn.ADSP.AM.DataModels.Store.FrequencyControls" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="FrequencyControl">
+        <PropertyRef Name="FrequencyControlId" />
+      </Principal>
+      <Dependent Role="AdMaterialFrequencyControl">
+        <PropertyRef Name="FrequencyControls_FrequencyControlId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Lorn.ADSP.AM.DataModels" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AdMaterialFormInfo">
+          <Documentation>
+            <Summary>广告物料表单信息</Summary>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="AdMaterialFormInfoId" />
+          </Key>
+          <Property Name="AdMaterialFormInfoId" Type="Guid" Nullable="false" />
+          <Property Name="CreativeTypeFormdefinitionId" Type="Guid" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SortNo" Type="Int32" />
+          <Property Name="AdMaterial_AdMaterialId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AdMaterial" Relationship="Self.FK_AdMaterialAdMaterialFormInfo" FromRole="AdMaterialFormInfoes" ToRole="AdMaterials" />
+        </EntityType>
+        <EntityType Name="AdMaterial">
+          <Key>
+            <PropertyRef Name="AdMaterialId" />
+          </Key>
+          <Property Name="AdMaterialId" Type="Guid" Nullable="false" />
+          <Property Name="AdMasterPlanId" Type="Guid" Nullable="true" />
+          <Property Name="MaterialCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="CreativeTypeId" Type="Guid" Nullable="false" />
+          <Property Name="TimeLength" Type="Time" Precision="7" />
+          <Property Name="Height" Type="Int32" />
+          <Property Name="Width" Type="Int32" />
+          <Property Name="AspectRatioId" Type="Guid" />
+          <Property Name="ExtData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AdMaterialFormInfos" Relationship="Self.FK_AdMaterialAdMaterialFormInfo" FromRole="AdMaterials" ToRole="AdMaterialFormInfoes" >
+            <Documentation>
+              <Summary>广告物料表单信息</Summary>
+            </Documentation>
+          </NavigationProperty>
+          <NavigationProperty Name="AdSpotPlanThirdMonitorCodes" Relationship="Self.FK_AdMaterialThirdMonitorCode" FromRole="AdMaterials" ToRole="AdSpotPlanThirdMonitorCodes" />
+          <NavigationProperty Name="MaterialAssigns" Relationship="Lorn.ADSP.AM.DataModels.AdMaterialMaterialAssign" FromRole="AdMaterial" ToRole="MaterialAssign" />
+          <NavigationProperty Name="FrequencyControls" Relationship="Lorn.ADSP.AM.DataModels.AdMaterialFrequencyControl" FromRole="AdMaterial" ToRole="FrequencyControl" />
+          <Property Name="MediaId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdSpotPlanDetail">
+          <Key>
+            <PropertyRef Name="AdPositionDetailId" />
+            <PropertyRef Name="SpotDate" />
+            <PropertyRef Name="AdSpotPlanGroupId" />
+          </Key>
+          <Property Name="AdPositionDetailId" Type="Guid" Nullable="false" />
+          <Property Name="SpotDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AdSpotPlanGroupId" Type="Guid" Nullable="false" />
+          <Property Name="AdPositionId" Type="String" Nullable="false" >
+            <Documentation>
+              <Summary>广告位Id</Summary>
+            </Documentation>
+          </Property>
+          <NavigationProperty Name="AdSpotPlanGroup" Relationship="Self.FK_AdSpotPlanDetails_AdSpotPlanGroups" FromRole="AdSpotPlanDetails" ToRole="AdSpotPlanGroups" />
+          <Property Name="SaleType" Type="Lorn.ADSP.AM.DataModels.SaleType" Nullable="false" />
+          <Property Name="AdPositionFormat" Type="String" Nullable="true" MaxLength="1024" />
+          <Property Name="AdPositionUrl" Type="String" Nullable="true" MaxLength="1024" />
+          <Property Name="PlanTrafficRatio" Type="Int32" Nullable="true" />
+          <Property Name="PlanImpressionNumber" Type="Int64" Nullable="true" />
+          <Property Name="PlanClickNumber" Type="Int64" Nullable="true" />
+          <Property Name="MacroSlideshowSequenceNo" Type="Int32" Nullable="true" />
+          <Property Name="MicroSlideshowType" Type="Lorn.ADSP.AM.DataModels.MicroSlideshowType" Nullable="true" />
+          <Property Name="PublishPrice" Type="Decimal" Nullable="false" />
+          <Property Name="NetPrice" Type="Decimal" Nullable="false" />
+          <Property Name="PriceType" Type="Lorn.ADSP.AM.DataModels.PriceUnit" Nullable="false" />
+          <Property Name="ComsumeType" Type="Lorn.ADSP.AM.DataModels.ConsumeType" Nullable="false" />
+          <NavigationProperty Name="MaterialAssigns" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanDetailMaterialAssign" FromRole="AdSpotPlanDetail" ToRole="MaterialAssign" />
+          <Property Name="AdPositionSizeId" Type="Guid" >
+            <Documentation>
+              <Summary>广告尺寸Id</Summary>
+            </Documentation>
+          </Property>
+          <Property Name="AdLocationId" Type="Guid" >
+            <Documentation>
+              <Summary>广告位置Id</Summary>
+            </Documentation>
+          </Property>
+        </EntityType>
+        <EntityType Name="AdSpotPlanEdition">
+          <Documentation>
+            <Summary>广告投放计划</Summary>
+          </Documentation>
+          <Key>
+            <PropertyRef Name="AdSpotPlanEditionId" />
+          </Key>
+          <Property Name="AdSpotPlanEditionId" Type="Guid" Nullable="false" />
+          <Property Name="EditionNo" Type="Int32" Nullable="false" />
+          <Property Name="Priority" Type="Int32" Nullable="false" />
+          <Property Name="CategoryExclusive" Type="Boolean" Nullable="false" />
+          <Property Name="ProductCategoryId" Type="Guid" >
+            <Documentation>
+              <Summary>产品类别Id</Summary>
+            </Documentation>
+          </Property>
+          <Property Name="MonitorCompanyId" Type="Guid" Nullable="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EditionStatus" Type="Lorn.ADSP.AM.DataModels.PlanStatus" Nullable="false" />
+          <Property Name="BudgetAmount" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="PackageDiscount" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AdSpotPlan_AdSpotPlanId" Type="Guid" Nullable="false" />
+          <Property Name="AdSpotPlanType_AdSpotPlanTypeId" Type="Guid" Nullable="false" />
+          <Property Name="IpLibrary_IpLibraryId" Type="Guid" />
+          <NavigationProperty Name="AdSpotPlan" Relationship="Self.FK_AdSpotPlanAdSpotPlanEdition" FromRole="AdSpotPlanEditions" ToRole="AdSpotPlans" />
+          <NavigationProperty Name="AdSpotPlanGroups" Relationship="Self.FK_AdSpotPlanEditionSpotPlanGroup" FromRole="AdSpotPlanEditions" ToRole="AdSpotPlanGroups" />
+          <NavigationProperty Name="AdSpotPlanThirdMonitorCodes" Relationship="Self.FK_AdSpotPlanEditionThirdMonitorCode" FromRole="AdSpotPlanEditions" ToRole="AdSpotPlanThirdMonitorCodes" />
+          <NavigationProperty Name="AdSpotPlanType" Relationship="Self.FK_AdSpotPlanTypeAdSpotPlanEdition" FromRole="AdSpotPlanEditions" ToRole="AdSpotPlanTypes" />
+          <NavigationProperty Name="IpLibrary" Relationship="Self.FK_IpLibraryAdSpotPlanEdition" FromRole="AdSpotPlanEditions" ToRole="IpLibraries" />
+          <NavigationProperty Name="FrequencyControls" Relationship="Lorn.ADSP.AM.DataModels.FrequencyControlAdSpotPlanEdition" FromRole="AdSpotPlanEdition" ToRole="FrequencyControl" />
+          <NavigationProperty Name="ValuationMonitorType" Relationship="Lorn.ADSP.AM.DataModels.MonitorTypeAdSpotPlanEdition" FromRole="AdSpotPlanEdition" ToRole="MonitorType" >
+            <Documentation>
+              <Summary>结算监测类型</Summary>
+            </Documentation>
+          </NavigationProperty>
+          <NavigationProperty Name="RedirectConditions" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanEditionRedirctCondition" FromRole="AdSpotPlanEdition" ToRole="RedirctCondition" />
+        </EntityType>
+        <EntityType Name="RedirectConditionDetail">
+          <Key>
+            <PropertyRef Name="RedirectConditionDetailId" />
+          </Key>
+          <Property Name="RedirectConditionDetailId" Type="Guid" Nullable="false" />
+          <Property Name="StartValue" Type="Double" />
+          <Property Name="EndValue" Type="Double" />
+          <Property Name="RedirectCondition_RedirectConditionId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="RedirectCondition" Relationship="Self.FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1" FromRole="AdSpotPlanGroupRedirctConditionDetails" ToRole="AdSpotPlanGroupRedirctConditions" />
+          <Property Name="CustomKey" Type="String" />
+          <Property Name="CustomValue" Type="String" />
+          <Property Name="RedirectConditionDefinitionId" Type="Guid" />
+        </EntityType>
+        <EntityType Name="RedirectCondition">
+          <Key>
+            <PropertyRef Name="RedirectConditionId" />
+          </Key>
+          <Property Name="RedirectConditionId" Type="Guid" Nullable="false" />
+          <Property Name="RedirectDimensionId" Type="Guid" Nullable="false" />
+          <Property Name="IsExclude" Type="Boolean" Nullable="false" />
+          <Property Name="SpotPlanGroup_SpotPlanGroupId" Type="Guid" />
+          <NavigationProperty Name="RedirctConditionDetails" Relationship="Self.FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1" FromRole="AdSpotPlanGroupRedirctConditions" ToRole="AdSpotPlanGroupRedirctConditionDetails" />
+          <NavigationProperty Name="AdSpotPlanGroup" Relationship="Self.FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition" FromRole="AdSpotPlanGroupRedirctConditions" ToRole="AdSpotPlanGroups" />
+          <NavigationProperty Name="AdSpotPlanEdition" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanEditionRedirctCondition" FromRole="RedirctCondition" ToRole="AdSpotPlanEdition" />
+        </EntityType>
+        <EntityType Name="AdSpotPlanGroup">
+          <Key>
+            <PropertyRef Name="SpotPlanGroupId" />
+          </Key>
+          <Property Name="SpotPlanGroupId" Type="Guid" Nullable="false" />
+          <Property Name="SpotPlanGroupName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AdSpotPlanEdition_AdSpotPlanEditionId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AdSpotPlanDetails" Relationship="Self.FK_AdSpotPlanDetails_AdSpotPlanGroups" FromRole="AdSpotPlanGroups" ToRole="AdSpotPlanDetails" />
+          <NavigationProperty Name="AdSpotPlanEdition" Relationship="Self.FK_AdSpotPlanEditionSpotPlanGroup" FromRole="AdSpotPlanGroups" ToRole="AdSpotPlanEditions" />
+          <NavigationProperty Name="RedirectConditions" Relationship="Self.FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition" FromRole="AdSpotPlanGroups" ToRole="AdSpotPlanGroupRedirctConditions" />
+          <NavigationProperty Name="FrequencyControls" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupFrequencyControl" FromRole="AdSpotPlanGroup" ToRole="FrequencyControl" />
+          <NavigationProperty Name="AdSpotPlanThirdMonitorCodes" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupAdSpotPlanThirdMonitorCode" FromRole="AdSpotPlanGroup" ToRole="AdSpotPlanThirdMonitorCode" />
+        </EntityType>
+        <EntityType Name="AdSpotPlan">
+          <Key>
+            <PropertyRef Name="AdSpotPlanId" />
+          </Key>
+          <Property Name="AdSpotPlanId" Type="Guid" Nullable="false" />
+          <Property Name="AdMasterPlanId" Type="Guid" Nullable="true" />
+          <NavigationProperty Name="AdSpotPlanEditions" Relationship="Self.FK_AdSpotPlanAdSpotPlanEdition" FromRole="AdSpotPlans" ToRole="AdSpotPlanEditions" />
+          <Property Name="AdSpotPlanName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="MediaId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AdSpotPlanThirdMonitorCode">
+          <Key>
+            <PropertyRef Name="SpotPlanThirdMonitorCodeId" />
+          </Key>
+          <Property Name="SpotPlanThirdMonitorCodeId" Type="Guid" Nullable="false" />
+          <Property Name="AdPositionId" Type="Guid" />
+          <Property Name="AdSpotPlanEdition_AdSpotPlanEditionId" Type="Guid" />
+          <Property Name="AdMaterial_AdMaterialId" Type="Guid" />
+          <NavigationProperty Name="AdMaterial" Relationship="Lorn.ADSP.AM.DataModels.FK_AdMaterialThirdMonitorCode" FromRole="AdSpotPlanThirdMonitorCodes" ToRole="AdMaterials" />
+          <NavigationProperty Name="AdSpotPlanEdition" Relationship="Lorn.ADSP.AM.DataModels.FK_AdSpotPlanEditionThirdMonitorCode" FromRole="AdSpotPlanThirdMonitorCodes" ToRole="AdSpotPlanEditions" />
+          <NavigationProperty Name="ThirdMonitorCode" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorCodeAdSpotPlanThirdMonitorCode" FromRole="AdSpotPlanThirdMonitorCode" ToRole="ThirdMonitorCode" />
+          <Property Name="SpotDate" Type="DateTime" />
+          <NavigationProperty Name="AdSpotPlanGroup" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupAdSpotPlanThirdMonitorCode" FromRole="AdSpotPlanThirdMonitorCode" ToRole="AdSpotPlanGroup" />
+        </EntityType>
+        <EntityType Name="AdSpotPlanType">
+          <Key>
+            <PropertyRef Name="AdSpotPlanTypeId" />
+          </Key>
+          <Property Name="AdSpotPlanTypeId" Type="Guid" Nullable="false" />
+          <Property Name="AdSpotPlanTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Priority" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="AdSpotPlanEditions" Relationship="Self.FK_AdSpotPlanTypeAdSpotPlanEdition" FromRole="AdSpotPlanTypes" ToRole="AdSpotPlanEditions" />
+          <Property Name="MediaId" Type="Guid" Nullable="true" />
+        </EntityType>
+        <EntityType Name="IpLibrary">
+          <Key>
+            <PropertyRef Name="IpLibraryId" />
+          </Key>
+          <Property Name="IpLibraryId" Type="Guid" Nullable="false" />
+          <Property Name="IpLibraryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IpLibraryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AdSpotPlanEditions" Relationship="Self.FK_IpLibraryAdSpotPlanEdition" FromRole="IpLibraries" ToRole="AdSpotPlanEditions" />
+          <Property Name="MediaId" Type="Guid" Nullable="true" />
+        </EntityType>
+        <EntityType Name="MonitorType">
+          <Key>
+            <PropertyRef Name="MonitorTypeId" />
+          </Key>
+          <Property Name="MonitorTypeId" Type="Guid" Nullable="false" />
+          <Property Name="MonitorTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MonitorTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdSpotPlanEditions" Relationship="Lorn.ADSP.AM.DataModels.MonitorTypeAdSpotPlanEdition" FromRole="MonitorType" ToRole="AdSpotPlanEdition" />
+          <Property Name="MediaId" Type="Guid" Nullable="true" />
+          <NavigationProperty Name="ThirdMonitorCodes" Relationship="Lorn.ADSP.AM.DataModels.MonitorTypeThirdMonitorCode" FromRole="MonitorType" ToRole="ThirdMonitorCode" />
+          <Property Name="PriceUnit" Type="Lorn.ADSP.AM.DataModels.PriceUnit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AdMaterialAdMaterialFormInfo">
+          <End Role="AdMaterials" Type="Self.AdMaterial" Multiplicity="1" />
+          <End Role="AdMaterialFormInfoes" Type="Self.AdMaterialFormInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdMaterials">
+              <PropertyRef Name="AdMaterialId" />
+            </Principal>
+            <Dependent Role="AdMaterialFormInfoes">
+              <PropertyRef Name="AdMaterial_AdMaterialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdMaterialThirdMonitorCode">
+          <End Role="AdMaterials" Type="Self.AdMaterial" Multiplicity="0..1" />
+          <End Role="AdSpotPlanThirdMonitorCodes" Type="Self.AdSpotPlanThirdMonitorCode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdMaterials">
+              <PropertyRef Name="AdMaterialId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanThirdMonitorCodes">
+              <PropertyRef Name="AdMaterial_AdMaterialId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanDetails_AdSpotPlanGroups">
+          <End Role="AdSpotPlanGroups" Type="Self.AdSpotPlanGroup" Multiplicity="1" />
+          <End Role="AdSpotPlanDetails" Type="Self.AdSpotPlanDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanGroups">
+              <PropertyRef Name="SpotPlanGroupId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanDetails">
+              <PropertyRef Name="AdSpotPlanGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanAdSpotPlanEdition">
+          <End Role="AdSpotPlans" Type="Self.AdSpotPlan" Multiplicity="1" />
+          <End Role="AdSpotPlanEditions" Type="Self.AdSpotPlanEdition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlans">
+              <PropertyRef Name="AdSpotPlanId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanEditions">
+              <PropertyRef Name="AdSpotPlan_AdSpotPlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanEditionSpotPlanGroup">
+          <End Role="AdSpotPlanEditions" Type="Self.AdSpotPlanEdition" Multiplicity="1" />
+          <End Role="AdSpotPlanGroups" Type="Self.AdSpotPlanGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanEditions">
+              <PropertyRef Name="AdSpotPlanEditionId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanGroups">
+              <PropertyRef Name="AdSpotPlanEdition_AdSpotPlanEditionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanEditionThirdMonitorCode">
+          <End Role="AdSpotPlanEditions" Type="Self.AdSpotPlanEdition" Multiplicity="0..1" />
+          <End Role="AdSpotPlanThirdMonitorCodes" Type="Self.AdSpotPlanThirdMonitorCode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanEditions">
+              <PropertyRef Name="AdSpotPlanEditionId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanThirdMonitorCodes">
+              <PropertyRef Name="AdSpotPlanEdition_AdSpotPlanEditionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanTypeAdSpotPlanEdition">
+          <End Role="AdSpotPlanTypes" Type="Self.AdSpotPlanType" Multiplicity="1" />
+          <End Role="AdSpotPlanEditions" Type="Self.AdSpotPlanEdition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanTypes">
+              <PropertyRef Name="AdSpotPlanTypeId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanEditions">
+              <PropertyRef Name="AdSpotPlanType_AdSpotPlanTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IpLibraryAdSpotPlanEdition">
+          <End Role="IpLibraries" Type="Self.IpLibrary" Multiplicity="0..1" />
+          <End Role="AdSpotPlanEditions" Type="Self.AdSpotPlanEdition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IpLibraries">
+              <PropertyRef Name="IpLibraryId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanEditions">
+              <PropertyRef Name="IpLibrary_IpLibraryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1">
+          <End Role="AdSpotPlanGroupRedirctConditions" Type="Lorn.ADSP.AM.DataModels.RedirectCondition" Multiplicity="1" />
+          <End Role="AdSpotPlanGroupRedirctConditionDetails" Type="Lorn.ADSP.AM.DataModels.RedirectConditionDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanGroupRedirctConditions">
+              <PropertyRef Name="RedirectConditionId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanGroupRedirctConditionDetails">
+              <PropertyRef Name="RedirectCondition_RedirectConditionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition">
+          <End Role="AdSpotPlanGroups" Type="Self.AdSpotPlanGroup" Multiplicity="0..1" />
+          <End Role="AdSpotPlanGroupRedirctConditions" Type="Lorn.ADSP.AM.DataModels.RedirectCondition" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdSpotPlanGroups">
+              <PropertyRef Name="SpotPlanGroupId" />
+            </Principal>
+            <Dependent Role="AdSpotPlanGroupRedirctConditions">
+              <PropertyRef Name="SpotPlanGroup_SpotPlanGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="AMDataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AdMaterialFormInfoes" EntityType="Self.AdMaterialFormInfo" />
+          <EntitySet Name="AdMaterials" EntityType="Self.AdMaterial" />
+          <EntitySet Name="AdSpotPlanDetails" EntityType="Self.AdSpotPlanDetail" />
+          <EntitySet Name="AdSpotPlanEditions" EntityType="Self.AdSpotPlanEdition" />
+          <EntitySet Name="RedirectConditionDetails" EntityType="Lorn.ADSP.AM.DataModels.RedirectConditionDetail" />
+          <EntitySet Name="RedirectConditions" EntityType="Lorn.ADSP.AM.DataModels.RedirectCondition" />
+          <EntitySet Name="AdSpotPlanGroups" EntityType="Self.AdSpotPlanGroup" />
+          <EntitySet Name="AdSpotPlans" EntityType="Self.AdSpotPlan" />
+          <EntitySet Name="AdSpotPlanThirdMonitorCodes" EntityType="Self.AdSpotPlanThirdMonitorCode" />
+          <EntitySet Name="AdSpotPlanTypes" EntityType="Self.AdSpotPlanType" />
+          <EntitySet Name="IpLibraries" EntityType="Self.IpLibrary" />
+          <EntitySet Name="MonitorTypes" EntityType="Self.MonitorType" />
+          <AssociationSet Name="FK_AdMaterialAdMaterialFormInfo" Association="Self.FK_AdMaterialAdMaterialFormInfo">
+            <End Role="AdMaterials" EntitySet="AdMaterials" />
+            <End Role="AdMaterialFormInfoes" EntitySet="AdMaterialFormInfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdMaterialThirdMonitorCode" Association="Self.FK_AdMaterialThirdMonitorCode">
+            <End Role="AdMaterials" EntitySet="AdMaterials" />
+            <End Role="AdSpotPlanThirdMonitorCodes" EntitySet="AdSpotPlanThirdMonitorCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanDetails_AdSpotPlanGroups" Association="Self.FK_AdSpotPlanDetails_AdSpotPlanGroups">
+            <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+            <End Role="AdSpotPlanDetails" EntitySet="AdSpotPlanDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanAdSpotPlanEdition" Association="Self.FK_AdSpotPlanAdSpotPlanEdition">
+            <End Role="AdSpotPlans" EntitySet="AdSpotPlans" />
+            <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanEditionSpotPlanGroup" Association="Self.FK_AdSpotPlanEditionSpotPlanGroup">
+            <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+            <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanEditionThirdMonitorCode" Association="Self.FK_AdSpotPlanEditionThirdMonitorCode">
+            <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+            <End Role="AdSpotPlanThirdMonitorCodes" EntitySet="AdSpotPlanThirdMonitorCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanTypeAdSpotPlanEdition" Association="Self.FK_AdSpotPlanTypeAdSpotPlanEdition">
+            <End Role="AdSpotPlanTypes" EntitySet="AdSpotPlanTypes" />
+            <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IpLibraryAdSpotPlanEdition" Association="Self.FK_IpLibraryAdSpotPlanEdition">
+            <End Role="IpLibraries" EntitySet="IpLibraries" />
+            <End Role="AdSpotPlanEditions" EntitySet="AdSpotPlanEditions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1" Association="Self.FK_AdSpotPlanRedirctConditionAdSpotPlanRedirctConditionDetail1">
+            <End Role="AdSpotPlanGroupRedirctConditions" EntitySet="RedirectConditions" />
+            <End Role="AdSpotPlanGroupRedirctConditionDetails" EntitySet="RedirectConditionDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition" Association="Self.FK_SpotPlanGroupAdSpotPlanGroupRedirctCondition">
+            <End Role="AdSpotPlanGroups" EntitySet="AdSpotPlanGroups" />
+            <End Role="AdSpotPlanGroupRedirctConditions" EntitySet="RedirectConditions" />
+          </AssociationSet>
+          <EntitySet Name="AdMaterialAssigns" EntityType="Lorn.ADSP.AM.DataModels.AdMaterialAssign" />
+          <AssociationSet Name="AdSpotPlanDetailMaterialAssign" Association="Lorn.ADSP.AM.DataModels.AdSpotPlanDetailMaterialAssign">
+            <End Role="AdSpotPlanDetail" EntitySet="AdSpotPlanDetails" />
+            <End Role="MaterialAssign" EntitySet="AdMaterialAssigns" />
+          </AssociationSet>
+          <AssociationSet Name="AdMaterialMaterialAssign" Association="Lorn.ADSP.AM.DataModels.AdMaterialMaterialAssign">
+            <End Role="AdMaterial" EntitySet="AdMaterials" />
+            <End Role="MaterialAssign" EntitySet="AdMaterialAssigns" />
+          </AssociationSet>
+          <EntitySet Name="FrequencyControls" EntityType="Lorn.ADSP.AM.DataModels.FrequencyControl" />
+          <AssociationSet Name="FrequencyControlAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.FrequencyControlAdSpotPlanEdition">
+            <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+            <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+          </AssociationSet>
+          <AssociationSet Name="AdSpotPlanGroupFrequencyControl" Association="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupFrequencyControl">
+            <End Role="AdSpotPlanGroup" EntitySet="AdSpotPlanGroups" />
+            <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+          </AssociationSet>
+          <AssociationSet Name="AdMaterialFrequencyControl" Association="Lorn.ADSP.AM.DataModels.AdMaterialFrequencyControl">
+            <End Role="AdMaterial" EntitySet="AdMaterials" />
+            <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+          </AssociationSet>
+          <EntitySet Name="FrequencyControlDetails" EntityType="Lorn.ADSP.AM.DataModels.FrequencyControlDetail" />
+          <AssociationSet Name="FrequencyControlFrequencyControlDetail" Association="Lorn.ADSP.AM.DataModels.FrequencyControlFrequencyControlDetail">
+            <End Role="FrequencyControl" EntitySet="FrequencyControls" />
+            <End Role="FrequencyControlDetail" EntitySet="FrequencyControlDetails" />
+          </AssociationSet>
+          <AssociationSet Name="MonitorTypeAdSpotPlanEdition" Association="Lorn.ADSP.AM.DataModels.MonitorTypeAdSpotPlanEdition">
+            <End Role="MonitorType" EntitySet="MonitorTypes" />
+            <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+          </AssociationSet>
+          <EntitySet Name="ThirdMonitorCodes" EntityType="Lorn.ADSP.AM.DataModels.ThirdMonitorCode" />
+          <AssociationSet Name="MonitorTypeThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.MonitorTypeThirdMonitorCode">
+            <End Role="MonitorType" EntitySet="MonitorTypes" />
+            <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+          </AssociationSet>
+          <AssociationSet Name="ThirdMonitorCodeAdSpotPlanThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.ThirdMonitorCodeAdSpotPlanThirdMonitorCode">
+            <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+            <End Role="AdSpotPlanThirdMonitorCode" EntitySet="AdSpotPlanThirdMonitorCodes" />
+          </AssociationSet>
+          <EntitySet Name="ThirdMonitorModes" EntityType="Lorn.ADSP.AM.DataModels.ThirdMonitorMode" />
+          <AssociationSet Name="ThirdMonitorTypeThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.ThirdMonitorTypeThirdMonitorCode">
+            <End Role="ThirdMonitorType" EntitySet="ThirdMonitorModes" />
+            <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+          </AssociationSet>
+          <AssociationSet Name="AdSpotPlanGroupAdSpotPlanThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupAdSpotPlanThirdMonitorCode">
+            <End Role="AdSpotPlanGroup" EntitySet="AdSpotPlanGroups" />
+            <End Role="AdSpotPlanThirdMonitorCode" EntitySet="AdSpotPlanThirdMonitorCodes" />
+          </AssociationSet>
+          <EntitySet Name="ThirdMonitorCompanies" EntityType="Lorn.ADSP.AM.DataModels.ThirdMonitorCompany" />
+          <AssociationSet Name="ThirdMonitorCompanyThirdMonitorCode" Association="Lorn.ADSP.AM.DataModels.ThirdMonitorCompanyThirdMonitorCode">
+            <End Role="ThirdMonitorCompany" EntitySet="ThirdMonitorCompanies" />
+            <End Role="ThirdMonitorCode" EntitySet="ThirdMonitorCodes" />
+          </AssociationSet>
+          <AssociationSet Name="AdSpotPlanEditionRedirctCondition" Association="Lorn.ADSP.AM.DataModels.AdSpotPlanEditionRedirctCondition">
+            <End Role="AdSpotPlanEdition" EntitySet="AdSpotPlanEditions" />
+            <End Role="RedirctCondition" EntitySet="RedirectConditions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EnumType Name="SaleType" a:ExternalTypeName=" Lorn.ADSP.Common.DataModels.SaleType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="MicroSlideshowType" a:ExternalTypeName="Lorn.ADSP.Common.DataModels.MicroSlideshowType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
+          <Member Name="UserSlideshow" />
+          <Member Name="MaterialSlideshow" />
+        </EnumType>
+        <EnumType Name="PriceUnit" a:ExternalTypeName=" Lorn.ADSP.Common.DataModels.PriceUnit" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="ConsumeType" a:ExternalTypeName="Lorn.ADSP.Common.DataModels.ConsumeType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
+          <Member Name="FastConsume" />
+          <Member Name="AverageConsume" />
+          <Member Name="SmoothConsume" />
+          <Member Name="PercentageConsume" />
+        </EnumType>
+        <EntityType Name="AdMaterialAssign">
+          <Key>
+            <PropertyRef Name="MaterialAssignId" />
+          </Key>
+          <Property Name="MaterialAssignId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="AdSpotPlanDetail" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanDetailMaterialAssign" FromRole="MaterialAssign" ToRole="AdSpotPlanDetail" />
+          <NavigationProperty Name="AdMaterial" Relationship="Lorn.ADSP.AM.DataModels.AdMaterialMaterialAssign" FromRole="MaterialAssign" ToRole="AdMaterial" />
+          <Property Name="MicroSlideshowSequenceNo" Type="Int32" Nullable="true" />
+        </EntityType>
+        <Association Name="AdSpotPlanDetailMaterialAssign">
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanDetail" Role="AdSpotPlanDetail" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdMaterialAssign" Role="MaterialAssign" Multiplicity="*" />
+        </Association>
+        <Association Name="AdMaterialMaterialAssign">
+          <End Type="Lorn.ADSP.AM.DataModels.AdMaterial" Role="AdMaterial" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdMaterialAssign" Role="MaterialAssign" Multiplicity="*" />
+        </Association>
+        <EnumType Name="PlanStatus" a:ExternalTypeName="Lorn.ADSP.Common.DataModels.PlanStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="FrequencyControl">
+          <Key>
+            <PropertyRef Name="FrequencyControlId" />
+          </Key>
+          <Property Name="FrequencyControlId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="AdSpotPlanEditions" Relationship="Lorn.ADSP.AM.DataModels.FrequencyControlAdSpotPlanEdition" FromRole="FrequencyControl" ToRole="AdSpotPlanEdition" />
+          <Property Name="FrequencyControlName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="FrequencyControlDetail" Type="String" Nullable="true" />
+          <NavigationProperty Name="AdSpotPlanGroups" Relationship="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupFrequencyControl" FromRole="FrequencyControl" ToRole="AdSpotPlanGroup" />
+          <NavigationProperty Name="AdMaterials" Relationship="Lorn.ADSP.AM.DataModels.AdMaterialFrequencyControl" FromRole="FrequencyControl" ToRole="AdMaterial" />
+          <NavigationProperty Name="FrequencyControlDetails" Relationship="Lorn.ADSP.AM.DataModels.FrequencyControlFrequencyControlDetail" FromRole="FrequencyControl" ToRole="FrequencyControlDetail" />
+          <Property Name="MediaId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <Association Name="FrequencyControlAdSpotPlanEdition">
+          <End Type="Lorn.ADSP.AM.DataModels.FrequencyControl" Role="FrequencyControl" Multiplicity="*" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanEdition" Role="AdSpotPlanEdition" Multiplicity="*" />
+        </Association>
+        <Association Name="AdSpotPlanGroupFrequencyControl">
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanGroup" Role="AdSpotPlanGroup" Multiplicity="*" />
+          <End Type="Lorn.ADSP.AM.DataModels.FrequencyControl" Role="FrequencyControl" Multiplicity="*" />
+        </Association>
+        <Association Name="AdMaterialFrequencyControl">
+          <End Type="Lorn.ADSP.AM.DataModels.AdMaterial" Role="AdMaterial" Multiplicity="*" />
+          <End Type="Lorn.ADSP.AM.DataModels.FrequencyControl" Role="FrequencyControl" Multiplicity="*" />
+        </Association>
+        <EntityType Name="FrequencyControlDetail">
+          <Key>
+            <PropertyRef Name="FrequencyControlDetailId" />
+          </Key>
+          <Property Name="FrequencyControlDetailId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="FrequencyControl" Relationship="Lorn.ADSP.AM.DataModels.FrequencyControlFrequencyControlDetail" FromRole="FrequencyControlDetail" ToRole="FrequencyControl" />
+          <Property Name="FrequencyControlPeriod" Type="Lorn.ADSP.AM.DataModels.FrequencyControlPeriod" Nullable="false" />
+          <Property Name="PeriodNumber" Type="Int32" Nullable="false" />
+          <Property Name="MaxCount" Type="Int32" Nullable="true" />
+          <Property Name="MinCount" Type="Int32" Nullable="true" />
+        </EntityType>
+        <Association Name="FrequencyControlFrequencyControlDetail">
+          <End Type="Lorn.ADSP.AM.DataModels.FrequencyControl" Role="FrequencyControl" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.FrequencyControlDetail" Role="FrequencyControlDetail" Multiplicity="*" />
+        </Association>
+        <EnumType Name="FrequencyControlPeriod" a:ExternalTypeName="Lorn.ADSP.Common.DataModels.FrequencyControlPeriod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <Association Name="MonitorTypeAdSpotPlanEdition">
+          <End Type="Lorn.ADSP.AM.DataModels.MonitorType" Role="MonitorType" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanEdition" Role="AdSpotPlanEdition" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ThirdMonitorCode">
+          <Key>
+            <PropertyRef Name="ThirdMonitorCodeId" />
+          </Key>
+          <Property Name="ThirdMonitorCodeId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="MediaId" Type="Guid" Nullable="false" />
+          <Property Name="AdMasterPlanId" Type="Guid" />
+          <Property Name="MonitorCode" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MonitorType" Relationship="Lorn.ADSP.AM.DataModels.MonitorTypeThirdMonitorCode" FromRole="ThirdMonitorCode" ToRole="MonitorType" />
+          <NavigationProperty Name="AdSpotPlanThirdMonitorCodes" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorCodeAdSpotPlanThirdMonitorCode" FromRole="ThirdMonitorCode" ToRole="AdSpotPlanThirdMonitorCode" />
+          <NavigationProperty Name="ThirdMonitorMode" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorTypeThirdMonitorCode" FromRole="ThirdMonitorCode" ToRole="ThirdMonitorType" />
+          <NavigationProperty Name="ThirdMonitorCompany" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorCompanyThirdMonitorCode" FromRole="ThirdMonitorCode" ToRole="ThirdMonitorCompany" />
+        </EntityType>
+        <Association Name="MonitorTypeThirdMonitorCode">
+          <End Type="Lorn.ADSP.AM.DataModels.MonitorType" Role="MonitorType" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorCode" Role="ThirdMonitorCode" Multiplicity="*" />
+        </Association>
+        <Association Name="ThirdMonitorCodeAdSpotPlanThirdMonitorCode">
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorCode" Role="ThirdMonitorCode" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanThirdMonitorCode" Role="AdSpotPlanThirdMonitorCode" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ThirdMonitorMode">
+          <Key>
+            <PropertyRef Name="ThirdMonitorModeId" />
+          </Key>
+          <Property Name="ThirdMonitorModeId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="ThirdMonitorModeName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="MediaId" Type="Guid" />
+          <Property Name="Description" Type="String" MaxLength="Max" />
+          <NavigationProperty Name="ThirdMonitorCodes" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorTypeThirdMonitorCode" FromRole="ThirdMonitorType" ToRole="ThirdMonitorCode" />
+        </EntityType>
+        <Association Name="ThirdMonitorTypeThirdMonitorCode">
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorMode" Role="ThirdMonitorType" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorCode" Role="ThirdMonitorCode" Multiplicity="*" />
+        </Association>
+        <Association Name="AdSpotPlanGroupAdSpotPlanThirdMonitorCode">
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanGroup" Role="AdSpotPlanGroup" Multiplicity="0..1" />
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanThirdMonitorCode" Role="AdSpotPlanThirdMonitorCode" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ThirdMonitorCompany">
+          <Key>
+            <PropertyRef Name="ThirdMonitorCompanyId" />
+          </Key>
+          <Property Name="ThirdMonitorCompanyId" Type="Guid" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="ThirdMonitorCodes" Relationship="Lorn.ADSP.AM.DataModels.ThirdMonitorCompanyThirdMonitorCode" FromRole="ThirdMonitorCompany" ToRole="ThirdMonitorCode" />
+          <Property Name="MediaId" Type="Guid" />
+          <Property Name="ThirdMonitorCompanyName" Type="String" Nullable="false" MaxLength="50" />
+          <Property Name="Description" Type="String" MaxLength="Max" />
+        </EntityType>
+        <Association Name="ThirdMonitorCompanyThirdMonitorCode">
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorCompany" Role="ThirdMonitorCompany" Multiplicity="1" />
+          <End Type="Lorn.ADSP.AM.DataModels.ThirdMonitorCode" Role="ThirdMonitorCode" Multiplicity="*" />
+        </Association>
+        <Association Name="AdSpotPlanEditionRedirctCondition">
+          <End Type="Lorn.ADSP.AM.DataModels.AdSpotPlanEdition" Role="AdSpotPlanEdition" Multiplicity="0..1" />
+          <End Type="Lorn.ADSP.AM.DataModels.RedirectCondition" Role="RedirctCondition" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="LornADSPAMDataModelsStoreContainer" CdmEntityContainer="AMDataEntities">
+    <EntitySetMapping Name="AdMaterialFormInfoes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdMaterialFormInfo)">
+        <MappingFragment StoreEntitySet="AdMaterialFormInfoes">
+          <ScalarProperty Name="AdMaterialFormInfoId" ColumnName="AdMaterialFormInfoId" />
+          <ScalarProperty Name="CreativeTypeFormdefinitionId" ColumnName="CreativeTypeFormdefinitionId" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="SortNo" ColumnName="SortNo" />
+          <ScalarProperty Name="AdMaterial_AdMaterialId" ColumnName="AdMaterial_AdMaterialId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdMaterials">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdMaterial)">
+        <MappingFragment StoreEntitySet="AdMaterials">
+          <ScalarProperty Name="AdMaterialId" ColumnName="AdMaterialId" />
+          <ScalarProperty Name="AdMasterPlanId" ColumnName="AdMasterPlanId" />
+          <ScalarProperty Name="MaterialCode" ColumnName="MaterialCode" />
+          <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+          <ScalarProperty Name="CreativeTypeId" ColumnName="CreativeTypeId" />
+          <ScalarProperty Name="TimeLength" ColumnName="TimeLength" />
+          <ScalarProperty Name="Height" ColumnName="Height" />
+          <ScalarProperty Name="Width" ColumnName="Width" />
+          <ScalarProperty Name="AspectRatioId" ColumnName="AspectRatioId" />
+          <ScalarProperty Name="ExtData" ColumnName="ExtData" />
+          <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlanDetails">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlanDetail)">
+        <MappingFragment StoreEntitySet="AdSpotPlanDetails">
+          <ScalarProperty Name="AdPositionDetailId" ColumnName="AdPositionDetailId" />
+          <ScalarProperty Name="SpotDate" ColumnName="SpotDate" />
+          <ScalarProperty Name="AdSpotPlanGroupId" ColumnName="AdSpotPlanGroupId" />
+          <ScalarProperty Name="AdPositionId" ColumnName="AdPositionId" />
+          <ScalarProperty Name="SaleType" ColumnName="SaleType" />
+          <ScalarProperty Name="AdPositionFormat" ColumnName="AdPositionFormat" />
+          <ScalarProperty Name="AdPositionUrl" ColumnName="AdPositionUrl" />
+          <ScalarProperty Name="PlanTrafficRatio" ColumnName="PlanTrafficRatio" />
+          <ScalarProperty Name="PlanImpressionNumber" ColumnName="PlanImpressionNumber" />
+          <ScalarProperty Name="PlanClickNumber" ColumnName="PlanClickNumber" />
+          <ScalarProperty Name="MacroSlideshowSequenceNo" ColumnName="MacroSlideshowSequenceNo" />
+          <ScalarProperty Name="MicroSlideshowType" ColumnName="MicroSlideshowType" />
+          <ScalarProperty Name="PublishPrice" ColumnName="PublishPrice" />
+          <ScalarProperty Name="NetPrice" ColumnName="NetPrice" />
+          <ScalarProperty Name="PriceType" ColumnName="PriceType" />
+          <ScalarProperty Name="ComsumeType" ColumnName="ComsumeType" />
+          <ScalarProperty Name="AdPositionSizeId" ColumnName="AdPositionSizeId" />
+          <ScalarProperty Name="AdLocationId" ColumnName="AdLocationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlanEditions">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlanEdition)">
+        <MappingFragment StoreEntitySet="AdSpotPlanEditions">
+          <ScalarProperty Name="AdSpotPlanEditionId" ColumnName="AdSpotPlanEditionId" />
+          <ScalarProperty Name="EditionNo" ColumnName="EditionNo" />
+          <ScalarProperty Name="Priority" ColumnName="Priority" />
+          <ScalarProperty Name="CategoryExclusive" ColumnName="CategoryExclusive" />
+          <ScalarProperty Name="ProductCategoryId" ColumnName="ProductCategoryId" />
+          <ScalarProperty Name="MonitorCompanyId" ColumnName="MonitorCompanyId" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+          <ScalarProperty Name="EditionStatus" ColumnName="EditionStatus" />
+          <ScalarProperty Name="BudgetAmount" ColumnName="BudgetAmount" />
+          <ScalarProperty Name="PackageDiscount" ColumnName="PackageDiscount" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+          <ScalarProperty Name="AdSpotPlan_AdSpotPlanId" ColumnName="AdSpotPlan_AdSpotPlanId" />
+          <ScalarProperty Name="AdSpotPlanType_AdSpotPlanTypeId" ColumnName="AdSpotPlanType_AdSpotPlanTypeId" />
+          <ScalarProperty Name="IpLibrary_IpLibraryId" ColumnName="IpLibrary_IpLibraryId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RedirectConditionDetails">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.RedirectConditionDetail)">
+        <MappingFragment StoreEntitySet="RedirectConditionDetails">
+          <ScalarProperty Name="RedirectConditionDetailId" ColumnName="RedirectConditionDetailId" />
+          <ScalarProperty Name="StartValue" ColumnName="StartValue" />
+          <ScalarProperty Name="EndValue" ColumnName="EndValue" />
+          <ScalarProperty Name="RedirectCondition_RedirectConditionId" ColumnName="RedirectCondition_RedirectConditionId" />
+          <ScalarProperty Name="CustomKey" ColumnName="CustomKey" />
+          <ScalarProperty Name="CustomValue" ColumnName="CustomValue" />
+          <ScalarProperty Name="RedirectConditionDefinitionId" ColumnName="RedirectConditionDefinitionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RedirectConditions">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.RedirectCondition)">
+        <MappingFragment StoreEntitySet="RedirectConditions">
+          <ScalarProperty Name="RedirectConditionId" ColumnName="RedirectConditionId" />
+          <ScalarProperty Name="RedirectDimensionId" ColumnName="RedirectDimensionId" />
+          <ScalarProperty Name="IsExclude" ColumnName="IsExclude" />
+          <ScalarProperty Name="SpotPlanGroup_SpotPlanGroupId" ColumnName="SpotPlanGroup_SpotPlanGroupId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlanGroups">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlanGroup)">
+        <MappingFragment StoreEntitySet="AdSpotPlanGroups">
+          <ScalarProperty Name="SpotPlanGroupId" ColumnName="SpotPlanGroupId" />
+          <ScalarProperty Name="SpotPlanGroupName" ColumnName="SpotPlanGroupName" />
+          <ScalarProperty Name="AdSpotPlanEdition_AdSpotPlanEditionId" ColumnName="AdSpotPlanEdition_AdSpotPlanEditionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlans">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlan)">
+        <MappingFragment StoreEntitySet="AdSpotPlans">
+          <ScalarProperty Name="AdSpotPlanId" ColumnName="AdSpotPlanId" />
+          <ScalarProperty Name="AdMasterPlanId" ColumnName="AdMasterPlanId" />
+          <ScalarProperty Name="AdSpotPlanName" ColumnName="AdSpotPlanName" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlanThirdMonitorCodes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlanThirdMonitorCode)">
+        <MappingFragment StoreEntitySet="AdSpotPlanThirdMonitorCodes">
+          <ScalarProperty Name="SpotPlanThirdMonitorCodeId" ColumnName="SpotPlanThirdMonitorCodeId" />
+          <ScalarProperty Name="AdPositionId" ColumnName="AdPositionId" />
+          <ScalarProperty Name="AdSpotPlanEdition_AdSpotPlanEditionId" ColumnName="AdSpotPlanEdition_AdSpotPlanEditionId" />
+          <ScalarProperty Name="AdMaterial_AdMaterialId" ColumnName="AdMaterial_AdMaterialId" />
+          <ScalarProperty Name="SpotDate" ColumnName="SpotDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdSpotPlanTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdSpotPlanType)">
+        <MappingFragment StoreEntitySet="AdSpotPlanTypes">
+          <ScalarProperty Name="AdSpotPlanTypeId" ColumnName="AdSpotPlanTypeId" />
+          <ScalarProperty Name="AdSpotPlanTypeName" ColumnName="AdSpotPlanTypeName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Priority" ColumnName="Priority" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="IpLibraries">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.IpLibrary)">
+        <MappingFragment StoreEntitySet="IpLibraries">
+          <ScalarProperty Name="IpLibraryId" ColumnName="IpLibraryId" />
+          <ScalarProperty Name="IpLibraryCode" ColumnName="IpLibraryCode" />
+          <ScalarProperty Name="IpLibraryName" ColumnName="IpLibraryName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MonitorTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.MonitorType)">
+        <MappingFragment StoreEntitySet="MonitorTypes">
+          <ScalarProperty Name="MonitorTypeId" ColumnName="MonitorTypeId" />
+          <ScalarProperty Name="MonitorTypeName" ColumnName="MonitorTypeName" />
+          <ScalarProperty Name="MonitorTypeCode" ColumnName="MonitorTypeCode" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+          <ScalarProperty Name="PriceUnit" ColumnName="PriceUnit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AdMaterialAssigns">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.AdMaterialAssign)">
+        <MappingFragment StoreEntitySet="AdMaterialAssigns">
+          <ScalarProperty Name="MaterialAssignId" ColumnName="MaterialAssignId" />
+          <ScalarProperty Name="MicroSlideshowSequenceNo" ColumnName="MicroSlideshowSequenceNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FrequencyControls">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.FrequencyControl)">
+        <MappingFragment StoreEntitySet="FrequencyControls">
+          <ScalarProperty Name="FrequencyControlId" ColumnName="FrequencyControlId" />
+          <ScalarProperty Name="FrequencyControlName" ColumnName="FrequencyControlName" />
+          <ScalarProperty Name="FrequencyControlDetail" ColumnName="FrequencyControlDetail" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FrequencyControlDetails">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.FrequencyControlDetail)">
+        <MappingFragment StoreEntitySet="FrequencyControlDetails">
+          <ScalarProperty Name="FrequencyControlDetailId" ColumnName="FrequencyControlDetailId" />
+          <ScalarProperty Name="FrequencyControlPeriod" ColumnName="FrequencyControlPeriod" />
+          <ScalarProperty Name="PeriodNumber" ColumnName="PeriodNumber" />
+          <ScalarProperty Name="MaxCount" ColumnName="MaxCount" />
+          <ScalarProperty Name="MinCount" ColumnName="MinCount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ThirdMonitorCodes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.ThirdMonitorCode)">
+        <MappingFragment StoreEntitySet="ThirdMonitorCodes">
+          <ScalarProperty Name="ThirdMonitorCodeId" ColumnName="ThirdMonitorCodeId" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+          <ScalarProperty Name="AdMasterPlanId" ColumnName="AdMasterPlanId" />
+          <ScalarProperty Name="MonitorCode" ColumnName="MonitorCode" />
+          <ScalarProperty Name="Remark" ColumnName="Remark" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ThirdMonitorModes">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.ThirdMonitorMode)">
+        <MappingFragment StoreEntitySet="ThirdMonitorModes">
+          <ScalarProperty Name="ThirdMonitorModeId" ColumnName="ThirdMonitorModeId" />
+          <ScalarProperty Name="ThirdMonitorModeName" ColumnName="ThirdMonitorModeName" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ThirdMonitorCompanies">
+      <EntityTypeMapping TypeName="IsTypeOf(Lorn.ADSP.AM.DataModels.ThirdMonitorCompany)">
+        <MappingFragment StoreEntitySet="ThirdMonitorCompanies">
+          <ScalarProperty Name="ThirdMonitorCompanyId" ColumnName="ThirdMonitorCompanyId" />
+          <ScalarProperty Name="MediaId" ColumnName="MediaId" />
+          <ScalarProperty Name="ThirdMonitorCompanyName" ColumnName="ThirdMonitorCompanyName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="AdSpotPlanDetailMaterialAssign" TypeName="Lorn.ADSP.AM.DataModels.AdSpotPlanDetailMaterialAssign" StoreEntitySet="AdMaterialAssigns">
+      <EndProperty Name="AdSpotPlanDetail">
+        <ScalarProperty Name="AdPositionDetailId" ColumnName="AdSpotPlanDetail_AdPositionDetailId" />
+        <ScalarProperty Name="SpotDate" ColumnName="AdSpotPlanDetail_SpotDate" />
+        <ScalarProperty Name="AdSpotPlanGroupId" ColumnName="AdSpotPlanDetail_AdSpotPlanGroupId" />
+      </EndProperty>
+      <EndProperty Name="MaterialAssign">
+        <ScalarProperty Name="MaterialAssignId" ColumnName="MaterialAssignId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AdMaterialMaterialAssign" TypeName="Lorn.ADSP.AM.DataModels.AdMaterialMaterialAssign" StoreEntitySet="AdMaterialAssigns">
+      <EndProperty Name="AdMaterial">
+        <ScalarProperty Name="AdMaterialId" ColumnName="AdMaterial_AdMaterialId" />
+      </EndProperty>
+      <EndProperty Name="MaterialAssign">
+        <ScalarProperty Name="MaterialAssignId" ColumnName="MaterialAssignId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FrequencyControlAdSpotPlanEdition" TypeName="Lorn.ADSP.AM.DataModels.FrequencyControlAdSpotPlanEdition" StoreEntitySet="FrequencyControlAdSpotPlanEdition">
+      <EndProperty Name="FrequencyControl">
+        <ScalarProperty Name="FrequencyControlId" ColumnName="FrequencyControls_FrequencyControlId" />
+      </EndProperty>
+      <EndProperty Name="AdSpotPlanEdition">
+        <ScalarProperty Name="AdSpotPlanEditionId" ColumnName="AdSpotPlanEditions_AdSpotPlanEditionId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AdSpotPlanGroupFrequencyControl" TypeName="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupFrequencyControl" StoreEntitySet="AdSpotPlanGroupFrequencyControl">
+      <EndProperty Name="AdSpotPlanGroup">
+        <ScalarProperty Name="SpotPlanGroupId" ColumnName="AdSpotPlanGroups_SpotPlanGroupId" />
+      </EndProperty>
+      <EndProperty Name="FrequencyControl">
+        <ScalarProperty Name="FrequencyControlId" ColumnName="FrequencyControls_FrequencyControlId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AdMaterialFrequencyControl" TypeName="Lorn.ADSP.AM.DataModels.AdMaterialFrequencyControl" StoreEntitySet="AdMaterialFrequencyControl">
+      <EndProperty Name="AdMaterial">
+        <ScalarProperty Name="AdMaterialId" ColumnName="AdMaterials_AdMaterialId" />
+      </EndProperty>
+      <EndProperty Name="FrequencyControl">
+        <ScalarProperty Name="FrequencyControlId" ColumnName="FrequencyControls_FrequencyControlId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FrequencyControlFrequencyControlDetail" TypeName="Lorn.ADSP.AM.DataModels.FrequencyControlFrequencyControlDetail" StoreEntitySet="FrequencyControlDetails">
+      <EndProperty Name="FrequencyControl">
+        <ScalarProperty Name="FrequencyControlId" ColumnName="FrequencyControl_FrequencyControlId" />
+      </EndProperty>
+      <EndProperty Name="FrequencyControlDetail">
+        <ScalarProperty Name="FrequencyControlDetailId" ColumnName="FrequencyControlDetailId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MonitorTypeAdSpotPlanEdition" TypeName="Lorn.ADSP.AM.DataModels.MonitorTypeAdSpotPlanEdition" StoreEntitySet="AdSpotPlanEditions">
+      <EndProperty Name="MonitorType">
+        <ScalarProperty Name="MonitorTypeId" ColumnName="ValuationMonitorType_MonitorTypeId" />
+      </EndProperty>
+      <EndProperty Name="AdSpotPlanEdition">
+        <ScalarProperty Name="AdSpotPlanEditionId" ColumnName="AdSpotPlanEditionId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MonitorTypeThirdMonitorCode" TypeName="Lorn.ADSP.AM.DataModels.MonitorTypeThirdMonitorCode" StoreEntitySet="ThirdMonitorCodes">
+      <EndProperty Name="MonitorType">
+        <ScalarProperty Name="MonitorTypeId" ColumnName="MonitorType_MonitorTypeId" />
+      </EndProperty>
+      <EndProperty Name="ThirdMonitorCode">
+        <ScalarProperty Name="ThirdMonitorCodeId" ColumnName="ThirdMonitorCodeId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ThirdMonitorCodeAdSpotPlanThirdMonitorCode" TypeName="Lorn.ADSP.AM.DataModels.ThirdMonitorCodeAdSpotPlanThirdMonitorCode" StoreEntitySet="AdSpotPlanThirdMonitorCodes">
+      <EndProperty Name="ThirdMonitorCode">
+        <ScalarProperty Name="ThirdMonitorCodeId" ColumnName="ThirdMonitorCode_ThirdMonitorCodeId" />
+      </EndProperty>
+      <EndProperty Name="AdSpotPlanThirdMonitorCode">
+        <ScalarProperty Name="SpotPlanThirdMonitorCodeId" ColumnName="SpotPlanThirdMonitorCodeId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ThirdMonitorTypeThirdMonitorCode" TypeName="Lorn.ADSP.AM.DataModels.ThirdMonitorTypeThirdMonitorCode" StoreEntitySet="ThirdMonitorCodes">
+      <EndProperty Name="ThirdMonitorType">
+        <ScalarProperty Name="ThirdMonitorModeId" ColumnName="ThirdMonitorMode_ThirdMonitorModeId" />
+      </EndProperty>
+      <EndProperty Name="ThirdMonitorCode">
+        <ScalarProperty Name="ThirdMonitorCodeId" ColumnName="ThirdMonitorCodeId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AdSpotPlanGroupAdSpotPlanThirdMonitorCode" TypeName="Lorn.ADSP.AM.DataModels.AdSpotPlanGroupAdSpotPlanThirdMonitorCode" StoreEntitySet="AdSpotPlanThirdMonitorCodes">
+      <EndProperty Name="AdSpotPlanGroup">
+        <ScalarProperty Name="SpotPlanGroupId" ColumnName="AdSpotPlanGroup_SpotPlanGroupId" />
+      </EndProperty>
+      <EndProperty Name="AdSpotPlanThirdMonitorCode">
+        <ScalarProperty Name="SpotPlanThirdMonitorCodeId" ColumnName="SpotPlanThirdMonitorCodeId" />
+      </EndProperty>
+      <Condition ColumnName="AdSpotPlanGroup_SpotPlanGroupId" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ThirdMonitorCompanyThirdMonitorCode" TypeName="Lorn.ADSP.AM.DataModels.ThirdMonitorCompanyThirdMonitorCode" StoreEntitySet="ThirdMonitorCodes">
+      <EndProperty Name="ThirdMonitorCompany">
+        <ScalarProperty Name="ThirdMonitorCompanyId" ColumnName="ThirdMonitorCompany_ThirdMonitorCompanyId" />
+      </EndProperty>
+      <EndProperty Name="ThirdMonitorCode">
+        <ScalarProperty Name="ThirdMonitorCodeId" ColumnName="ThirdMonitorCodeId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AdSpotPlanEditionRedirctCondition" TypeName="Lorn.ADSP.AM.DataModels.AdSpotPlanEditionRedirctCondition" StoreEntitySet="RedirectConditions">
+      <EndProperty Name="AdSpotPlanEdition">
+        <ScalarProperty Name="AdSpotPlanEditionId" ColumnName="AdSpotPlanEdition_AdSpotPlanEditionId" />
+      </EndProperty>
+      <EndProperty Name="RedirctCondition">
+        <ScalarProperty Name="RedirectConditionId" ColumnName="RedirectConditionId" />
+      </EndProperty>
+      <Condition ColumnName="AdSpotPlanEdition_AdSpotPlanEditionId" IsNull="false" />
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

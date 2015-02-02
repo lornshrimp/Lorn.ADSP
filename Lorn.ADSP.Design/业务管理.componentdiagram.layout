@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<componentDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="业务管理">
+  <componentModelMoniker Id="32d0d745-ac2c-421d-84aa-0e32db7bc029" />
+  <nestedChildShapes>
+    <componentShape Id="e6426a1e-c80d-4f37-8c49-375aff7efa81" absoluteBounds="8, 5.25, 1.84375, 0.95" customColor="161, 199, 231" whiteBoxBoundsHeight="0" whiteBoxBoundsWidth="0" blackBoxBoundsHeight="0" blackBoxBoundsWidth="0" whiteBoxTopEdgeShapesCount="0" whiteBoxRightEdgeShapesCount="0" whiteBoxBottomEdgeShapesCount="0" whiteBoxLeftEdgeShapesCount="0" blackBoxTopEdgeShapesCount="0" blackBoxRightEdgeShapesCount="0" blackBoxBottomEdgeShapesCount="0" blackBoxLeftEdgeShapesCount="0">
+      <componentMoniker Id="96b05046-3290-456f-b326-1d53959b2a63" LastKnownName="BusinessDataBase" />
+      <relativeChildShapes>
+        <providedInterfaceShape Id="3bdef89c-a0fe-4aea-9674-4dafd3248018" absoluteBounds="7.59375, 5.40625, 0.40625, 0.15625" blackBoxLocation="0" whiteBoxLocation="0" whiteBoxEdge="" blackBoxEdge="" whiteBoxIsOnPort="false" blackBoxIsOnPort="false">
+          <providedInterfaceMoniker Id="c95b9cc1-4667-44a5-a2eb-3c7e37b9521f" LastKnownName="Port1" />
+          <relativeChildShapes />
+        </providedInterfaceShape>
+      </relativeChildShapes>
+    </componentShape>
+    <componentShape Id="3e6ff9b2-3315-4a93-b1c3-4128713f129e" absoluteBounds="1.9636051034927369, 3.5, 1.5, 0.95" customColor="161, 199, 231" whiteBoxBoundsHeight="0" whiteBoxBoundsWidth="0" blackBoxBoundsHeight="0" blackBoxBoundsWidth="0" whiteBoxTopEdgeShapesCount="0" whiteBoxRightEdgeShapesCount="0" whiteBoxBottomEdgeShapesCount="0" whiteBoxLeftEdgeShapesCount="0" blackBoxTopEdgeShapesCount="0" blackBoxRightEdgeShapesCount="0" blackBoxBottomEdgeShapesCount="0" blackBoxLeftEdgeShapesCount="0">
+      <componentMoniker Id="f6890498-4ddd-47c5-8f91-dbe47ab264c5" LastKnownName="ADBusiness" />
+      <relativeChildShapes>
+        <requiredInterfaceShape Id="8834b56e-f5d6-42a4-b028-40d03a8cb525" absoluteBounds="3.4636051034927369, 4.15625, 0.40625, 0.15625" blackBoxLocation="0" whiteBoxLocation="0" whiteBoxEdge="" blackBoxEdge="" whiteBoxIsOnPort="false" blackBoxIsOnPort="false">
+          <requiredInterfaceMoniker Id="390c7407-e098-4b8f-9371-509f1fa7e9b0" LastKnownName="Port1" />
+          <relativeChildShapes />
+        </requiredInterfaceShape>
+        <requiredInterfaceShape Id="277286e5-de2c-4e97-9413-470b86681fc8" absoluteBounds="3.4636051034927369, 3.65625, 0.40625, 0.15625" blackBoxLocation="0" whiteBoxLocation="0" whiteBoxEdge="" blackBoxEdge="" whiteBoxIsOnPort="false" blackBoxIsOnPort="false">
+          <requiredInterfaceMoniker Id="7cda6c39-73cb-4d8b-9944-e688216fc1c1" LastKnownName="Port2" />
+          <relativeChildShapes />
+        </requiredInterfaceShape>
+        <requiredInterfaceShape Id="48fcb19c-2fd1-4e07-9cc7-093a7cef4d33" absoluteBounds="1.5573551034927369, 4.09375, 0.40625, 0.15625" blackBoxLocation="0" whiteBoxLocation="0" whiteBoxEdge="" blackBoxEdge="" whiteBoxIsOnPort="false" blackBoxIsOnPort="false">
+          <requiredInterfaceMoniker Id="a89ac4ab-6df3-43b9-8159-060459135b0f" LastKnownName="Port3" />
+          <relativeChildShapes />
+        </requiredInterfaceShape>
+      </relativeChildShapes>
+    </componentShape>
+    <dependencyConnector edgePoints="[(3.86985510349274 : 4.234375); (4.24485510349274 : 4.234375); (4.24485510349274 : 5.484375); (7.59375 : 5.484375)]" fixedFrom="Caller" fixedTo="Caller" customColor="Black">
+      <dependencyMoniker Id="b6a3d8c9-c9fa-4ebf-af03-eb0386e352ae" />
+      <relativeChildShapes />
+      <nodes>
+        <requiredInterfaceShapeMoniker Id="8834b56e-f5d6-42a4-b028-40d03a8cb525" />
+        <providedInterfaceShapeMoniker Id="3bdef89c-a0fe-4aea-9674-4dafd3248018" />
+      </nodes>
+    </dependencyConnector>
+    <componentShape Id="2a1cc74b-ab16-44e6-b2be-e3cd10aa0168" absoluteBounds="8.125, 3, 1.9270833333333339, 0.95" customColor="161, 199, 231" whiteBoxBoundsHeight="0" whiteBoxBoundsWidth="0" blackBoxBoundsHeight="0" blackBoxBoundsWidth="0" whiteBoxTopEdgeShapesCount="0" whiteBoxRightEdgeShapesCount="0" whiteBoxBottomEdgeShapesCount="0" whiteBoxLeftEdgeShapesCount="0" blackBoxTopEdgeShapesCount="0" blackBoxRightEdgeShapesCount="0" blackBoxBottomEdgeShapesCount="0" blackBoxLeftEdgeShapesCount="0">
+      <componentMoniker Id="fc490b85-a595-4c8d-bf45-efdc01462004" LastKnownName="ADDeliveryDatabase" />
+      <relativeChildShapes>
+        <providedInterfaceShape Id="a96ce55d-f5af-4f1e-8106-29365a2c4692" absoluteBounds="7.71875, 3.15625, 0.40625, 0.15625" blackBoxLocation="0" whiteBoxLocation="0" whiteBoxEdge="" blackBoxEdge="" whiteBoxIsOnPort="false" blackBoxIsOnPort="false">
+          <providedInterfaceMoniker Id="7ec739ba-291b-4d1b-8587-8d17eb06b286" LastKnownName="Port1" />
+          <relativeChildShapes />
+        </providedInterfaceShape>
+      </relativeChildShapes>
+    </componentShape>
+    <dependencyConnector edgePoints="[(3.86985510349274 : 3.734375); (4.24485510349274 : 3.734375); (4.24485510349274 : 3.234375); (7.71875 : 3.234375)]" fixedFrom="Caller" fixedTo="Caller" customColor="Black">
+      <dependencyMoniker Id="9190d1a9-d079-4a95-b775-689a307697d2" />
+      <relativeChildShapes />
+      <nodes>
+        <requiredInterfaceShapeMoniker Id="277286e5-de2c-4e97-9413-470b86681fc8" />
+        <providedInterfaceShapeMoniker Id="a96ce55d-f5af-4f1e-8106-29365a2c4692" />
+      </nodes>
+    </dependencyConnector>
+  </nestedChildShapes>
+</componentDiagram>

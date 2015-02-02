@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ac857f03-1eba-4114-9127-182bdb2fca63}</ProjectGuid>
+    <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
+    <Name>Lorn.ADSP.Design</Name>
+    <RootNamespace>LornADSP</RootNamespace>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ItemGroup>
+    <Content Include="AM.usecasediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="AM.usecasediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>AM.usecasediagram</DependentUpon>
+    </Content>
+    <Content Include="DE\互联网视频广告投放引擎序列图.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\互联网视频广告投放引擎流程图.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告引擎架构.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告引擎架构.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>DE\广告引擎架构.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="DE\广告请求处理流程.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告请求处理流程.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>DE\广告请求处理流程.sequencediagram</DependentUpon>
+    </Content>
+    <Content Include="DE\广告调取流程.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告调取流程.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>DE\广告调取流程.sequencediagram</DependentUpon>
+    </Content>
+    <Content Include="DE\广告调度.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告调度.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>DE\广告调度.sequencediagram</DependentUpon>
+    </Content>
+    <Content Include="DE\广告调度中心数据结构.classdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="DE\广告调度中心数据结构.classdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>DE\广告调度中心数据结构.classdiagram</DependentUpon>
+    </Content>
+    <Content Include="SA.usecasediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="SA.usecasediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>SA.usecasediagram</DependentUpon>
+    </Content>
+    <Content Include="业务管理.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="业务管理.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>业务管理.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="互联网广告系统功能点设计.jpeg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="互联网视频广告系统架构设计.jpg">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="客户端请求并展示广告.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="客户端请求并展示广告.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>客户端请求并展示广告.sequencediagram</DependentUpon>
+    </Content>
+    <Content Include="工作流引擎.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="工作流引擎.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>工作流引擎.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="广告客户端.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="广告客户端.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>广告客户端.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="BI.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="BI.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>BI.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="权限管理.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="权限管理.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>权限管理.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="第三方广告\第三方广告.usecasediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="第三方广告\第三方广告.usecasediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>第三方广告\第三方广告.usecasediagram</DependentUpon>
+    </Content>
+    <Content Include="第三方广告\自助广告投放.activitydiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="第三方广告\自助广告投放.activitydiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>第三方广告\自助广告投放.activitydiagram</DependentUpon>
+    </Content>
+    <Folder Include="ModelDefinition\" />
+    <Content Include="ADSPCD.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ADSPCD.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>ADSPCD.componentdiagram</DependentUpon>
+    </Content>
+    <Content Include="ModelDefinition\LornADSP.uml">
+      <SubType>Content</SubType>
+    </Content>
+    <Folder Include="DE" />
+    <Folder Include="第三方广告" />
+  </ItemGroup>
+</Project>
