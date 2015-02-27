@@ -62,3 +62,4 @@
 \packages\EntityFramework.zh-Hans.6.1.1\lib\net45\zh-Hans\EntityFramework.SqlServer.xml
 \packages\EntityFramework.zh-Hans.6.1.1\lib\net45\zh-Hans\EntityFramework.xml
 \.git
+\.gitignore

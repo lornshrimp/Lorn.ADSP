@@ -17,5 +17,6 @@ namespace Lorn.ADSP.DE.DataModels
         public const string STR_REPORTHEALTHINTERVAL = "ReportHealthInterval";
         public const string STR_DISPATCHADPLANINTERVAL = "DispatchingAdPlanInterval";
         public const string STR_CALCULATETIMESPANNUMBER = "CalculateTimeSpanNumber";
+        public const string STR_SERVERID = "ServerId";
     }
 }

@@ -80,7 +80,7 @@ namespace Lorn.ADSP.DE.DeliveryEngine
             lastReorganizeAdStacksTime = Time.Now;
             lastReportHealthTime = Time.Now;
 
-            this.serverId = ConfigurationManager.AppSettings["ServerId"];
+            this.serverId = ConfigurationManager.AppSettings[ConstStrings.STR_SERVERID];
             this.ServiceStatusMoniter.InitService(ConstStrings.STR_DELIVERYRUNTIMESERVICENAME, serverId);
 
             this.adDispatchPlans = new ConcurrentDictionary<DateTime, IDictionary<Guid, IDictionary<Ad, IDictionary<int, long>>>>();

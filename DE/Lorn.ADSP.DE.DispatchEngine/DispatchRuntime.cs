@@ -55,7 +55,7 @@ namespace Lorn.ADSP.DE.DispatchEngine
             lastDispatchTime = Time.Now;
             lastReportHealthTime = Time.Now;
 
-            this.serverId = ConfigurationManager.AppSettings["ServerId"];
+            this.serverId = ConfigurationManager.AppSettings[ConstStrings.STR_SERVERID];
             this.ServiceStatusMoniter.InitService(ConstStrings.STR_DISPATCHSERVICENAME, serverId);
 
             RunDispatch();
