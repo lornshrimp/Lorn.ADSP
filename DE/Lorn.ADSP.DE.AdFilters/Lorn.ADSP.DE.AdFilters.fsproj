@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Lorn.ADSP.DE.AdFilters</RootNamespace>
     <AssemblyName>Lorn.ADSP.DE.AdFilters</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>Lorn.ADSP.DE.AdFilters</Name>
     <SccProjectName>SAK</SccProjectName>
