@@ -144,25 +144,28 @@ namespace Lorn.ADSP.DE.DispatchEngine
                     var adSpotPlan = adSpotPlanEnumerator.Current;
                     long planReleaseNumber = 0;
                     float broadcastRatio = 1;
-                    //读取今天的计划量
-                    switch (adSpotPlan.PriceUnit)
+
+                    if (adSpotPlan.PriceUnit == Common.DataModels.PriceUnit.CPT)
                     {
-                        case Lorn.ADSP.Common.DataModels.PriceUnit.CPT:
-                            planReleaseNumber = adSpotPlan.PlanTrafficRatio * -100;
-                            break;
-                        case Lorn.ADSP.Common.DataModels.PriceUnit.CPM:
-                            planReleaseNumber = adSpotPlan.PlanImpressionNumber;
-                            break;
-                        case Lorn.ADSP.Common.DataModels.PriceUnit.CPC:
-                            planReleaseNumber = adSpotPlan.PlanClickNumber;
-                            broadcastRatio = adSpotPlan.PlanClickNumber / adSpotPlan.PlanImpressionNumber;
-                            break;
-                        default:
-                            break;
+                        //负数表示无需进行流量调度
+                        planReleaseNumber = adSpotPlan.PlanTrafficRatio * -100;
                     }
-                    //计算今天的剩余量
-                    if (adSpotPlan.PriceUnit != Common.DataModels.PriceUnit.CPT)
+                    else
                     {
+                        //读取今天的计划量
+                        switch (adSpotPlan.PriceUnit)
+                        {
+                            case Lorn.ADSP.Common.DataModels.PriceUnit.CPM:
+                                planReleaseNumber = adSpotPlan.PlanImpressionNumber;
+                                break;
+                            case Lorn.ADSP.Common.DataModels.PriceUnit.CPC:
+                                planReleaseNumber = adSpotPlan.PlanClickNumber;
+                                broadcastRatio = adSpotPlan.PlanClickNumber / adSpotPlan.PlanImpressionNumber;
+                                break;
+                            default:
+                                break;
+                        }
+                        //计算今天的剩余量
                         if (mediaAdCounts != null && mediaAdCounts.ContainsKey(adSpotPlan.AdSpotPlanId) && mediaMonitorTypeMappings != null && mediaMonitorTypeMappings.ContainsKey(adSpotPlan.ValuationMonitorTypeId) && mediaAdCounts[adSpotPlan.AdSpotPlanId].ContainsKey(mediaMonitorTypeMappings[adSpotPlan.ValuationMonitorTypeId]))
                         {
                             planReleaseNumber -= mediaAdCounts[adSpotPlan.AdSpotPlanId][mediaMonitorTypeMappings[adSpotPlan.ValuationMonitorTypeId]];
@@ -172,32 +175,40 @@ namespace Lorn.ADSP.DE.DispatchEngine
                             }
                         }
                         planReleaseNumber = (long)(planReleaseNumber / broadcastRatio);
+                    }
 
-                        //调度流量
-                        var adDispatchPlanCalculator = this.adDispatchPlanCalculators.First(o => o.Metadata.ConsumeType == adSpotPlan.ComsumeType).Value;
-                        adDispatchPlanCalculator.CalculateTimeSpan = new TimeSpan(0, adDispatchInterval, 0);
-                        adDispatchPlanCalculator.CalculateTimeSpanNumber = calculateTimeSpanNumber;
-                        var adDispatchPlan = adDispatchPlanCalculator.CalculateAdDispatchPlan(Time.Now, planReleaseNumber, FlowControlCalculator.CalculateFlowControl(adSpotPlan.RedirctConditions, flowControls[mediaId]));
 
-                        //将流量分配到各投放服务器
-                        foreach (var server in deliveryServers)
+                    //调度流量
+                    var adDispatchPlanCalculator = this.adDispatchPlanCalculators.First(o => o.Metadata.ConsumeType == adSpotPlan.ComsumeType).Value;
+                    adDispatchPlanCalculator.CalculateTimeSpan = new TimeSpan(0, adDispatchInterval, 0);
+                    adDispatchPlanCalculator.CalculateTimeSpanNumber = calculateTimeSpanNumber;
+                    var adDispatchPlan = adDispatchPlanCalculator.CalculateAdDispatchPlan(Time.Now, planReleaseNumber, FlowControlCalculator.CalculateFlowControl(adSpotPlan.RedirctConditions, flowControls[mediaId]));
+
+                    //将流量分配到各投放服务器
+                    foreach (var server in deliveryServers)
+                    {
+
+                        if (!adDispatchPlans.ContainsKey(server.Key))
                         {
-
-                            if (!adDispatchPlans.ContainsKey(server.Key))
+                            adDispatchPlans[server.Key] = new Dictionary<Guid, IDictionary<DateTime, IDictionary<Ad, long>>>();
+                        }
+                        if (!adDispatchPlans[server.Key].ContainsKey(mediaId))
+                        {
+                            adDispatchPlans[server.Key][mediaId] = new Dictionary<DateTime, IDictionary<Ad, long>>();
+                        }
+                        foreach (var adDispatchTimePlan in adDispatchPlan)
+                        {
+                            if (!adDispatchPlans[server.Key][mediaId].ContainsKey(adDispatchTimePlan.Key))
                             {
-                                adDispatchPlans[server.Key] = new Dictionary<Guid, IDictionary<DateTime, IDictionary<Ad, long>>>();
+                                adDispatchPlans[server.Key][mediaId][adDispatchTimePlan.Key] = new Dictionary<Ad, long>();
                             }
-                            if (!adDispatchPlans[server.Key].ContainsKey(mediaId))
+                            if (adDispatchTimePlan.Value >= 0)
                             {
-                                adDispatchPlans[server.Key][mediaId] = new Dictionary<DateTime,IDictionary<Ad,long>>();
-                            }
-                            foreach (var adDispatchTimePlan in adDispatchPlan)
-                            {
-                                if (!adDispatchPlans[server.Key][mediaId].ContainsKey(adDispatchTimePlan.Key))
-                                {
-                                    adDispatchPlans[server.Key][mediaId][adDispatchTimePlan.Key] = new Dictionary<Ad, long>();
-                                }
                                 adDispatchPlans[server.Key][mediaId][adDispatchTimePlan.Key][adSpotPlan] = adDispatchTimePlan.Value * server.Value.Value.Value / sumPerformance;
+                            }
+                            else
+                            {
+                                adDispatchPlans[server.Key][mediaId][adDispatchTimePlan.Key][adSpotPlan] = adDispatchTimePlan.Value;
                             }
                         }
                     }

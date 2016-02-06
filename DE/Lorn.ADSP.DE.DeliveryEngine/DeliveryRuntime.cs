@@ -324,8 +324,8 @@ namespace Lorn.ADSP.DE.DeliveryEngine
                     var adSerializerInfo = adSerializerSelector.SelectSerializer(parameters, this.creativeSerializerMappings[mediaId], adPositionKeyValuePair.Key.AdPositionId, adMaterial.CreativeTypeId);
                     var adSerializer = this.AdSerializers.First(o => o.Metadata.SerializerId == adSerializerInfo.Key && o.Metadata.Version >= adSerializerInfo.Value).Value;
                     var serializedAd = adSerializer.SerializeAd(adMaterial, this.creativeSerializerMappings[mediaId]);
-                    //扣减待投量，如果待投量大于零说明是非流量比例释放，可以扣减
-                    if (this.adDispatchPlans[currentTime2][mediaId][adMaterial.Ad][currentSequenceNo] > 0)
+                    //扣减待投量，如果CPT售卖就可以扣减
+                    if (adMaterial.Ad.PriceUnit != Common.DataModels.PriceUnit.CPT)
                     {
                         this.adDispatchPlans[currentTime2][mediaId][adMaterial.Ad][currentSequenceNo]--;
                     }
