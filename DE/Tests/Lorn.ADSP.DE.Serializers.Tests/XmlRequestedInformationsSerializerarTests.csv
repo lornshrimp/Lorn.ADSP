@@ -1,5 +1,0 @@
-Inputs,Outputs 
-info:aa,"<InformationData><ServiceData ServiceName=""info"">aa</ServiceData></InformationData>"
-info:bb,"<InformationData><ServiceData ServiceName=""info"">bb</ServiceData></InformationData>"
-info:asdfasdfaoifqwerfowqr209r021r,"<InformationData><ServiceData ServiceName=""info"">asdfasdfaoifqwerfowqr209r021r</ServiceData></InformationData>"
-info:asdfas;af:asdf,"<InformationData><ServiceData ServiceName=""info"">asdfas</ServiceData><ServiceData ServiceName=""af"">asdf</ServiceData></InformationData>"

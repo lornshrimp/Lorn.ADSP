@@ -16,6 +16,9 @@ local.properties
 .settings/
 .loadpath
 .github/
+视频课程/
+免费专栏/
+收费专栏/
 
 # External tool builders
 .externalToolBuilders/
@@ -41,6 +44,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+.vs/
 
 # Build results
 
@@ -219,3 +223,4 @@ pip-log.txt
 #Tfs folders
 $tf/
 packages/
+.fake
