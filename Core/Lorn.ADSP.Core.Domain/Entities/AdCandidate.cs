@@ -1,208 +1,343 @@
+using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
-/// 广告候选对象
+/// 广告候选实体
+/// 在广告投放流程中的候选广告，是广告召回、过滤、排序阶段的核心处理对象
+/// 生命周期：召回→过滤→排序→投放，每个阶段都可能修改候选对象的属性
 /// </summary>
-public record AdCandidate
+public class AdCandidate : EntityBase
 {
     /// <summary>
-    /// 广告ID
+    /// 广告唯一标识
     /// </summary>
-    public required string AdId { get; init; }
+    public string AdId { get; private set; }
 
     /// <summary>
     /// 广告类型
     /// </summary>
-    public required AdType AdType { get; init; }
+    public AdType AdType { get; private set; }
 
     /// <summary>
-    /// 活动ID
+    /// 活动标识
     /// </summary>
-    public required string CampaignId { get; init; }
+    public string CampaignId { get; private set; }
 
     /// <summary>
-    /// 广告主ID
+    /// 创意标识
     /// </summary>
-    public required string AdvertiserId { get; init; }
+    public string CreativeId { get; private set; }
+
+    /// <summary>
+    /// 竞价价格
+    /// </summary>
+    public decimal BidPrice { get; private set; }
 
     /// <summary>
     /// 创意信息
     /// </summary>
-    public required CreativeInfo Creative { get; init; }
+    public CreativeInfo Creative { get; private set; }
 
     /// <summary>
-    /// 定向配置
+    /// 定向策略
     /// </summary>
-    public TargetingConfig? Targeting { get; init; }
+    public TargetingPolicy Targeting { get; private set; }
 
     /// <summary>
     /// 竞价信息
     /// </summary>
-    public required BiddingInfo Bidding { get; init; }
+    public BiddingInfo Bidding { get; private set; }
 
     /// <summary>
     /// 质量评分
     /// </summary>
-    public QualityScore? QualityScore { get; init; }
-
-    /// <summary>
-    /// 广告状态
-    /// </summary>
-    public AdStatus Status { get; init; } = AdStatus.Active;
-
-    /// <summary>
-    /// 上下文数据
-    /// </summary>
-    public IReadOnlyDictionary<string, object> Context { get; init; } = new Dictionary<string, object>();
-
-    /// <summary>
-    /// 创建时间
-    /// </summary>
-    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-
-    /// <summary>
-    /// 最后更新时间
-    /// </summary>
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
-
-    /// <summary>
-    /// 权重分数（用于排序）
-    /// </summary>
-    public decimal WeightScore { get; init; } = 0m;
+    public QualityScore QualityScore { get; private set; }
 
     /// <summary>
     /// 预估点击率
     /// </summary>
-    public decimal? PredictedCtr { get; init; }
+    public double PredictedCtr { get; private set; }
 
     /// <summary>
     /// 预估转化率
     /// </summary>
-    public decimal? PredictedCvr { get; init; }
+    public double PredictedCvr { get; private set; }
 
     /// <summary>
-    /// eCPM值
+    /// 权重分数
     /// </summary>
-    public decimal? ECpm { get; init; }
-}
-
-/// <summary>
-/// 定向配置
-/// </summary>
-public record TargetingConfig
-{
-    /// <summary>
-    /// 地理位置定向
-    /// </summary>
-    public GeoTargeting? GeoTargeting { get; init; }
+    public double WeightScore { get; private set; }
 
     /// <summary>
-    /// 人口属性定向
+    /// 扩展上下文数据
     /// </summary>
-    public DemographicTargeting? DemographicTargeting { get; init; }
+    public Dictionary<string, object> Context { get; private set; }
 
     /// <summary>
-    /// 设备定向
+    /// 私有构造函数
     /// </summary>
-    public DeviceTargeting? DeviceTargeting { get; init; }
+    private AdCandidate(
+        string adId,
+        AdType adType,
+        string campaignId,
+        string creativeId,
+        decimal bidPrice,
+        CreativeInfo creative,
+        TargetingPolicy targeting,
+        BiddingInfo bidding,
+        QualityScore qualityScore,
+        double predictedCtr = 0.0,
+        double predictedCvr = 0.0,
+        double weightScore = 0.0,
+        Dictionary<string, object>? context = null)
+    {
+        AdId = adId;
+        AdType = adType;
+        CampaignId = campaignId;
+        CreativeId = creativeId;
+        BidPrice = bidPrice;
+        Creative = creative;
+        Targeting = targeting;
+        Bidding = bidding;
+        QualityScore = qualityScore;
+        PredictedCtr = predictedCtr;
+        PredictedCvr = predictedCvr;
+        WeightScore = weightScore;
+        Context = context ?? new Dictionary<string, object>();
+    }
 
     /// <summary>
-    /// 时间定向
+    /// 创建广告候选对象
     /// </summary>
-    public TimeTargeting? TimeTargeting { get; init; }
+    public static AdCandidate Create(
+        string adId,
+        AdType adType,
+        string campaignId,
+        string creativeId,
+        decimal bidPrice,
+        CreativeInfo creative,
+        TargetingPolicy targeting,
+        BiddingInfo bidding,
+        QualityScore qualityScore,
+        double predictedCtr = 0.0,
+        double predictedCvr = 0.0,
+        double weightScore = 0.0,
+        Dictionary<string, object>? context = null)
+    {
+        ValidateParameters(adId, campaignId, creativeId, bidPrice, creative, targeting, bidding, qualityScore);
+
+        return new AdCandidate(
+            adId,
+            adType,
+            campaignId,
+            creativeId,
+            bidPrice,
+            creative,
+            targeting,
+            bidding,
+            qualityScore,
+            predictedCtr,
+            predictedCvr,
+            weightScore,
+            context);
+    }
 
     /// <summary>
-    /// 行为定向
+    /// 更新竞价价格
     /// </summary>
-    public BehaviorTargeting? BehaviorTargeting { get; init; }
+    public void UpdateBidPrice(decimal newBidPrice)
+    {
+        if (newBidPrice < 0)
+            throw new ArgumentException("竞价价格不能为负数", nameof(newBidPrice));
+
+        BidPrice = newBidPrice;
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 关键词定向
+    /// 更新预估点击率
     /// </summary>
-    public IReadOnlyList<string> Keywords { get; init; } = Array.Empty<string>();
+    public void UpdatePredictedCtr(double predictedCtr)
+    {
+        if (predictedCtr < 0 || predictedCtr > 1)
+            throw new ArgumentException("预估点击率必须在0-1之间", nameof(predictedCtr));
+
+        PredictedCtr = predictedCtr;
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 兴趣标签定向
+    /// 更新预估转化率
     /// </summary>
-    public IReadOnlyList<string> InterestTags { get; init; } = Array.Empty<string>();
+    public void UpdatePredictedCvr(double predictedCvr)
+    {
+        if (predictedCvr < 0 || predictedCvr > 1)
+            throw new ArgumentException("预估转化率必须在0-1之间", nameof(predictedCvr));
+
+        PredictedCvr = predictedCvr;
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 定向权重
+    /// 更新权重分数
     /// </summary>
-    public decimal Weight { get; init; } = 1.0m;
-}
+    public void UpdateWeightScore(double weightScore)
+    {
+        if (weightScore < 0)
+            throw new ArgumentException("权重分数不能为负数", nameof(weightScore));
 
-/// <summary>
-/// 竞价信息
-/// </summary>
-public record BiddingInfo
-{
-    /// <summary>
-    /// 竞价策略
-    /// </summary>
-    public required BiddingStrategy Strategy { get; init; }
+        WeightScore = weightScore;
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 基础出价（分）
+    /// 更新质量评分
     /// </summary>
-    public required decimal BaseBidPrice { get; init; }
+    public void UpdateQualityScore(QualityScore qualityScore)
+    {
+        QualityScore = qualityScore ?? throw new ArgumentNullException(nameof(qualityScore));
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 最大出价（分）
+    /// 添加上下文数据
     /// </summary>
-    public required decimal MaxBidPrice { get; init; }
+    public void AddContext(string key, object value)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("上下文键不能为空", nameof(key));
+
+        Context[key] = value;
+        UpdateLastModifiedTime();
+    }
 
     /// <summary>
-    /// 当前出价（分）
+    /// 移除上下文数据
     /// </summary>
-    public decimal CurrentBidPrice { get; init; }
+    public void RemoveContext(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("上下文键不能为空", nameof(key));
+
+        if (Context.Remove(key))
+        {
+            UpdateLastModifiedTime();
+        }
+    }
 
     /// <summary>
-    /// 出价调整因子
+    /// 计算相关性分数
     /// </summary>
-    public decimal BidAdjustmentFactor { get; init; } = 1.0m;
+    public double CalculateRelevanceScore(AdContext adContext)
+    {
+        if (adContext == null)
+            throw new ArgumentNullException(nameof(adContext));
+
+        // 基础质量分数
+        double baseScore = (double)QualityScore.OverallScore;
+
+        // 定向匹配分数
+        var targetingContext = ConvertToTargetingContext(adContext);
+        double targetingScore = (double)Targeting.CalculateMatchScore(targetingContext);
+
+        // 综合计算相关性分数
+        return baseScore * 0.6 + targetingScore * 0.4;
+    }
 
     /// <summary>
-    /// 预算信息
+    /// 检查是否符合投放条件
     /// </summary>
-    public BudgetInfo? Budget { get; init; }
+    public bool IsEligibleForPlacement(AdContext adContext)
+    {
+        if (adContext == null)
+            return false;
+
+        // 检查定向匹配
+        var targetingContext = ConvertToTargetingContext(adContext);
+        if (!Targeting.IsMatch(targetingContext))
+            return false;
+
+        // 检查预算状态
+        if (BidPrice <= 0)
+            return false;
+
+        // 检查质量分数
+        if (QualityScore.OverallScore < 0.1m)
+            return false;
+
+        return true;
+    }
 
     /// <summary>
-    /// 竞价标签
+    /// 将AdContext转换为TargetingContext
     /// </summary>
-    public IReadOnlyList<string> BidTags { get; init; } = Array.Empty<string>();
-}
-
-/// <summary>
-/// 预算信息
-/// </summary>
-public record BudgetInfo
-{
-    /// <summary>
-    /// 日预算（分）
-    /// </summary>
-    public decimal DailyBudget { get; init; }
-
-    /// <summary>
-    /// 总预算（分）
-    /// </summary>
-    public decimal TotalBudget { get; init; }
+    private TargetingContext ConvertToTargetingContext(AdContext adContext)
+    {
+        return new TargetingContext
+        {
+            GeoLocation = adContext.GeoLocation,
+            DeviceInfo = adContext.Device,
+            RequestTime = adContext.RequestTime,
+            UserProfile = null, // 需要从其他地方获取
+            UserBehavior = null // 需要从其他地方获取
+        };
+    }
 
     /// <summary>
-    /// 已消费预算（分）
+    /// 获取性能指标
     /// </summary>
-    public decimal SpentBudget { get; init; }
+    public Dictionary<string, object> GetPerformanceMetrics()
+    {
+        return new Dictionary<string, object>
+        {
+            ["AdId"] = AdId,
+            ["BidPrice"] = BidPrice,
+            ["PredictedCtr"] = PredictedCtr,
+            ["PredictedCvr"] = PredictedCvr,
+            ["WeightScore"] = WeightScore,
+            ["QualityScore"] = QualityScore.OverallScore,
+            ["ExpectedRevenue"] = (double)BidPrice * PredictedCtr * PredictedCvr
+        };
+    }
 
     /// <summary>
-    /// 剩余预算（分）
+    /// 参数验证
     /// </summary>
-    public decimal RemainingBudget => TotalBudget - SpentBudget;
+    private static void ValidateParameters(
+        string adId,
+        string campaignId,
+        string creativeId,
+        decimal bidPrice,
+        CreativeInfo creative,
+        TargetingPolicy targeting,
+        BiddingInfo bidding,
+        QualityScore qualityScore)
+    {
+        if (string.IsNullOrEmpty(adId))
+            throw new ArgumentException("广告ID不能为空", nameof(adId));
 
-    /// <summary>
-    /// 预算消耗速度（分/小时）
-    /// </summary>
-    public decimal? BurnRate { get; init; }
+        if (string.IsNullOrEmpty(campaignId))
+            throw new ArgumentException("活动ID不能为空", nameof(campaignId));
+
+        if (string.IsNullOrEmpty(creativeId))
+            throw new ArgumentException("创意ID不能为空", nameof(creativeId));
+
+        if (bidPrice < 0)
+            throw new ArgumentException("竞价价格不能为负数", nameof(bidPrice));
+
+        if (creative == null)
+            throw new ArgumentNullException(nameof(creative));
+
+        if (targeting == null)
+            throw new ArgumentNullException(nameof(targeting));
+
+        if (bidding == null)
+            throw new ArgumentNullException(nameof(bidding));
+
+        if (qualityScore == null)
+            throw new ArgumentNullException(nameof(qualityScore));
+    }
 }

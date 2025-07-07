@@ -166,7 +166,7 @@ public class Advertisement : AggregateRoot
         Name = name;
         Description = description;
         Tags = tags?.ToList() ?? new List<string>();
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "基本信息"));
     }
@@ -180,7 +180,7 @@ public class Advertisement : AggregateRoot
 
         StartTime = startTime;
         EndTime = endTime;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "投放时间"));
     }
@@ -193,7 +193,7 @@ public class Advertisement : AggregateRoot
         ArgumentNullException.ThrowIfNull(targetingPolicy);
 
         TargetingPolicy = targetingPolicy;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "定向策略"));
     }
@@ -206,7 +206,7 @@ public class Advertisement : AggregateRoot
         ArgumentNullException.ThrowIfNull(deliveryPolicy);
 
         DeliveryPolicy = deliveryPolicy;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "投放策略"));
     }
@@ -219,7 +219,7 @@ public class Advertisement : AggregateRoot
         ArgumentNullException.ThrowIfNull(creativeInfo);
 
         CreativeInfo = creativeInfo;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "创意信息"));
 
@@ -240,7 +240,7 @@ public class Advertisement : AggregateRoot
 
         AuditInfo = AuditInfo.CreatePending();
         IsActive = false; // 提交审核时暂停投放
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementSubmittedForAuditEvent(Id, AdvertiserId));
     }
@@ -254,7 +254,7 @@ public class Advertisement : AggregateRoot
             throw new InvalidOperationException("只有待审核状态的广告才能开始审核");
 
         AuditInfo = AuditInfo.CreateInProgress(auditorId, auditorName);
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementAuditStartedEvent(Id, auditorId));
     }
@@ -268,7 +268,7 @@ public class Advertisement : AggregateRoot
             throw new InvalidOperationException("只有审核中状态的广告才能审核通过");
 
         AuditInfo = AuditInfo.CreateApproved(auditorId, auditorName, feedback);
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementAuditApprovedEvent(Id, auditorId));
     }
@@ -286,7 +286,7 @@ public class Advertisement : AggregateRoot
 
         AuditInfo = AuditInfo.CreateRejected(feedback, auditorId, auditorName);
         IsActive = false; // 审核拒绝时停止投放
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementAuditRejectedEvent(Id, auditorId, feedback));
     }
@@ -304,7 +304,7 @@ public class Advertisement : AggregateRoot
 
         AuditInfo = AuditInfo.CreateRequiresChanges(correctionSuggestion, auditorId, auditorName);
         IsActive = false; // 需要修改时停止投放
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementRequiresChangesEvent(Id, auditorId, correctionSuggestion));
     }
@@ -321,7 +321,7 @@ public class Advertisement : AggregateRoot
             throw new InvalidOperationException("已过期的广告无法激活");
 
         IsActive = true;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementActivatedEvent(Id));
     }
@@ -332,7 +332,7 @@ public class Advertisement : AggregateRoot
     public void Pause()
     {
         IsActive = false;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementPausedEvent(Id));
     }
@@ -347,7 +347,7 @@ public class Advertisement : AggregateRoot
 
         TotalImpressions++;
         TotalSpent += cost;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementImpressionRecordedEvent(Id, cost));
     }
@@ -362,7 +362,7 @@ public class Advertisement : AggregateRoot
         {
             TotalSpent += cost;
         }
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementClickRecordedEvent(Id, cost));
     }
@@ -377,7 +377,7 @@ public class Advertisement : AggregateRoot
 
         var oldScore = QualityScore;
         QualityScore = newScore;
-        
+
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementQualityScoreUpdatedEvent(Id, oldScore, newScore));
     }
@@ -385,9 +385,9 @@ public class Advertisement : AggregateRoot
     /// <summary>
     /// 是否可以投放
     /// </summary>
-    public bool CanDeliver => IsActive && 
-                             AuditInfo.CanDeliver && 
-                             !IsExpired && 
+    public bool CanDeliver => IsActive &&
+                             AuditInfo.CanDeliver &&
+                             !IsExpired &&
                              IsWithinDeliveryTime &&
                              !IsDeleted;
 
@@ -485,156 +485,5 @@ public class Advertisement : AggregateRoot
     {
         if (startTime.HasValue && endTime.HasValue && startTime.Value >= endTime.Value)
             throw new ArgumentException("投放开始时间必须早于结束时间");
-    }
-}
-
-/// <summary>
-/// 创意信息值对象
-/// </summary>
-public class CreativeInfo : ValueObject
-{
-    /// <summary>
-    /// 创意标题
-    /// </summary>
-    public string Title { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 创意描述
-    /// </summary>
-    public string Description { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 素材URL
-    /// </summary>
-    public string MaterialUrl { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 点击跳转URL
-    /// </summary>
-    public string ClickUrl { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 创意宽度
-    /// </summary>
-    public int Width { get; private set; }
-
-    /// <summary>
-    /// 创意高度
-    /// </summary>
-    public int Height { get; private set; }
-
-    /// <summary>
-    /// 文件大小（字节）
-    /// </summary>
-    public long FileSize { get; private set; }
-
-    /// <summary>
-    /// 媒体类型 (MIME)
-    /// </summary>
-    public string MimeType { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 创意类型
-    /// </summary>
-    public string CreativeType { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 私有构造函数
-    /// </summary>
-    private CreativeInfo() { }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public CreativeInfo(
-        string title,
-        string description,
-        string materialUrl,
-        string clickUrl,
-        int width,
-        int height,
-        long fileSize,
-        string mimeType,
-        string creativeType)
-    {
-        ValidateInputs(title, materialUrl, clickUrl, width, height, fileSize, mimeType);
-
-        Title = title;
-        Description = description;
-        MaterialUrl = materialUrl;
-        ClickUrl = clickUrl;
-        Width = width;
-        Height = height;
-        FileSize = fileSize;
-        MimeType = mimeType;
-        CreativeType = creativeType;
-    }
-
-    /// <summary>
-    /// 获取创意尺寸比例
-    /// </summary>
-    public decimal GetAspectRatio()
-    {
-        return Height != 0 ? (decimal)Width / Height : 0m;
-    }
-
-    /// <summary>
-    /// 是否为标准尺寸
-    /// </summary>
-    public bool IsStandardSize()
-    {
-        var size = (Width, Height);
-        return size == AdSizeConstants.Banner.MobileBanner ||
-               size == AdSizeConstants.Banner.Leaderboard ||
-               size == AdSizeConstants.Banner.MediumRectangle ||
-               size == AdSizeConstants.Banner.LargeRectangle ||
-               size == AdSizeConstants.Banner.WideSkyscraper ||
-               size == AdSizeConstants.Banner.Skyscraper;
-    }
-
-    /// <summary>
-    /// 验证输入参数
-    /// </summary>
-    private static void ValidateInputs(string title, string materialUrl, string clickUrl, 
-        int width, int height, long fileSize, string mimeType)
-    {
-        if (string.IsNullOrWhiteSpace(title))
-            throw new ArgumentException("创意标题不能为空", nameof(title));
-
-        if (string.IsNullOrWhiteSpace(materialUrl))
-            throw new ArgumentException("素材URL不能为空", nameof(materialUrl));
-
-        if (string.IsNullOrWhiteSpace(clickUrl))
-            throw new ArgumentException("点击URL不能为空", nameof(clickUrl));
-
-        if (width < ValidationConstants.NumberRange.MinAdWidth || 
-            width > ValidationConstants.NumberRange.MaxAdWidth)
-            throw new ArgumentOutOfRangeException(nameof(width), "创意宽度超出允许范围");
-
-        if (height < ValidationConstants.NumberRange.MinAdHeight || 
-            height > ValidationConstants.NumberRange.MaxAdHeight)
-            throw new ArgumentOutOfRangeException(nameof(height), "创意高度超出允许范围");
-
-        if (fileSize <= 0)
-            throw new ArgumentOutOfRangeException(nameof(fileSize), "文件大小必须大于0");
-
-        if (string.IsNullOrWhiteSpace(mimeType))
-            throw new ArgumentException("媒体类型不能为空", nameof(mimeType));
-    }
-
-    /// <summary>
-    /// 获取相等性比较的组件
-    /// </summary>
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Title;
-        yield return Description;
-        yield return MaterialUrl;
-        yield return ClickUrl;
-        yield return Width;
-        yield return Height;
-        yield return FileSize;
-        yield return MimeType;
-        yield return CreativeType;
     }
 }

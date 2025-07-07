@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
@@ -247,52 +248,9 @@ public class UserPreferences : ValueObject
     }
 }
 
-/// <summary>
-/// 数据使用类型枚举
-/// </summary>
-public enum DataUsageType
-{
-    /// <summary>
-    /// 个性化
-    /// </summary>
-    Personalization = 1,
 
-    /// <summary>
-    /// 行为追踪
-    /// </summary>
-    BehaviorTracking = 2,
 
-    /// <summary>
-    /// 跨设备追踪
-    /// </summary>
-    CrossDeviceTracking = 3
-}
 
-/// <summary>
-/// 隐私级别枚举
-/// </summary>
-public enum PrivacyLevel
-{
-    /// <summary>
-    /// 低隐私（允许所有数据使用）
-    /// </summary>
-    Low = 1,
-
-    /// <summary>
-    /// 标准隐私（允许基本数据使用）
-    /// </summary>
-    Standard = 2,
-
-    /// <summary>
-    /// 高隐私（限制数据使用）
-    /// </summary>
-    High = 3,
-
-    /// <summary>
-    /// 最高隐私（禁止大部分数据使用）
-    /// </summary>
-    Maximum = 4
-}
 
 /// <summary>
 /// 通知偏好设置
@@ -378,54 +336,5 @@ public class ContentPreferences : ValueObject
     }
 }
 
-/// <summary>
-/// 通知频率枚举
-/// </summary>
-public enum NotificationFrequency
-{
-    /// <summary>
-    /// 从不
-    /// </summary>
-    Never = 0,
 
-    /// <summary>
-    /// 低频
-    /// </summary>
-    Low = 1,
 
-    /// <summary>
-    /// 正常
-    /// </summary>
-    Normal = 2,
-
-    /// <summary>
-    /// 高频
-    /// </summary>
-    High = 3
-}
-
-/// <summary>
-/// 内容成熟度级别枚举
-/// </summary>
-public enum ContentMaturityLevel
-{
-    /// <summary>
-    /// 普遍级
-    /// </summary>
-    General = 1,
-
-    /// <summary>
-    /// 青少年级
-    /// </summary>
-    Teen = 2,
-
-    /// <summary>
-    /// 成人级
-    /// </summary>
-    Mature = 3,
-
-    /// <summary>
-    /// 限制级
-    /// </summary>
-    Restricted = 4
-}

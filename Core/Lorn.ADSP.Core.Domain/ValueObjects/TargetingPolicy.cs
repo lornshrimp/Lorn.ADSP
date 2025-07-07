@@ -114,7 +114,7 @@ public class TargetingPolicy : ValueObject
         // 设备定向匹配
         if (DeviceTargeting != null)
         {
-            totalScore += DeviceTargeting.CalculateMatchScore(context.DeviceInfo);
+            totalScore += DeviceTargeting.CalculateMatchScore(context.DeviceInfo); // Fix: Removed extra dot and ensured correct parameter type
             targetingCount++;
         }
 
@@ -153,98 +153,13 @@ public class TargetingPolicy : ValueObject
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return GeoTargeting ?? new GeoTargeting();
+        yield return GeoTargeting ?? GeoTargeting.Create(new List<GeoInfo>()); // Fix: Use the static Create method to instantiate GeoTargeting
         yield return DemographicTargeting ?? new DemographicTargeting();
-        yield return DeviceTargeting ?? new DeviceTargeting();
-        yield return TimeTargeting ?? new TimeTargeting();
+        yield return DeviceTargeting ?? DeviceTargeting.Create(); // Fix: Use the static Create method to instantiate DeviceTargeting
+        yield return TimeTargeting ?? TimeTargeting.Create();
         yield return BehaviorTargeting ?? new BehaviorTargeting();
         yield return Weight;
         yield return IsEnabled;
-    }
-}
-
-/// <summary>
-/// 地理位置定向
-/// </summary>
-public class GeoTargeting : ValueObject
-{
-    /// <summary>
-    /// 目标地理位置列表
-    /// </summary>
-    public IReadOnlyList<GeoLocation> TargetLocations { get; private set; } = new List<GeoLocation>();
-
-    /// <summary>
-    /// 排除地理位置列表
-    /// </summary>
-    public IReadOnlyList<GeoLocation> ExcludedLocations { get; private set; } = new List<GeoLocation>();
-
-    /// <summary>
-    /// 定向半径（公里）
-    /// </summary>
-    public double? RadiusKm { get; private set; }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public GeoTargeting(
-        IList<GeoLocation>? targetLocations = null,
-        IList<GeoLocation>? excludedLocations = null,
-        double? radiusKm = null)
-    {
-        TargetLocations = targetLocations?.ToList() ?? new List<GeoLocation>();
-        ExcludedLocations = excludedLocations?.ToList() ?? new List<GeoLocation>();
-        RadiusKm = radiusKm;
-    }
-
-    /// <summary>
-    /// 计算地理位置匹配度
-    /// </summary>
-    public decimal CalculateMatchScore(GeoLocation? userLocation)
-    {
-        if (userLocation == null || !TargetLocations.Any())
-            return 1.0m;
-
-        // 检查是否在排除列表中
-        if (ExcludedLocations.Any(excluded => IsLocationMatch(userLocation, excluded)))
-            return 0m;
-
-        // 检查是否在目标列表中
-        return TargetLocations.Any(target => IsLocationMatch(userLocation, target)) ? 1.0m : 0m;
-    }
-
-    /// <summary>
-    /// 判断位置是否匹配
-    /// </summary>
-    private bool IsLocationMatch(GeoLocation userLocation, GeoLocation targetLocation)
-    {
-        // 精确坐标匹配
-        if (userLocation.HasCoordinates && targetLocation.HasCoordinates && RadiusKm.HasValue)
-        {
-            return userLocation.IsWithinRadius(targetLocation, RadiusKm.Value);
-        }
-
-        // 城市级别匹配
-        if (!string.IsNullOrWhiteSpace(targetLocation.CityName) &&
-            !string.IsNullOrWhiteSpace(userLocation.CityName))
-        {
-            return string.Equals(userLocation.CityName, targetLocation.CityName, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(userLocation.CountryCode, targetLocation.CountryCode, StringComparison.OrdinalIgnoreCase);
-        }
-
-        // 国家级别匹配
-        return string.Equals(userLocation.CountryCode, targetLocation.CountryCode, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// 获取相等性比较的组件
-    /// </summary>
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        foreach (var location in TargetLocations)
-            yield return location;
-        foreach (var location in ExcludedLocations)
-            yield return location;
-        yield return RadiusKm ?? 0;
     }
 }
 
@@ -347,120 +262,6 @@ public class DemographicTargeting : ValueObject
 }
 
 /// <summary>
-/// 设备定向
-/// </summary>
-public class DeviceTargeting : ValueObject
-{
-    /// <summary>
-    /// 目标设备类型
-    /// </summary>
-    public IReadOnlyList<DeviceType> TargetDeviceTypes { get; private set; } = new List<DeviceType>();
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public DeviceTargeting(IList<DeviceType>? targetDeviceTypes = null)
-    {
-        TargetDeviceTypes = targetDeviceTypes?.ToList() ?? new List<DeviceType>();
-    }
-
-    /// <summary>
-    /// 计算设备匹配度
-    /// </summary>
-    public decimal CalculateMatchScore(DeviceInfo? deviceInfo)
-    {
-        if (deviceInfo == null || !TargetDeviceTypes.Any())
-            return 1.0m;
-
-        return TargetDeviceTypes.Contains(deviceInfo.DeviceType) ? 1.0m : 0m;
-    }
-
-    /// <summary>
-    /// 获取相等性比较的组件
-    /// </summary>
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        foreach (var deviceType in TargetDeviceTypes)
-            yield return deviceType;
-    }
-}
-
-/// <summary>
-/// 时间定向
-/// </summary>
-public class TimeTargeting : ValueObject
-{
-    /// <summary>
-    /// 目标小时范围（0-23）
-    /// </summary>
-    public IReadOnlyList<int> TargetHours { get; private set; } = new List<int>();
-
-    /// <summary>
-    /// 目标星期范围（0=周日, 1=周一...6=周六）
-    /// </summary>
-    public IReadOnlyList<int> TargetDaysOfWeek { get; private set; } = new List<int>();
-
-    /// <summary>
-    /// 时区
-    /// </summary>
-    public string? TimeZone { get; private set; }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public TimeTargeting(
-        IList<int>? targetHours = null,
-        IList<int>? targetDaysOfWeek = null,
-        string? timeZone = null)
-    {
-        TargetHours = targetHours?.ToList() ?? new List<int>();
-        TargetDaysOfWeek = targetDaysOfWeek?.ToList() ?? new List<int>();
-        TimeZone = timeZone;
-    }
-
-    /// <summary>
-    /// 计算时间匹配度
-    /// </summary>
-    public decimal CalculateMatchScore(DateTime requestTime)
-    {
-        var targetTime = TimeZone != null ?
-            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(requestTime, TimeZone) :
-            requestTime;
-
-        decimal score = 1.0m;
-        int criteriaCount = 0;
-
-        // 小时匹配
-        if (TargetHours.Any())
-        {
-            score *= TargetHours.Contains(targetTime.Hour) ? 1.0m : 0m;
-            criteriaCount++;
-        }
-
-        // 星期匹配
-        if (TargetDaysOfWeek.Any())
-        {
-            score *= TargetDaysOfWeek.Contains((int)targetTime.DayOfWeek) ? 1.0m : 0m;
-            criteriaCount++;
-        }
-
-        return criteriaCount == 0 ? 1.0m : score;
-    }
-
-    /// <summary>
-    /// 获取相等性比较的组件
-    /// </summary>
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        foreach (var hour in TargetHours)
-            yield return hour;
-        foreach (var day in TargetDaysOfWeek)
-            yield return day;
-        yield return TimeZone ?? string.Empty;
-    }
-}
-
-/// <summary>
 /// 行为定向
 /// </summary>
 public class BehaviorTargeting : ValueObject
@@ -539,7 +340,7 @@ public class TargetingContext
     /// <summary>
     /// 地理位置
     /// </summary>
-    public GeoLocation? GeoLocation { get; set; }
+    public GeoInfo? GeoLocation { get; set; }
 
     /// <summary>
     /// 用户画像

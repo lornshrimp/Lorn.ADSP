@@ -1,3 +1,4 @@
+using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Shared.Enums;
 
@@ -6,300 +7,367 @@ namespace Lorn.ADSP.Core.Domain.Entities;
 /// <summary>
 /// 广告上下文实体
 /// 封装广告请求的完整上下文信息，为广告投放决策提供环境数据
+/// 生命周期：请求创建→策略使用→销毁，在整个请求处理过程中保持不变
 /// </summary>
-public record AdContext
+public class AdContext : EntityBase
 {
     /// <summary>
-    /// 请求标识
+    /// 请求唯一标识
     /// </summary>
-    public required string RequestId { get; init; }
+    public string RequestId { get; private set; }
 
     /// <summary>
-    /// 用户ID
+    /// 用户标识
     /// </summary>
-    public string? UserId { get; init; }
+    public string UserId { get; private set; }
 
     /// <summary>
-    /// 广告位ID
+    /// 广告位标识
     /// </summary>
-    public required string PlacementId { get; init; }
-
-    /// <summary>
-    /// 设备类型
-    /// </summary>
-    public required string DeviceType { get; init; }
-
-    /// <summary>
-    /// 地理位置信息
-    /// </summary>
-    public required GeoInfo GeoLocation { get; init; }
-
-    /// <summary>
-    /// 用户代理字符串
-    /// </summary>
-    public string? UserAgent { get; init; }
-
-    /// <summary>
-    /// 请求时间
-    /// </summary>
-    public DateTime RequestTime { get; init; } = DateTime.UtcNow;
+    public string PlacementId { get; private set; }
 
     /// <summary>
     /// 设备信息
     /// </summary>
-    public DeviceInfo? DeviceInfo { get; init; }
+    public DeviceInfo Device { get; private set; }
+
+    /// <summary>
+    /// 地理位置信息
+    /// </summary>
+    public GeoInfo GeoLocation { get; private set; }
+
+    /// <summary>
+    /// 用户代理信息
+    /// </summary>
+    public string UserAgent { get; private set; }
+
+    /// <summary>
+    /// 请求时间
+    /// </summary>
+    public DateTime RequestTime { get; private set; }
+
+    /// <summary>
+    /// 时间窗口信息
+    /// </summary>
+    public TimeWindow TimeWindow { get; private set; }
 
     /// <summary>
     /// 用户画像信息
     /// </summary>
-    public IReadOnlyDictionary<string, object> UserProfile { get; init; } = new Dictionary<string, object>();
+    public Dictionary<string, object> UserProfile { get; private set; }
 
     /// <summary>
-    /// 环境信息
+    /// 环境上下文信息
     /// </summary>
-    public IReadOnlyDictionary<string, object> EnvironmentInfo { get; init; } = new Dictionary<string, object>();
-
-    /// <summary>
-    /// 请求元数据
-    /// </summary>
-    public IReadOnlyDictionary<string, object> RequestMetadata { get; init; } = new Dictionary<string, object>();
-
-    /// <summary>
-    /// 媒体类型
-    /// </summary>
-    public MediaType? MediaType { get; init; }
-
-    /// <summary>
-    /// 广告类型
-    /// </summary>
-    public AdType? AdType { get; init; }
+    public Dictionary<string, object> EnvironmentInfo { get; private set; }
 
     /// <summary>
     /// 请求来源
     /// </summary>
-    public string? Source { get; init; }
+    public RequestSource RequestSource { get; private set; }
 
     /// <summary>
-    /// 会话ID
+    /// 广告位尺寸
     /// </summary>
-    public string? SessionId { get; init; }
+    public AdSize AdSize { get; private set; }
 
     /// <summary>
-    /// 客户端IP地址
+    /// 私有构造函数
     /// </summary>
-    public string? ClientIp { get; init; }
+    private AdContext(
+        string requestId,
+        string userId,
+        string placementId,
+        DeviceInfo device,
+        GeoInfo geoLocation,
+        string userAgent,
+        DateTime requestTime,
+        TimeWindow timeWindow,
+        RequestSource requestSource,
+        AdSize adSize,
+        Dictionary<string, object>? userProfile = null,
+        Dictionary<string, object>? environmentInfo = null)
+    {
+        RequestId = requestId;
+        UserId = userId;
+        PlacementId = placementId;
+        Device = device;
+        GeoLocation = geoLocation;
+        UserAgent = userAgent;
+        RequestTime = requestTime;
+        TimeWindow = timeWindow;
+        RequestSource = requestSource;
+        AdSize = adSize;
+        UserProfile = userProfile ?? new Dictionary<string, object>();
+        EnvironmentInfo = environmentInfo ?? new Dictionary<string, object>();
+    }
 
     /// <summary>
-    /// 推荐信息
+    /// 创建广告上下文对象
     /// </summary>
-    public string? Referrer { get; init; }
+    public static AdContext Create(
+        string requestId,
+        string userId,
+        string placementId,
+        DeviceInfo device,
+        GeoInfo geoLocation,
+        string userAgent,
+        DateTime requestTime,
+        TimeWindow timeWindow,
+        RequestSource requestSource,
+        AdSize adSize,
+        Dictionary<string, object>? userProfile = null,
+        Dictionary<string, object>? environmentInfo = null)
+    {
+        ValidateParameters(requestId, userId, placementId, device, geoLocation, userAgent, timeWindow, adSize);
+
+        return new AdContext(
+            requestId,
+            userId,
+            placementId,
+            device,
+            geoLocation,
+            userAgent,
+            requestTime,
+            timeWindow,
+            requestSource,
+            adSize,
+            userProfile,
+            environmentInfo);
+    }
 
     /// <summary>
-    /// 获取用户分段信息
+    /// 更新用户画像信息
     /// </summary>
-    /// <returns>用户分段列表</returns>
-    public IReadOnlyList<string> GetUserSegments()
+    public void UpdateUserProfile(Dictionary<string, object> userProfile)
+    {
+        UserProfile = userProfile ?? throw new ArgumentNullException(nameof(userProfile));
+        UpdateLastModifiedTime();
+    }
+
+    /// <summary>
+    /// 添加用户画像属性
+    /// </summary>
+    public void AddUserProfileAttribute(string key, object value)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("用户画像键不能为空", nameof(key));
+
+        UserProfile[key] = value;
+        UpdateLastModifiedTime();
+    }
+
+    /// <summary>
+    /// 移除用户画像属性
+    /// </summary>
+    public void RemoveUserProfileAttribute(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("用户画像键不能为空", nameof(key));
+
+        if (UserProfile.Remove(key))
+        {
+            UpdateLastModifiedTime();
+        }
+    }
+
+    /// <summary>
+    /// 更新环境信息
+    /// </summary>
+    public void UpdateEnvironmentInfo(Dictionary<string, object> environmentInfo)
+    {
+        EnvironmentInfo = environmentInfo ?? throw new ArgumentNullException(nameof(environmentInfo));
+        UpdateLastModifiedTime();
+    }
+
+    /// <summary>
+    /// 添加环境信息
+    /// </summary>
+    public void AddEnvironmentInfo(string key, object value)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("环境信息键不能为空", nameof(key));
+
+        EnvironmentInfo[key] = value;
+        UpdateLastModifiedTime();
+    }
+
+    /// <summary>
+    /// 移除环境信息
+    /// </summary>
+    public void RemoveEnvironmentInfo(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            throw new ArgumentException("环境信息键不能为空", nameof(key));
+
+        if (EnvironmentInfo.Remove(key))
+        {
+            UpdateLastModifiedTime();
+        }
+    }
+
+    /// <summary>
+    /// 获取用户细分标签
+    /// </summary>
+    public List<string> GetUserSegments()
     {
         var segments = new List<string>();
-        
-        if (UserProfile.TryGetValue("segments", out var segmentData) && segmentData is IEnumerable<string> segmentList)
-        {
-            segments.AddRange(segmentList);
-        }
-        
-        // 基于设备类型添加分段
-        if (!string.IsNullOrEmpty(DeviceType))
-        {
-            segments.Add($"device_{DeviceType.ToLowerInvariant()}");
-        }
-        
-        // 基于地理位置添加分段
-        if (!string.IsNullOrEmpty(GeoLocation.CountryCode))
-        {
-            segments.Add($"geo_{GeoLocation.CountryCode.ToLowerInvariant()}");
-        }
-        
-        return segments.AsReadOnly();
-    }
 
-    /// <summary>
-    /// 判断是否来自目标地区
-    /// </summary>
-    /// <param name="targetCountryCode">目标国家代码</param>
-    /// <returns>是否匹配</returns>
-    public bool IsFromTargetRegion(string targetCountryCode)
-    {
-        return string.Equals(GeoLocation.CountryCode, targetCountryCode, StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// 获取时间段信息
-    /// </summary>
-    /// <returns>时间段枚举</returns>
-    public TimeSlot GetTimeSlot()
-    {
-        var localTime = RequestTime;
-        
-        // 如果有时区信息，转换为本地时间
-        if (!string.IsNullOrEmpty(GeoLocation.TimeZone))
+        if (UserProfile.ContainsKey("segments"))
         {
-            try
+            if (UserProfile["segments"] is List<string> segmentList)
             {
-                var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(GeoLocation.TimeZone);
-                localTime = TimeZoneInfo.ConvertTimeFromUtc(RequestTime, timeZoneInfo);
-            }
-            catch (TimeZoneNotFoundException)
-            {
-                // 如果找不到时区，使用UTC时间
-                localTime = RequestTime;
+                segments.AddRange(segmentList);
             }
         }
-        
-        return localTime.Hour switch
-        {
-            >= 6 and < 12 => TimeSlot.Morning,
-            >= 12 and < 18 => TimeSlot.Afternoon,
-            >= 18 and < 22 => TimeSlot.Evening,
-            _ => TimeSlot.Night
-        };
+
+        return segments;
     }
 
     /// <summary>
-    /// 获取请求元数据
+    /// 检查是否来自目标区域
     /// </summary>
-    /// <returns>请求元数据对象</returns>
-    public RequestMetadataInfo GetRequestMetadata()
+    public bool IsFromTargetRegion(GeoInfo targetGeoLocation)
     {
-        return new RequestMetadataInfo
-        {
-            RequestId = RequestId,
-            RequestTime = RequestTime,
-            Source = Source,
-            UserAgent = UserAgent,
-            ClientIp = ClientIp,
-            Referrer = Referrer,
-            SessionId = SessionId,
-            AdditionalData = RequestMetadata
-        };
-    }
-
-    /// <summary>
-    /// 检查是否为有效的广告请求
-    /// </summary>
-    /// <returns>是否有效</returns>
-    public bool IsValidAdRequest()
-    {
-        // 基本字段验证
-        if (string.IsNullOrEmpty(RequestId) || string.IsNullOrEmpty(PlacementId) || string.IsNullOrEmpty(DeviceType))
-        {
+        if (targetGeoLocation == null)
             return false;
-        }
 
-        // 时间验证（请求时间不能太旧）
-        if (RequestTime < DateTime.UtcNow.AddHours(-1))
-        {
+        // 检查国家匹配
+        if (!string.IsNullOrEmpty(targetGeoLocation.CountryName) &&
+            !string.Equals(GeoLocation.CountryName, targetGeoLocation.CountryName, StringComparison.OrdinalIgnoreCase))
             return false;
-        }
 
-        // 地理位置验证
-        if (GeoLocation == null)
-        {
+        // 检查省份匹配
+        if (!string.IsNullOrEmpty(targetGeoLocation.ProvinceName) &&
+            !string.Equals(GeoLocation.ProvinceName, targetGeoLocation.ProvinceName, StringComparison.OrdinalIgnoreCase))
             return false;
-        }
+
+        // 检查城市匹配
+        if (!string.IsNullOrEmpty(targetGeoLocation.CityName) &&
+            !string.Equals(GeoLocation.CityName, targetGeoLocation.CityName, StringComparison.OrdinalIgnoreCase))
+            return false;
 
         return true;
     }
 
     /// <summary>
-    /// 获取调试信息
+    /// 获取时间段
     /// </summary>
-    /// <returns>调试信息字典</returns>
-    public IReadOnlyDictionary<string, object> GetDebugInfo()
+    public string GetTimeSlot()
+    {
+        var hour = RequestTime.Hour;
+        return hour switch
+        {
+            >= 6 and < 12 => "上午",
+            >= 12 and < 18 => "下午",
+            >= 18 and < 24 => "晚上",
+            _ => "凌晨"
+        };
+    }
+
+    /// <summary>
+    /// 获取星期几
+    /// </summary>
+    public DayOfWeek GetDayOfWeek()
+    {
+        return RequestTime.DayOfWeek;
+    }
+
+    /// <summary>
+    /// 检查是否在指定时间范围内
+    /// </summary>
+    public bool IsWithinTimeRange(TimeRange timeRange)
+    {
+        if (timeRange == null)
+            return false;
+
+        return timeRange.Contains(RequestTime);
+    }
+
+    /// <summary>
+    /// 获取请求元数据
+    /// </summary>
+    public Dictionary<string, object> GetRequestMetadata()
     {
         return new Dictionary<string, object>
         {
             ["RequestId"] = RequestId,
+            ["UserId"] = UserId,
             ["PlacementId"] = PlacementId,
-            ["DeviceType"] = DeviceType,
-            ["GeoLocation"] = GeoLocation.CountryCode ?? "Unknown",
             ["RequestTime"] = RequestTime,
-            ["TimeSlot"] = GetTimeSlot().ToString(),
-            ["UserSegments"] = GetUserSegments(),
-            ["IsValidRequest"] = IsValidAdRequest()
+            ["TimeSlot"] = GetTimeSlot(),
+            ["DayOfWeek"] = GetDayOfWeek().ToString(),
+            ["DeviceType"] = Device.DeviceType,
+            ["Country"] = GeoLocation.CountryName,
+            ["Province"] = GeoLocation.ProvinceName,
+            ["City"] = GeoLocation.CityName,
+            ["UserAgent"] = UserAgent,
+            ["RequestSource"] = RequestSource.ToString(),
+            ["AdSize"] = $"{AdSize.Width}x{AdSize.Height}"
         };
     }
-}
-
-/// <summary>
-/// 时间段枚举
-/// </summary>
-public enum TimeSlot
-{
-    /// <summary>
-    /// 早晨 (6:00-12:00)
-    /// </summary>
-    Morning = 1,
 
     /// <summary>
-    /// 下午 (12:00-18:00)
+    /// 检查是否为移动设备
     /// </summary>
-    Afternoon = 2,
+    public bool IsMobileDevice()
+    {
+        return Device.DeviceType == DeviceType.Smartphone || Device.DeviceType == DeviceType.Tablet;
+    }
 
     /// <summary>
-    /// 晚上 (18:00-22:00)
+    /// 检查是否为高价值用户
     /// </summary>
-    Evening = 3,
+    public bool IsHighValueUser()
+    {
+        if (UserProfile.ContainsKey("value_score"))
+        {
+            if (UserProfile["value_score"] is double valueScore)
+            {
+                return valueScore > 0.8;
+            }
+        }
+
+        return false;
+    }
 
     /// <summary>
-    /// 夜晚 (22:00-6:00)
+    /// 参数验证
     /// </summary>
-    Night = 4
-}
+    private static void ValidateParameters(
+        string requestId,
+        string userId,
+        string placementId,
+        DeviceInfo device,
+        GeoInfo geoLocation,
+        string userAgent,
+        TimeWindow timeWindow,
+        AdSize adSize)
+    {
+        if (string.IsNullOrEmpty(requestId))
+            throw new ArgumentException("请求ID不能为空", nameof(requestId));
 
-/// <summary>
-/// 请求元数据信息
-/// </summary>
-public record RequestMetadataInfo
-{
-    /// <summary>
-    /// 请求ID
-    /// </summary>
-    public required string RequestId { get; init; }
+        if (string.IsNullOrEmpty(userId))
+            throw new ArgumentException("用户ID不能为空", nameof(userId));
 
-    /// <summary>
-    /// 请求时间
-    /// </summary>
-    public DateTime RequestTime { get; init; }
+        if (string.IsNullOrEmpty(placementId))
+            throw new ArgumentException("广告位ID不能为空", nameof(placementId));
 
-    /// <summary>
-    /// 请求来源
-    /// </summary>
-    public string? Source { get; init; }
+        if (device == null)
+            throw new ArgumentNullException(nameof(device));
 
-    /// <summary>
-    /// 用户代理
-    /// </summary>
-    public string? UserAgent { get; init; }
+        if (geoLocation == null)
+            throw new ArgumentNullException(nameof(geoLocation));
 
-    /// <summary>
-    /// 客户端IP
-    /// </summary>
-    public string? ClientIp { get; init; }
+        if (string.IsNullOrEmpty(userAgent))
+            throw new ArgumentException("用户代理信息不能为空", nameof(userAgent));
 
-    /// <summary>
-    /// 推荐信息
-    /// </summary>
-    public string? Referrer { get; init; }
+        if (timeWindow == null)
+            throw new ArgumentNullException(nameof(timeWindow));
 
-    /// <summary>
-    /// 会话ID
-    /// </summary>
-    public string? SessionId { get; init; }
-
-    /// <summary>
-    /// 附加数据
-    /// </summary>
-    public IReadOnlyDictionary<string, object> AdditionalData { get; init; } = new Dictionary<string, object>();
+        if (adSize == null)
+            throw new ArgumentNullException(nameof(adSize));
+    }
 }
 
 

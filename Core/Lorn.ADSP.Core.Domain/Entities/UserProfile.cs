@@ -575,7 +575,7 @@ public class UserProfile : AggregateRoot
             if (GeoInfo.CountryCode == other.GeoInfo.CountryCode)
             {
                 similarity += 0.1m;
-                if (GeoInfo.RegionCode == other.GeoInfo.RegionCode)
+                if (GeoInfo.ProvinceCode == other.GeoInfo.ProvinceCode)
                 {
                     similarity += 0.1m;
                     if (GeoInfo.CityName == other.GeoInfo.CityName)
@@ -675,7 +675,7 @@ public class UserProfile : AggregateRoot
         // 地理位置一致性检查
         if (GeoInfo != null)
         {
-            if (string.IsNullOrWhiteSpace(GeoInfo.CountryCode) && !string.IsNullOrWhiteSpace(GeoInfo.RegionCode))
+            if (string.IsNullOrWhiteSpace(GeoInfo.CountryCode) && !string.IsNullOrWhiteSpace(GeoInfo.ProvinceCode))
                 score -= 5;
         }
 
