@@ -44,6 +44,16 @@ public static class ErrorCodes
         /// 系统繁忙
         /// </summary>
         public const string SystemBusy = "E0007";
+
+        /// <summary>
+        /// 内部错误
+        /// </summary>
+        public const string InternalError = "E0008";
+
+        /// <summary>
+        /// 操作已取消
+        /// </summary>
+        public const string OperationCancelled = "E0009";
     }
 
     /// <summary>
@@ -193,6 +203,21 @@ public static class ErrorCodes
         /// 数据反序列化失败
         /// </summary>
         public const string DataDeserializationFailed = "E4006";
+
+        /// <summary>
+        /// 数据验证失败
+        /// </summary>
+        public const string DataValidationFailed = "E4007";
+
+        /// <summary>
+        /// 数据转换失败
+        /// </summary>
+        public const string DataTransformationFailed = "E4008";
+
+        /// <summary>
+        /// 数据源不可用
+        /// </summary>
+        public const string DataSourceUnavailable = "E4009";
     }
 
     /// <summary>
@@ -224,5 +249,136 @@ public static class ErrorCodes
         /// 外部服务限流
         /// </summary>
         public const string ServiceRateLimited = "E5005";
+    }
+
+    /// <summary>
+    /// 广告引擎错误码
+    /// </summary>
+    public static class AdEngine
+    {
+        /// <summary>
+        /// 策略相关错误码
+        /// </summary>
+        public static class Strategy
+        {
+            /// <summary>
+            /// 策略未找到
+            /// </summary>
+            public const string StrategyNotFound = "E6001";
+
+            /// <summary>
+            /// 策略执行失败
+            /// </summary>
+            public const string StrategyExecutionFailed = "E6002";
+
+            /// <summary>
+            /// 策略执行超时
+            /// </summary>
+            public const string StrategyTimeout = "E6003";
+
+            /// <summary>
+            /// 策略配置无效
+            /// </summary>
+            public const string StrategyConfigurationInvalid = "E6004";
+
+            /// <summary>
+            /// 策略依赖缺失
+            /// </summary>
+            public const string StrategyDependencyMissing = "E6005";
+
+            /// <summary>
+            /// 策略验证失败
+            /// </summary>
+            public const string StrategyValidationFailed = "E6006";
+        }
+
+        /// <summary>
+        /// 回调相关错误码
+        /// </summary>
+        public static class Callback
+        {
+            /// <summary>
+            /// 回调未找到
+            /// </summary>
+            public const string CallbackNotFound = "E6101";
+
+            /// <summary>
+            /// 回调执行失败
+            /// </summary>
+            public const string CallbackExecutionFailed = "E6102";
+
+            /// <summary>
+            /// 回调执行超时
+            /// </summary>
+            public const string CallbackTimeout = "E6103";
+
+            /// <summary>
+            /// 回调配置无效
+            /// </summary>
+            public const string CallbackConfigurationInvalid = "E6104";
+
+            /// <summary>
+            /// 回调健康检查失败
+            /// </summary>
+            public const string CallbackHealthCheckFailed = "E6105";
+        }
+
+        /// <summary>
+        /// 配置相关错误码
+        /// </summary>
+        public static class Configuration
+        {
+            /// <summary>
+            /// 配置未找到
+            /// </summary>
+            public const string ConfigurationNotFound = "E6201";
+
+            /// <summary>
+            /// 配置无效
+            /// </summary>
+            public const string ConfigurationInvalid = "E6202";
+
+            /// <summary>
+            /// 配置加载失败
+            /// </summary>
+            public const string ConfigurationLoadFailed = "E6203";
+        }
+
+        /// <summary>
+        /// 资源相关错误码
+        /// </summary>
+        public static class Resource
+        {
+            /// <summary>
+            /// 资源耗尽
+            /// </summary>
+            public const string ResourceExhausted = "E6301";
+
+            /// <summary>
+            /// 资源不可用
+            /// </summary>
+            public const string ResourceUnavailable = "E6302";
+
+            /// <summary>
+            /// 资源限制超出
+            /// </summary>
+            public const string ResourceLimitExceeded = "E6303";
+        }
+
+        /// <summary>
+        /// 业务规则相关错误码
+        /// </summary>
+        public static class BusinessRule
+        {
+            /// <summary>
+            /// 业务规则违反
+            /// </summary>
+            public const string BusinessRuleViolation = "E6401";
+
+            /// <summary>
+            /// 业务规则评估失败
+            /// </summary>
+            public const string BusinessRuleEvaluationFailed = "E6402";
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Events;
 
@@ -468,6 +469,105 @@ public class CampaignBudgetExhaustedEvent : DomainEventBase
     {
         CampaignId = campaignId;
         SpentBudget = spentBudget;
+    }
+}
+
+#endregion
+
+#region UserProfile Events
+
+/// <summary>
+/// 用户画像创建事件
+/// </summary>
+public class UserProfileCreatedEvent : DomainEventBase
+{
+    public override string EventType => "UserProfileCreated";
+
+    public string UserProfileId { get; }
+    public string UserId { get; }
+
+    public UserProfileCreatedEvent(string userProfileId, string userId)
+    {
+        UserProfileId = userProfileId;
+        UserId = userId;
+    }
+}
+
+/// <summary>
+/// 用户画像更新事件
+/// </summary>
+public class UserProfileUpdatedEvent : DomainEventBase
+{
+    public override string EventType => "UserProfileUpdated";
+
+    public string UserProfileId { get; }
+    public string UserId { get; }
+    public string UpdateType { get; }
+
+    public UserProfileUpdatedEvent(string userProfileId, string userId, string updateType)
+    {
+        UserProfileId = userProfileId;
+        UserId = userId;
+        UpdateType = updateType;
+    }
+}
+
+/// <summary>
+/// 用户画像评分更新事件
+/// </summary>
+public class UserProfileScoreUpdatedEvent : DomainEventBase
+{
+    public override string EventType => "UserProfileScoreUpdated";
+
+    public string UserProfileId { get; }
+    public string UserId { get; }
+    public string ScoreType { get; }
+    public int NewScore { get; }
+
+    public UserProfileScoreUpdatedEvent(string userProfileId, string userId, string scoreType, int newScore)
+    {
+        UserProfileId = userProfileId;
+        UserId = userId;
+        ScoreType = scoreType;
+        NewScore = newScore;
+    }
+}
+
+/// <summary>
+/// 用户活动记录事件
+/// </summary>
+public class UserActivityRecordedEvent : DomainEventBase
+{
+    public override string EventType => "UserActivityRecorded";
+
+    public string UserProfileId { get; }
+    public string UserId { get; }
+    public DateTime ActivityTimestamp { get; }
+
+    public UserActivityRecordedEvent(string userProfileId, string userId, DateTime activityTimestamp)
+    {
+        UserProfileId = userProfileId;
+        UserId = userId;
+        ActivityTimestamp = activityTimestamp;
+    }
+}
+
+/// <summary>
+/// 用户画像状态变更事件
+/// </summary>
+public class UserProfileStatusChangedEvent : DomainEventBase
+{
+    public override string EventType => "UserProfileStatusChanged";
+
+    public string UserProfileId { get; }
+    public string UserId { get; }
+    public UserStatus NewStatus { get; }
+
+    public UserProfileStatusChangedEvent(string userProfileId, string userId, UserStatus newStatus)
+    {
+        UserProfileId = userProfileId;
+        UserId = userId;
+        NewStatus = newStatus;
     }
 }
 

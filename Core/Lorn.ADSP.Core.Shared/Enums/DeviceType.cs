@@ -1,37 +1,52 @@
 namespace Lorn.ADSP.Core.Shared.Enums;
 
 /// <summary>
-/// 设备类型枚举
+/// 设备类型
 /// </summary>
 public enum DeviceType
 {
     /// <summary>
-    /// 手机/平板
+    /// 个人计算机
     /// </summary>
-    MobileTablet = 1,
+    PersonalComputer = 1,
 
     /// <summary>
-    /// 个人电脑
+    /// 智能手机
     /// </summary>
-    PersonalComputer = 2,
+    Smartphone = 2,
 
     /// <summary>
-    /// 联网电视
+    /// 平板电脑
     /// </summary>
-    ConnectedTV = 3,
+    Tablet = 3,
 
     /// <summary>
-    /// 手机
+    /// 智能电视
     /// </summary>
-    Phone = 4,
+    SmartTV = 4,
 
     /// <summary>
-    /// 平板
+    /// 可穿戴设备
     /// </summary>
-    Tablet = 5,
+    Wearable = 5,
 
     /// <summary>
-    /// 联网设备
+    /// 游戏机
     /// </summary>
-    ConnectedDevice = 6
+    GameConsole = 6,
+
+    /// <summary>
+    /// 车载设备
+    /// </summary>
+    Automotive = 7,
+
+    /// <summary>
+    /// IoT设备
+    /// </summary>
+    IoTDevice = 8,
+
+    /// <summary>
+    /// 其他
+    /// </summary>
+    Other = 99
 }

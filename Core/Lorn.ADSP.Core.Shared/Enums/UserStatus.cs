@@ -1,27 +1,27 @@
 namespace Lorn.ADSP.Core.Shared.Enums;
 
 /// <summary>
-/// 性别
+/// 用户状态
 /// </summary>
-public enum Gender
+public enum UserStatus
 {
     /// <summary>
-    /// 未知
+    /// 活跃
     /// </summary>
-    Unknown = 0,
+    Active = 1,
 
     /// <summary>
-    /// 男性
+    /// 非活跃
     /// </summary>
-    Male = 1,
+    Inactive = 2,
 
     /// <summary>
-    /// 女性
+    /// 已暂停
     /// </summary>
-    Female = 2,
+    Suspended = 3,
 
     /// <summary>
-    /// 其他
+    /// 已注销
     /// </summary>
-    Other = 3
+    Deleted = 4
 }

@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Entities;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
@@ -223,7 +224,7 @@ public class GeoTargeting : ValueObject
         }
 
         // 城市级别匹配
-        if (!string.IsNullOrWhiteSpace(targetLocation.CityName) && 
+        if (!string.IsNullOrWhiteSpace(targetLocation.CityName) &&
             !string.IsNullOrWhiteSpace(userLocation.CityName))
         {
             return string.Equals(userLocation.CityName, targetLocation.CityName, StringComparison.OrdinalIgnoreCase) &&
@@ -301,7 +302,7 @@ public class DemographicTargeting : ValueObject
         // 性别匹配
         if (TargetGenders.Any())
         {
-            score *= TargetGenders.Contains(userProfile.Gender) ? 1.0m : 0m;
+            score *= TargetGenders.Contains(userProfile.BasicInfo.Gender) ? 1.0m : 0m;
             criteriaCount++;
         }
 
@@ -309,9 +310,9 @@ public class DemographicTargeting : ValueObject
         if (MinAge.HasValue || MaxAge.HasValue)
         {
             var ageMatch = true;
-            if (MinAge.HasValue && userProfile.Age < MinAge.Value)
+            if (MinAge.HasValue && userProfile.GetAge() < MinAge.Value)
                 ageMatch = false;
-            if (MaxAge.HasValue && userProfile.Age > MaxAge.Value)
+            if (MaxAge.HasValue && userProfile.GetAge() > MaxAge.Value)
                 ageMatch = false;
 
             score *= ageMatch ? 1.0m : 0m;
@@ -321,8 +322,8 @@ public class DemographicTargeting : ValueObject
         // 关键词匹配
         if (TargetKeywords.Any())
         {
-            var keywordMatch = TargetKeywords.Any(keyword => 
-                userProfile.Keywords.Any(userKeyword => 
+            var keywordMatch = TargetKeywords.Any(keyword =>
+                userProfile.Keywords.Any(userKeyword =>
                     userKeyword.Contains(keyword, StringComparison.OrdinalIgnoreCase)));
             score *= keywordMatch ? 1.0m : 0m;
             criteriaCount++;
@@ -422,8 +423,8 @@ public class TimeTargeting : ValueObject
     /// </summary>
     public decimal CalculateMatchScore(DateTime requestTime)
     {
-        var targetTime = TimeZone != null ? 
-            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(requestTime, TimeZone) : 
+        var targetTime = TimeZone != null ?
+            TimeZoneInfo.ConvertTimeBySystemTimeZoneId(requestTime, TimeZone) :
             requestTime;
 
         decimal score = 1.0m;
@@ -499,7 +500,7 @@ public class BehaviorTargeting : ValueObject
         // 兴趣标签匹配
         if (InterestTags.Any())
         {
-            var interestMatch = InterestTags.Any(tag => 
+            var interestMatch = InterestTags.Any(tag =>
                 userBehavior.InterestTags.Contains(tag, StringComparer.OrdinalIgnoreCase));
             score *= interestMatch ? 1.0m : 0m;
             criteriaCount++;
@@ -508,8 +509,8 @@ public class BehaviorTargeting : ValueObject
         // 行为类型匹配
         if (BehaviorTypes.Any())
         {
-            var behaviorMatch = BehaviorTypes.Any(type => 
-                userBehavior.BehaviorHistory.Any(b => 
+            var behaviorMatch = BehaviorTypes.Any(type =>
+                userBehavior.BehaviorHistory.Any(b =>
                     string.Equals(b.BehaviorType, type, StringComparison.OrdinalIgnoreCase)));
             score *= behaviorMatch ? 1.0m : 0m;
             criteriaCount++;
@@ -559,38 +560,6 @@ public class TargetingContext
     /// 用户行为
     /// </summary>
     public UserBehavior? UserBehavior { get; set; }
-}
-
-/// <summary>
-/// 用户画像
-/// </summary>
-public class UserProfile
-{
-    /// <summary>
-    /// 性别
-    /// </summary>
-    public Gender Gender { get; set; }
-
-    /// <summary>
-    /// 年龄
-    /// </summary>
-    public int Age { get; set; }
-
-    /// <summary>
-    /// 关键词
-    /// </summary>
-    public IList<string> Keywords { get; set; } = new List<string>();
-}
-
-/// <summary>
-/// 设备信息
-/// </summary>
-public class DeviceInfo
-{
-    /// <summary>
-    /// 设备类型
-    /// </summary>
-    public DeviceType DeviceType { get; set; }
 }
 
 /// <summary>
