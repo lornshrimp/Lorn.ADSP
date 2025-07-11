@@ -8,6 +8,7 @@ namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
 /// 广告活动实体（聚合根）
+/// Campaign是唯一应该直接持有TargetingConfig的实体
 /// </summary>
 public class Campaign : AggregateRoot
 {
@@ -62,9 +63,10 @@ public class Campaign : AggregateRoot
     public string TimeZone { get; private set; } = "UTC";
 
     /// <summary>
-    /// 默认定向策略
+    /// 定向配置（运行时配置实例）
+    /// Campaign是定向配置的唯一直接持有者
     /// </summary>
-    public TargetingPolicy DefaultTargeting { get; private set; } = TargetingPolicy.CreateEmpty();
+    public TargetingConfig TargetingConfig { get; private set; } = null!;
 
     /// <summary>
     /// 默认投放策略
@@ -120,8 +122,8 @@ public class Campaign : AggregateRoot
         DateTime endDate,
         DeliveryPolicy defaultDelivery,
         CampaignObjective objective,
+        TargetingConfig targetingConfig,
         string timeZone = "UTC",
-        TargetingPolicy? defaultTargeting = null,
         IList<string>? tags = null)
     {
         ValidateInputs(name, advertiserId, totalBudget, dailyBudget, startDate, endDate);
@@ -135,12 +137,50 @@ public class Campaign : AggregateRoot
         EndDate = endDate;
         DefaultDelivery = defaultDelivery;
         Objective = objective;
+        TargetingConfig = targetingConfig ?? throw new ArgumentNullException(nameof(targetingConfig));
         TimeZone = timeZone;
-        DefaultTargeting = defaultTargeting ?? TargetingPolicy.CreateEmpty();
         Tags = tags?.ToList() ?? new List<string>();
 
         // 发布活动创建事件
         AddDomainEvent(new CampaignCreatedEvent(Id, advertiserId, name));
+    }
+
+    /// <summary>
+    /// 从定向策略模板创建活动（工厂方法）
+    /// 这是从TargetingPolicy创建TargetingConfig的推荐方式
+    /// </summary>
+    public static Campaign CreateFromTargetingPolicy(
+        string name,
+        string description,
+        string advertiserId,
+        decimal totalBudget,
+        decimal dailyBudget,
+        DateTime startDate,
+        DateTime endDate,
+        DeliveryPolicy defaultDelivery,
+        CampaignObjective objective,
+        TargetingPolicy targetingPolicy,
+        string timeZone = "UTC",
+        IList<string>? tags = null)
+    {
+        ArgumentNullException.ThrowIfNull(targetingPolicy);
+
+        // 从TargetingPolicy创建TargetingConfig实例
+        var targetingConfig = targetingPolicy.CreateConfig(advertiserId);
+
+        return new Campaign(
+            name,
+            description,
+            advertiserId,
+            totalBudget,
+            dailyBudget,
+            startDate,
+            endDate,
+            defaultDelivery,
+            objective,
+            targetingConfig,
+            timeZone,
+            tags);
     }
 
     /// <summary>
@@ -200,16 +240,30 @@ public class Campaign : AggregateRoot
     }
 
     /// <summary>
-    /// 更新默认定向策略
+    /// 更新定向配置
+    /// Campaign是定向配置的唯一管理者
     /// </summary>
-    public void UpdateDefaultTargeting(TargetingPolicy targetingPolicy)
+    public void UpdateTargetingConfig(TargetingConfig targetingConfig)
+    {
+        ArgumentNullException.ThrowIfNull(targetingConfig);
+
+        TargetingConfig = targetingConfig;
+
+        UpdateLastModifiedTime();
+        AddDomainEvent(new CampaignUpdatedEvent(Id, "定向配置"));
+    }
+
+    /// <summary>
+    /// 从定向策略模板创建新的定向配置
+    /// </summary>
+    public void CreateTargetingFromPolicy(TargetingPolicy targetingPolicy)
     {
         ArgumentNullException.ThrowIfNull(targetingPolicy);
 
-        DefaultTargeting = targetingPolicy;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "默认定向策略"));
+        // 从TargetingPolicy创建新的TargetingConfig实例
+        var newTargetingConfig = targetingPolicy.CreateConfig(AdvertiserId);
+        
+        UpdateTargetingConfig(newTargetingConfig);
     }
 
     /// <summary>

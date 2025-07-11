@@ -67,11 +67,6 @@ public class Advertisement : AggregateRoot
     public AuditInfo AuditInfo { get; private set; } = AuditInfo.CreatePending();
 
     /// <summary>
-    /// 定向策略
-    /// </summary>
-    public TargetingPolicy TargetingPolicy { get; private set; } = TargetingPolicy.CreateEmpty();
-
-    /// <summary>
     /// 投放策略
     /// </summary>
     public DeliveryPolicy DeliveryPolicy { get; private set; } = null!;
@@ -118,6 +113,7 @@ public class Advertisement : AggregateRoot
 
     /// <summary>
     /// 构造函数
+    /// 注意：Advertisement不再直接管理TargetingPolicy，定向策略通过Campaign的TargetingConfig来管理
     /// </summary>
     public Advertisement(
         string advertiserId,
@@ -127,7 +123,6 @@ public class Advertisement : AggregateRoot
         MediaType mediaType,
         DeliveryPolicy deliveryPolicy,
         CreativeInfo creativeInfo,
-        TargetingPolicy? targetingPolicy = null,
         IList<string>? categories = null,
         IList<int>? attributes = null,
         IList<string>? advertiserDomains = null,
@@ -144,7 +139,6 @@ public class Advertisement : AggregateRoot
         MediaType = mediaType;
         DeliveryPolicy = deliveryPolicy;
         CreativeInfo = creativeInfo;
-        TargetingPolicy = targetingPolicy ?? TargetingPolicy.CreateEmpty();
         Categories = categories?.ToList() ?? new List<string>();
         Attributes = attributes?.ToList() ?? new List<int>();
         AdvertiserDomains = advertiserDomains?.ToList() ?? new List<string>();
@@ -183,19 +177,6 @@ public class Advertisement : AggregateRoot
 
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "投放时间"));
-    }
-
-    /// <summary>
-    /// 更新定向策略
-    /// </summary>
-    public void UpdateTargetingPolicy(TargetingPolicy targetingPolicy)
-    {
-        ArgumentNullException.ThrowIfNull(targetingPolicy);
-
-        TargetingPolicy = targetingPolicy;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "定向策略"));
     }
 
     /// <summary>
