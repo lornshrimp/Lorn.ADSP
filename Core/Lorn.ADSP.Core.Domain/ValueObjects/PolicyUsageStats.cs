@@ -1,4 +1,4 @@
-﻿namespace Lorn.ADSP.Core.Domain.Enums
+﻿namespace Lorn.ADSP.Core.Domain.ValueObjects
 {
     /// <summary>
     /// 策略使用统计

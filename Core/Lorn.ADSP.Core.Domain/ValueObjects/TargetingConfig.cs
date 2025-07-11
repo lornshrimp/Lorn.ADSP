@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
@@ -121,7 +122,7 @@ public class TargetingConfig : ValueObject
             throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
 
         var finalConfigId = configId ?? Guid.NewGuid().ToString();
-        
+
         // 从策略复制定向条件
         var criteriaDict = new Dictionary<string, ITargetingCriteria>();
         foreach (var criteriaKvp in policy.CriteriaTemplates)
@@ -431,7 +432,7 @@ public class TargetingConfig : ValueObject
     public string GetConfigurationSummary()
     {
         var enabledCriteria = GetEnabledCriteria().ToList();
-        var criteriaInfo = enabledCriteria.Any() 
+        var criteriaInfo = enabledCriteria.Any()
             ? string.Join(", ", enabledCriteria.Select(c => c.CriteriaType))
             : "No criteria";
 
@@ -519,7 +520,7 @@ public class TargetingConfig : ValueObject
                 break;
 
             case OptimizationType.EnableCriteria:
-                if (!string.IsNullOrEmpty(recommendation.CriteriaType) && 
+                if (!string.IsNullOrEmpty(recommendation.CriteriaType) &&
                     _criteria.TryGetValue(recommendation.CriteriaType, out var criteria))
                 {
                     // 需要在ITargetingCriteria接口中添加Enable/Disable方法
@@ -528,7 +529,7 @@ public class TargetingConfig : ValueObject
                 break;
 
             case OptimizationType.DisableCriteria:
-                if (!string.IsNullOrEmpty(recommendation.CriteriaType) && 
+                if (!string.IsNullOrEmpty(recommendation.CriteriaType) &&
                     _criteria.TryGetValue(recommendation.CriteriaType, out var criteriaToDisable))
                 {
                     // criteriaToDisable.Disable();
@@ -536,7 +537,7 @@ public class TargetingConfig : ValueObject
                 break;
 
             case OptimizationType.SetDynamicParameter:
-                if (!string.IsNullOrEmpty(recommendation.ParameterKey) && 
+                if (!string.IsNullOrEmpty(recommendation.ParameterKey) &&
                     recommendation.ParameterValue != null)
                 {
                     SetDynamicParameter(recommendation.ParameterKey, recommendation.ParameterValue);
@@ -609,16 +610,7 @@ public class OptimizationRecommendation
     public string? Reason { get; set; }
 }
 
-/// <summary>
-/// 优化类型
-/// </summary>
-public enum OptimizationType
-{
-    AdjustWeight,
-    EnableCriteria,
-    DisableCriteria,
-    SetDynamicParameter
-}
+
 
 
 
