@@ -1,5 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
-using Lorn.ADSP.Core.Domain.Entities;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
 
@@ -9,9 +9,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects;
 public class TargetingConfig : ValueObject
 {
     /// <summary>
-    /// 地理位置定向
+    /// 行政区划地理定向
     /// </summary>
-    public GeoTargeting? GeoTargeting { get; private set; }
+    public AdministrativeGeoTargeting? AdministrativeGeoTargeting { get; private set; }
+
+    /// <summary>
+    /// 圆形地理围栏定向
+    /// </summary>
+    public CircularGeoFenceTargeting? CircularGeoFenceTargeting { get; private set; }
+
+    /// <summary>
+    /// 多边形地理围栏定向
+    /// </summary>
+    public PolygonGeoFenceTargeting? PolygonGeoFenceTargeting { get; private set; }
 
     /// <summary>
     /// 人口属性定向
@@ -52,7 +62,9 @@ public class TargetingConfig : ValueObject
     /// 私有构造函数
     /// </summary>
     private TargetingConfig(
-        GeoTargeting? geoTargeting = null,
+        AdministrativeGeoTargeting? administrativeGeoTargeting = null,
+        CircularGeoFenceTargeting? circularGeoFenceTargeting = null,
+        PolygonGeoFenceTargeting? polygonGeoFenceTargeting = null,
         DemographicTargeting? demographicTargeting = null,
         DeviceTargeting? deviceTargeting = null,
         TimeTargeting? timeTargeting = null,
@@ -61,7 +73,9 @@ public class TargetingConfig : ValueObject
         IReadOnlyList<string>? interestTags = null,
         decimal weight = 1.0m)
     {
-        GeoTargeting = geoTargeting;
+        AdministrativeGeoTargeting = administrativeGeoTargeting;
+        CircularGeoFenceTargeting = circularGeoFenceTargeting;
+        PolygonGeoFenceTargeting = polygonGeoFenceTargeting;
         DemographicTargeting = demographicTargeting;
         DeviceTargeting = deviceTargeting;
         TimeTargeting = timeTargeting;
@@ -75,7 +89,9 @@ public class TargetingConfig : ValueObject
     /// 创建定向配置
     /// </summary>
     public static TargetingConfig Create(
-        GeoTargeting? geoTargeting = null,
+        AdministrativeGeoTargeting? administrativeGeoTargeting = null,
+        CircularGeoFenceTargeting? circularGeoFenceTargeting = null,
+        PolygonGeoFenceTargeting? polygonGeoFenceTargeting = null,
         DemographicTargeting? demographicTargeting = null,
         DeviceTargeting? deviceTargeting = null,
         TimeTargeting? timeTargeting = null,
@@ -88,7 +104,9 @@ public class TargetingConfig : ValueObject
             throw new ArgumentException("定向权重必须大于0", nameof(weight));
 
         return new TargetingConfig(
-            geoTargeting,
+            administrativeGeoTargeting,
+            circularGeoFenceTargeting,
+            polygonGeoFenceTargeting,
             demographicTargeting,
             deviceTargeting,
             timeTargeting,
@@ -99,69 +117,83 @@ public class TargetingConfig : ValueObject
     }
 
     /// <summary>
-    /// 计算匹配分数
+    /// 获取所有已启用的定向条件
     /// </summary>
-    public double CalculateMatchScore(AdContext context)
+    public IEnumerable<ITargetingCriteria> GetEnabledCriteria()
     {
-        if (context == null)
-            return 0.0;
+        if (AdministrativeGeoTargeting != null && AdministrativeGeoTargeting.IsEnabled)
+            yield return AdministrativeGeoTargeting;
 
-        double totalScore = 0.0;
-        int factors = 0;
+        if (CircularGeoFenceTargeting != null && CircularGeoFenceTargeting.IsEnabled)
+            yield return CircularGeoFenceTargeting;
 
-        // 地理位置匹配
-        if (GeoTargeting != null)
-        {
-            totalScore += GeoTargeting.IsMatch(context.GeoLocation) ? 1.0 : 0.0;
-            factors++;
-        }
+        if (PolygonGeoFenceTargeting != null && PolygonGeoFenceTargeting.IsEnabled)
+            yield return PolygonGeoFenceTargeting;
 
-        // 设备匹配
-        if (DeviceTargeting != null && context.Device != null)
-        {
-            totalScore += DeviceTargeting.IsMatch(context.Device) ? 1.0 : 0.0;
-            factors++;
-        }
+        if (DemographicTargeting != null && DemographicTargeting.IsEnabled)
+            yield return DemographicTargeting;
 
-        // 时间匹配
-        if (TimeTargeting != null)
-        {
-            totalScore += TimeTargeting.IsActiveAt(context.RequestTime) ? 1.0 : 0.0;
-            factors++;
-        }
+        if (DeviceTargeting != null && DeviceTargeting.IsEnabled)
+            yield return DeviceTargeting;
 
-        // 人口属性匹配（需要用户画像）
-        if (DemographicTargeting != null && context.UserProfile.Any())
-        {
-            // 简化的匹配逻辑，实际需要根据用户画像数据进行匹配
-            totalScore += 0.5; // 假设部分匹配
-            factors++;
-        }
+        if (TimeTargeting != null && TimeTargeting.IsEnabled)
+            yield return TimeTargeting;
 
-        return factors > 0 ? (totalScore / factors) * (double)Weight : 0.0;
+        if (BehaviorTargeting != null && BehaviorTargeting.IsEnabled)
+            yield return BehaviorTargeting;
     }
 
     /// <summary>
-    /// 检查是否匹配
+    /// 获取所有已启用的地理定向条件
     /// </summary>
-    public bool IsMatch(AdContext context)
+    public IEnumerable<ITargetingCriteria> GetEnabledGeoTargetingCriteria()
     {
-        if (context == null)
+        if (AdministrativeGeoTargeting != null && AdministrativeGeoTargeting.IsEnabled)
+            yield return AdministrativeGeoTargeting;
+
+        if (CircularGeoFenceTargeting != null && CircularGeoFenceTargeting.IsEnabled)
+            yield return CircularGeoFenceTargeting;
+
+        if (PolygonGeoFenceTargeting != null && PolygonGeoFenceTargeting.IsEnabled)
+            yield return PolygonGeoFenceTargeting;
+    }
+
+    /// <summary>
+    /// 检查是否有任何地理定向条件
+    /// </summary>
+    public bool HasGeoTargeting()
+    {
+        return GetEnabledGeoTargetingCriteria().Any();
+    }
+
+    /// <summary>
+    /// 验证配置是否有效
+    /// </summary>
+    public bool IsValid()
+    {
+        // 至少需要一个定向条件
+        var enabledCriteria = GetEnabledCriteria().ToList();
+        if (!enabledCriteria.Any())
             return false;
 
-        // 地理位置匹配检查
-        if (GeoTargeting != null && !GeoTargeting.IsMatch(context.GeoLocation))
-            return false;
+        // 验证所有启用的条件都是有效的
+        return enabledCriteria.All(criteria => criteria.IsValid());
+    }
 
-        // 设备匹配检查
-        if (DeviceTargeting != null && context.Device != null && !DeviceTargeting.IsMatch(context.Device))
-            return false;
+    /// <summary>
+    /// 获取配置摘要
+    /// </summary>
+    public string GetConfigurationSummary()
+    {
+        var enabledCriteria = GetEnabledCriteria().ToList();
+        if (!enabledCriteria.Any())
+            return "TargetingConfig: No criteria defined";
 
-        // 时间匹配检查
-        if (TimeTargeting != null && !TimeTargeting.IsActiveAt(context.RequestTime))
-            return false;
+        var criteriaTypes = enabledCriteria.Select(c => c.CriteriaType);
+        var keywordInfo = Keywords.Any() ? $", Keywords: {Keywords.Count}" : "";
+        var tagInfo = InterestTags.Any() ? $", Tags: {InterestTags.Count}" : "";
 
-        return true;
+        return $"TargetingConfig: {string.Join(", ", criteriaTypes)} (Weight: {Weight:F2}){keywordInfo}{tagInfo}";
     }
 
     /// <summary>
@@ -169,7 +201,9 @@ public class TargetingConfig : ValueObject
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return GeoTargeting ?? new object();
+        yield return AdministrativeGeoTargeting ?? new object();
+        yield return CircularGeoFenceTargeting ?? new object();
+        yield return PolygonGeoFenceTargeting ?? new object();
         yield return DemographicTargeting ?? new object();
         yield return DeviceTargeting ?? new object();
         yield return TimeTargeting ?? new object();
@@ -187,6 +221,8 @@ public class TargetingConfig : ValueObject
         }
     }
 }
+
+
 
 
 

@@ -1,15 +1,20 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.Events;
 using Lorn.ADSP.Core.Domain.ValueObjects;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
 /// 用户画像实体
+/// 作为用户相关定向上下文的聚合根，实现ITargetingContext接口
+/// 通过定向上下文字典管理各种用户定向信息，而不是硬编码引用
 /// </summary>
-public class UserProfile : AggregateRoot
+public class UserProfile : AggregateRoot, ITargetingContext
 {
+    private readonly Dictionary<string, ITargetingContext> _targetingContexts;
+
     /// <summary>
     /// 用户ID（外部系统用户标识）
     /// </summary>
@@ -19,56 +24,6 @@ public class UserProfile : AggregateRoot
     /// 用户状态
     /// </summary>
     public UserStatus Status { get; private set; }
-
-    /// <summary>
-    /// 用户基础信息
-    /// </summary>
-    public UserBasicInfo BasicInfo { get; private set; }
-
-    /// <summary>
-    /// 人口统计学信息
-    /// </summary>
-    public DemographicInfo? DemographicInfo { get; private set; }
-
-    /// <summary>
-    /// 地理位置信息
-    /// </summary>
-    public GeoInfo? GeoInfo { get; private set; }
-
-    /// <summary>
-    /// 设备信息
-    /// </summary>
-    public DeviceInfo? DeviceInfo { get; private set; }
-
-    /// <summary>
-    /// 用户偏好设置
-    /// </summary>
-    public UserPreferences UserPreferences { get; private set; }
-
-    /// <summary>
-    /// 隐私设置
-    /// </summary>
-    public PrivacySettings PrivacySettings { get; private set; }
-
-    /// <summary>
-    /// 用户行为分析
-    /// </summary>
-    public UserBehaviorAnalysis BehaviorAnalysis { get; private set; }
-
-    /// <summary>
-    /// 用户兴趣标签
-    /// </summary>
-    public IReadOnlyList<string> InterestTags { get; private set; } = new List<string>();
-
-    /// <summary>
-    /// 用户行为标签
-    /// </summary>
-    public IReadOnlyList<string> BehaviorTags { get; private set; } = new List<string>();
-
-    /// <summary>
-    /// 用户价值评分
-    /// </summary>
-    public UserValueScore ValueScore { get; private set; }
 
     /// <summary>
     /// 最后活跃时间
@@ -85,6 +40,40 @@ public class UserProfile : AggregateRoot
     /// </summary>
     public IReadOnlyDictionary<string, object> CustomAttributes { get; private set; } = new Dictionary<string, object>();
 
+    #region ITargetingContext Implementation
+
+    /// <summary>
+    /// 定向上下文类型标识
+    /// </summary>
+    public string ContextType => "UserProfile";
+
+    /// <summary>
+    /// 定向上下文属性集合
+    /// </summary>
+    public IReadOnlyDictionary<string, object> Properties => GetProfileProperties();
+
+    /// <summary>
+    /// 上下文的创建时间戳
+    /// </summary>
+    public DateTime Timestamp => CreateTime;
+
+    /// <summary>
+    /// 上下文的唯一标识
+    /// </summary>
+    public string ContextId => $"UserProfile_{UserId}";
+
+    /// <summary>
+    /// 上下文数据来源
+    /// </summary>
+    public string DataSource => "UserProfileAggregate";
+
+    #endregion
+
+    /// <summary>
+    /// 定向上下文集合（只读）
+    /// </summary>
+    public IReadOnlyDictionary<string, ITargetingContext> TargetingContexts => _targetingContexts.AsReadOnly();
+
     /// <summary>
     /// 私有构造函数（用于EF Core）
     /// </summary>
@@ -92,13 +81,9 @@ public class UserProfile : AggregateRoot
     {
         UserId = string.Empty;
         Status = UserStatus.Active;
-        BasicInfo = UserBasicInfo.CreateDefault();
-        UserPreferences = UserPreferences.CreateDefault();
-        PrivacySettings = PrivacySettings.CreateDefault();
-        BehaviorAnalysis = UserBehaviorAnalysis.CreateDefault();
-        ValueScore = UserValueScore.CreateDefault();
         LastActiveTime = DateTime.UtcNow;
         QualityScore = ProfileQualityScore.CreateDefault();
+        _targetingContexts = new Dictionary<string, ITargetingContext>();
     }
 
     /// <summary>
@@ -106,21 +91,24 @@ public class UserProfile : AggregateRoot
     /// </summary>
     public UserProfile(
         string userId,
-        UserBasicInfo basicInfo,
-        UserPreferences? userPreferences = null,
+        DemographicInfo? demographicInfo = null,
+        UserPreference? userPreferences = null,
         PrivacySettings? privacySettings = null) : this()
     {
         ValidateUserId(userId);
-        ValidateBasicInfo(basicInfo);
 
         UserId = userId;
-        BasicInfo = basicInfo;
-        UserPreferences = userPreferences ?? UserPreferences.CreateDefault();
-        PrivacySettings = privacySettings ?? PrivacySettings.CreateDefault();
-        BehaviorAnalysis = UserBehaviorAnalysis.CreateDefault();
-        ValueScore = UserValueScore.CreateDefault();
         LastActiveTime = DateTime.UtcNow;
-        QualityScore = CalculateQualityScore();
+        QualityScore = ProfileQualityScore.CreateDefault();
+
+        // 初始化默认的定向上下文
+        if (demographicInfo != null)
+            SetTargetingContext(demographicInfo);
+        else
+            SetTargetingContext(DemographicInfo.CreateDefault($"UserProfile_{userId}"));
+
+        if (userPreferences != null)
+            SetTargetingContext(userPreferences);
 
         // 发布用户画像创建事件
         AddDomainEvent(new UserProfileCreatedEvent(Id, UserId));
@@ -131,11 +119,11 @@ public class UserProfile : AggregateRoot
     /// </summary>
     public static UserProfile Create(
         string userId,
-        UserBasicInfo basicInfo,
-        UserPreferences? userPreferences = null,
+        DemographicInfo? demographicInfo = null,
+        UserPreference? userPreferences = null,
         PrivacySettings? privacySettings = null)
     {
-        return new UserProfile(userId, basicInfo, userPreferences, privacySettings);
+        return new UserProfile(userId, demographicInfo, userPreferences, privacySettings);
     }
 
     /// <summary>
@@ -147,204 +135,145 @@ public class UserProfile : AggregateRoot
         Gender? gender = null,
         DateTime? dateOfBirth = null)
     {
-        var basicInfo = UserBasicInfo.CreateBasic(displayName, gender, dateOfBirth);
-        return new UserProfile(userId, basicInfo);
+        var demographicInfo = DemographicInfo.CreateBasic(displayName, gender ?? Gender.Unknown, dateOfBirth);
+        return new UserProfile(userId, demographicInfo);
     }
 
     /// <summary>
-    /// 更新基础信息
+    /// 设置定向上下文
     /// </summary>
-    public void UpdateBasicInfo(UserBasicInfo basicInfo)
+    public void SetTargetingContext(ITargetingContext targetingContext)
     {
-        ValidateBasicInfo(basicInfo);
+        if (targetingContext == null)
+            throw new ArgumentNullException(nameof(targetingContext));
 
-        BasicInfo = basicInfo;
+        _targetingContexts[targetingContext.ContextType] = targetingContext;
         UpdateLastModifiedTime();
         RecalculateQualityScore();
 
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "BasicInfo"));
+        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, targetingContext.ContextType));
     }
 
     /// <summary>
-    /// 更新人口统计学信息
+    /// 获取指定类型的定向上下文
     /// </summary>
-    public void UpdateDemographicInfo(DemographicInfo demographicInfo)
+    public T? GetTargetingContext<T>() where T : class, ITargetingContext
     {
-        DemographicInfo = demographicInfo;
-        UpdateLastModifiedTime();
-        RecalculateQualityScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "DemographicInfo"));
-    }
-
-    /// <summary>
-    /// 更新地理位置信息
-    /// </summary>
-    public void UpdateGeoInfo(GeoInfo geoInfo)
-    {
-        GeoInfo = geoInfo;
-        UpdateLastModifiedTime();
-        RecalculateQualityScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "GeoInfo"));
-    }
-
-    /// <summary>
-    /// 更新设备信息
-    /// </summary>
-    public void UpdateDeviceInfo(DeviceInfo deviceInfo)
-    {
-        DeviceInfo = deviceInfo;
-        UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "DeviceInfo"));
-    }
-
-    /// <summary>
-    /// 更新用户偏好设置
-    /// </summary>
-    public void UpdateUserPreferences(UserPreferences userPreferences)
-    {
-        UserPreferences = userPreferences;
-        UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "UserPreferences"));
-    }
-
-    /// <summary>
-    /// 更新隐私设置
-    /// </summary>
-    public void UpdatePrivacySettings(PrivacySettings privacySettings)
-    {
-        PrivacySettings = privacySettings;
-        UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "PrivacySettings"));
-    }
-
-    /// <summary>
-    /// 更新用户行为分析
-    /// </summary>
-    public void UpdateBehaviorAnalysis(UserBehaviorAnalysis behaviorAnalysis)
-    {
-        BehaviorAnalysis = behaviorAnalysis;
-        UpdateLastModifiedTime();
-        RecalculateValueScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "BehaviorAnalysis"));
-    }
-
-    /// <summary>
-    /// 更新兴趣标签
-    /// </summary>
-    public void UpdateInterestTags(IList<string> interestTags)
-    {
-        InterestTags = interestTags.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToList();
-        UpdateLastModifiedTime();
-        RecalculateQualityScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "InterestTags"));
-    }
-
-    /// <summary>
-    /// 添加兴趣标签
-    /// </summary>
-    public void AddInterestTag(string tag)
-    {
-        if (string.IsNullOrWhiteSpace(tag))
-            throw new ArgumentException("兴趣标签不能为空", nameof(tag));
-
-        var tags = InterestTags.ToList();
-        if (!tags.Contains(tag, StringComparer.OrdinalIgnoreCase))
+        var contextType = typeof(T).Name;
+        // 支持简化的类型名查找
+        if (contextType.EndsWith("Info") || contextType.EndsWith("Context"))
         {
-            tags.Add(tag);
-            InterestTags = tags;
+            var simpleName = contextType.Replace("Info", "").Replace("Context", "");
+            if (_targetingContexts.TryGetValue(simpleName, out var context))
+                return context as T;
+        }
+
+        return _targetingContexts.Values.OfType<T>().FirstOrDefault();
+    }
+
+    /// <summary>
+    /// 获取指定类型名的定向上下文
+    /// </summary>
+    public ITargetingContext? GetTargetingContext(string contextType)
+    {
+        return _targetingContexts.TryGetValue(contextType, out var context) ? context : null;
+    }
+
+    /// <summary>
+    /// 移除指定类型的定向上下文
+    /// </summary>
+    public bool RemoveTargetingContext(string contextType)
+    {
+        if (_targetingContexts.Remove(contextType))
+        {
             UpdateLastModifiedTime();
             RecalculateQualityScore();
+            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, $"Removed_{contextType}"));
+            return true;
+        }
+        return false;
+    }
 
-            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "InterestTags"));
+    /// <summary>
+    /// 检查是否包含指定类型的定向上下文
+    /// </summary>
+    public bool HasTargetingContext(string contextType)
+    {
+        return _targetingContexts.ContainsKey(contextType);
+    }
+
+    /// <summary>
+    /// 记录用户活动
+    /// </summary>
+    public void RecordActivity(DateTime? activityTime = null)
+    {
+        var timestamp = activityTime ?? DateTime.UtcNow;
+        LastActiveTime = timestamp;
+
+        // 更新行为分析上下文
+        var behaviorContext = GetTargetingContext<UserBehavior>();
+        if (behaviorContext != null)
+        {
+            var updatedBehaviorContext = UserBehavior.CreateActiveUser(
+                behaviorContext.InterestTags.ToList(),
+                behaviorContext.ActiveDays + 1,
+                behaviorContext.TotalSessions + 1,
+                behaviorContext.AverageSessionDuration);
+
+            SetTargetingContext(updatedBehaviorContext);
+        }
+
+        UpdateLastModifiedTime();
+        AddDomainEvent(new UserActivityRecordedEvent(Id, UserId, timestamp));
+    }
+
+    /// <summary>
+    /// 激活用户
+    /// </summary>
+    public void Activate()
+    {
+        if (Status != UserStatus.Active)
+        {
+            Status = UserStatus.Active;
+            UpdateLastModifiedTime();
+            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
         }
     }
 
     /// <summary>
-    /// 移除兴趣标签
+    /// 停用用户
     /// </summary>
-    public void RemoveInterestTag(string tag)
+    public void Deactivate()
     {
-        if (string.IsNullOrWhiteSpace(tag))
-            return;
-
-        var tags = InterestTags.ToList();
-        if (tags.Remove(tag))
+        if (Status == UserStatus.Active)
         {
-            InterestTags = tags;
+            Status = UserStatus.Inactive;
             UpdateLastModifiedTime();
-            RecalculateQualityScore();
-
-            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "InterestTags"));
+            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
         }
     }
 
     /// <summary>
-    /// 更新行为标签
+    /// 暂停用户
     /// </summary>
-    public void UpdateBehaviorTags(IList<string> behaviorTags)
+    public void Suspend()
     {
-        BehaviorTags = behaviorTags.Where(tag => !string.IsNullOrWhiteSpace(tag)).ToList();
-        UpdateLastModifiedTime();
-        RecalculateQualityScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "BehaviorTags"));
-    }
-
-    /// <summary>
-    /// 添加行为标签
-    /// </summary>
-    public void AddBehaviorTag(string tag)
-    {
-        if (string.IsNullOrWhiteSpace(tag))
-            throw new ArgumentException("行为标签不能为空", nameof(tag));
-
-        var tags = BehaviorTags.ToList();
-        if (!tags.Contains(tag, StringComparer.OrdinalIgnoreCase))
+        if (Status != UserStatus.Suspended)
         {
-            tags.Add(tag);
-            BehaviorTags = tags;
+            Status = UserStatus.Suspended;
             UpdateLastModifiedTime();
-            RecalculateQualityScore();
-
-            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "BehaviorTags"));
+            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
         }
     }
 
     /// <summary>
-    /// 移除行为标签
+    /// 软删除用户
     /// </summary>
-    public void RemoveBehaviorTag(string tag)
+    public void SoftDelete()
     {
-        if (string.IsNullOrWhiteSpace(tag))
-            return;
-
-        var tags = BehaviorTags.ToList();
-        if (tags.Remove(tag))
-        {
-            BehaviorTags = tags;
-            UpdateLastModifiedTime();
-            RecalculateQualityScore();
-
-            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "BehaviorTags"));
-        }
-    }
-
-    /// <summary>
-    /// 更新自定义属性
-    /// </summary>
-    public void UpdateCustomAttributes(IDictionary<string, object> customAttributes)
-    {
-        CustomAttributes = customAttributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "CustomAttributes"));
+        Status = UserStatus.Deleted;
+        Delete(); // 调用基类的软删除方法
+        AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
     }
 
     /// <summary>
@@ -374,74 +303,193 @@ public class UserProfile : AggregateRoot
         return default;
     }
 
-    /// <summary>
-    /// 记录用户活动
-    /// </summary>
-    public void RecordActivity(DateTime? activityTime = null)
-    {
-        var timestamp = activityTime ?? DateTime.UtcNow;
-        LastActiveTime = timestamp;
-
-        // 更新行为分析
-        BehaviorAnalysis = BehaviorAnalysis.RecordActivity(timestamp);
-
-        UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserActivityRecordedEvent(Id, UserId, timestamp));
-    }
+    #region ITargetingContext Methods
 
     /// <summary>
-    /// 激活用户
+    /// 获取指定类型的属性值
     /// </summary>
-    public void Activate()
+    public T? GetProperty<T>(string propertyKey)
     {
-        if (Status != UserStatus.Active)
+        if (string.IsNullOrEmpty(propertyKey))
+            return default;
+
+        // 首先从自定义属性中查找
+        if (CustomAttributes.TryGetValue(propertyKey, out var customValue) && customValue is T typedCustomValue)
+            return typedCustomValue;
+
+        // 然后从各个定向上下文中查找
+        foreach (var context in _targetingContexts.Values)
         {
-            Status = UserStatus.Active;
-            UpdateLastModifiedTime();
-
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
+            var value = context.GetProperty<T>(propertyKey);
+            if (value != null)
+                return value;
         }
+
+        return default;
     }
 
     /// <summary>
-    /// 停用用户
+    /// 获取指定类型的属性值，如果不存在则返回默认值
     /// </summary>
-    public void Deactivate()
+    public T GetProperty<T>(string propertyKey, T defaultValue)
     {
-        if (Status == UserStatus.Active)
+        var result = GetProperty<T>(propertyKey);
+        return result != null ? result : defaultValue;
+    }
+
+    /// <summary>
+    /// 获取属性值的字符串表示
+    /// </summary>
+    public string GetPropertyAsString(string propertyKey)
+    {
+        var value = GetProperty<object>(propertyKey);
+        return value?.ToString() ?? string.Empty;
+    }
+
+    /// <summary>
+    /// 检查是否包含指定属性
+    /// </summary>
+    public bool HasProperty(string propertyKey)
+    {
+        if (CustomAttributes.ContainsKey(propertyKey))
+            return true;
+
+        return _targetingContexts.Values.Any(context => context.HasProperty(propertyKey));
+    }
+
+    /// <summary>
+    /// 获取所有属性键
+    /// </summary>
+    public IReadOnlyCollection<string> GetPropertyKeys()
+    {
+        var keys = new HashSet<string>(CustomAttributes.Keys);
+
+        foreach (var context in _targetingContexts.Values)
         {
-            Status = UserStatus.Inactive;
-            UpdateLastModifiedTime();
-
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
+            foreach (var key in context.GetPropertyKeys())
+            {
+                keys.Add(key);
+            }
         }
+
+        return keys.ToList().AsReadOnly();
     }
 
     /// <summary>
-    /// 暂停用户
+    /// 验证上下文的有效性
     /// </summary>
-    public void Suspend()
+    public bool IsValid()
     {
-        if (Status != UserStatus.Suspended)
+        if (string.IsNullOrEmpty(UserId))
+            return false;
+
+        if (Timestamp == default)
+            return false;
+
+        // 验证所有定向上下文的有效性
+        return _targetingContexts.Values.All(context => context.IsValid());
+    }
+
+    /// <summary>
+    /// 检查上下文是否已过期
+    /// </summary>
+    public bool IsExpired(TimeSpan maxAge)
+    {
+        return DateTime.UtcNow - Timestamp > maxAge;
+    }
+
+    /// <summary>
+    /// 获取上下文的元数据信息
+    /// </summary>
+    public IReadOnlyDictionary<string, object> GetMetadata()
+    {
+        return new Dictionary<string, object>
         {
-            Status = UserStatus.Suspended;
-            UpdateLastModifiedTime();
-
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
-        }
+            ["ContextType"] = ContextType,
+            ["ContextId"] = ContextId,
+            ["DataSource"] = DataSource,
+            ["Timestamp"] = Timestamp,
+            ["UserId"] = UserId,
+            ["Status"] = Status.ToString(),
+            ["LastActiveTime"] = LastActiveTime,
+            ["TargetingContextCount"] = _targetingContexts.Count,
+            ["TargetingContextTypes"] = string.Join(",", _targetingContexts.Keys),
+            ["QualityScore"] = QualityScore.OverallScore,
+            ["Age"] = DateTime.UtcNow - Timestamp
+        }.AsReadOnly();
     }
 
     /// <summary>
-    /// 软删除用户
+    /// 获取上下文的调试信息
     /// </summary>
-    public void SoftDelete()
+    public string GetDebugInfo()
     {
-        Status = UserStatus.Deleted;
-        Delete(); // 调用基类的软删除方法
-
-        AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
+        var contextTypes = string.Join(", ", _targetingContexts.Keys);
+        return $"UserProfile[{UserId}] Status:{Status} Contexts:[{contextTypes}] " +
+               $"Quality:{QualityScore.OverallScore} LastActive:{LastActiveTime:yyyy-MM-dd HH:mm:ss} " +
+               $"Age:{DateTime.UtcNow - Timestamp:hh\\:mm\\:ss}";
     }
+
+    /// <summary>
+    /// 创建上下文的轻量级副本
+    /// </summary>
+    public ITargetingContext CreateLightweightCopy(IEnumerable<string> includeKeys)
+    {
+        // 创建简化的用户画像副本，只包含指定的属性
+        var filteredProperties = new Dictionary<string, object>();
+        
+        foreach (var key in includeKeys)
+        {
+            var value = GetProperty<object>(key);
+            if (value != null)
+            {
+                filteredProperties[key] = value;
+            }
+        }
+
+        return new TargetingContextBase(
+            ContextType + "_Lightweight",
+            filteredProperties,
+            DataSource,
+            ContextId + "_Copy");
+    }
+
+    /// <summary>
+    /// 合并另一个上下文的属性
+    /// </summary>
+    public ITargetingContext Merge(ITargetingContext other, bool overwriteExisting = false)
+    {
+        if (other == null)
+            throw new ArgumentNullException(nameof(other));
+
+        // 这里返回一个合并后的新上下文，而不是修改当前实体
+        var mergedProperties = new Dictionary<string, object>();
+
+        // 添加当前上下文的属性
+        foreach (var property in Properties)
+        {
+            mergedProperties[property.Key] = property.Value;
+        }
+
+        // 添加或覆盖其他上下文的属性
+        foreach (var property in other.Properties)
+        {
+            if (overwriteExisting || !mergedProperties.ContainsKey(property.Key))
+            {
+                mergedProperties[property.Key] = property.Value;
+            }
+        }
+
+        return new TargetingContextBase(
+            $"{ContextType}_Merged_{other.ContextType}",
+            mergedProperties,
+            $"{DataSource},{other.DataSource}",
+            $"{ContextId}_Merged_{other.ContextId}");
+    }
+
+    #endregion
+
+    #region Business Logic Helpers
 
     /// <summary>
     /// 是否活跃用户
@@ -451,7 +499,14 @@ public class UserProfile : AggregateRoot
     /// <summary>
     /// 是否高价值用户
     /// </summary>
-    public bool IsHighValueUser => ValueScore.OverallScore >= 80;
+    public bool IsHighValueUser
+    {
+        get
+        {
+            var valueContext = GetTargetingContext<UserValue>();
+            return valueContext?.IsHighValueUser ?? false;
+        }
+    }
 
     /// <summary>
     /// 是否完整画像
@@ -461,30 +516,22 @@ public class UserProfile : AggregateRoot
     /// <summary>
     /// 是否允许个性化广告
     /// </summary>
-    public bool AllowPersonalizedAds => UserPreferences.AllowPersonalizedAds &&
-                                       PrivacySettings.CanUseForMarketing();
-
-    /// <summary>
-    /// 是否允许数据共享
-    /// </summary>
-    public bool AllowDataSharing => PrivacySettings.CanShareData();
-
-    public IReadOnlyList<string> Keywords { get; private set; } = new List<string>();
+    public bool AllowPersonalizedAds
+    {
+        get
+        {
+            var preferences = GetTargetingContext<UserPreference>();
+            return preferences?.AllowPersonalizedAds ?? true;
+        }
+    }
 
     /// <summary>
     /// 获取用户年龄
     /// </summary>
     public int? GetAge()
     {
-        if (BasicInfo.DateOfBirth.HasValue)
-        {
-            var today = DateTime.Today;
-            var age = today.Year - BasicInfo.DateOfBirth.Value.Year;
-            if (BasicInfo.DateOfBirth.Value.Date > today.AddYears(-age))
-                age--;
-            return age;
-        }
-        return null;
+        var demographicInfo = GetTargetingContext<DemographicInfo>();
+        return demographicInfo?.Age;
     }
 
     /// <summary>
@@ -493,9 +540,11 @@ public class UserProfile : AggregateRoot
     public IReadOnlyList<string> GetUserSegments()
     {
         var segments = new List<string>();
+        var age = GetAge();
+        var valueContext = GetTargetingContext<UserValue>();
+        var behaviorContext = GetTargetingContext<UserBehavior>();
 
         // 基于年龄的细分
-        var age = GetAge();
         if (age.HasValue)
         {
             segments.Add(age.Value switch
@@ -510,84 +559,63 @@ public class UserProfile : AggregateRoot
         }
 
         // 基于价值评分的细分
-        if (ValueScore.OverallScore >= 80)
-            segments.Add("高价值用户");
-        else if (ValueScore.OverallScore >= 60)
-            segments.Add("中价值用户");
-        else
-            segments.Add("低价值用户");
+        if (valueContext != null)
+        {
+            if (valueContext.IsHighValueUser)
+                segments.Add("高价值用户");
+            else if (valueContext.OverallScore >= 60)
+                segments.Add("中价值用户");
+            else
+                segments.Add("低价值用户");
+        }
 
         // 基于活跃度的细分
-        if (BehaviorAnalysis.IsHighlyActive)
-            segments.Add("高活跃用户");
-        else if (BehaviorAnalysis.IsActive)
-            segments.Add("活跃用户");
-        else
-            segments.Add("非活跃用户");
-
-        // 基于兴趣的细分
-        if (InterestTags.Any())
-            segments.Add("兴趣明确用户");
+        if (behaviorContext != null)
+        {
+            if (behaviorContext.IsHighlyActiveUser)
+                segments.Add("高活跃用户");
+            else if (behaviorContext.IsActiveUser)
+                segments.Add("活跃用户");
+            else
+                segments.Add("非活跃用户");
+        }
 
         return segments;
     }
 
+    #endregion
+
+    #region Private Methods
+
     /// <summary>
-    /// 计算与指定用户的相似度
+    /// 获取画像属性字典
     /// </summary>
-    public decimal CalculateSimilarity(UserProfile other)
+    private IReadOnlyDictionary<string, object> GetProfileProperties()
     {
-        if (other == null)
-            return 0;
-
-        var similarity = 0m;
-        var factors = 0;
-
-        // 基础信息相似度
-        if (BasicInfo.Gender == other.BasicInfo.Gender && BasicInfo.Gender != Gender.Unknown)
+        var properties = new Dictionary<string, object>
         {
-            similarity += 0.1m;
-            factors++;
+            ["UserId"] = UserId,
+            ["Status"] = Status.ToString(),
+            ["LastActiveTime"] = LastActiveTime,
+            ["QualityScore"] = QualityScore.OverallScore
+        };
+
+        // 添加自定义属性
+        foreach (var attr in CustomAttributes)
+        {
+            properties[attr.Key] = attr.Value;
         }
 
-        // 年龄相似度
-        var age = GetAge();
-        var otherAge = other.GetAge();
-        if (age.HasValue && otherAge.HasValue)
+        // 添加各个定向上下文的属性
+        foreach (var context in _targetingContexts.Values)
         {
-            var ageDiff = Math.Abs(age.Value - otherAge.Value);
-            similarity += Math.Max(0, 1 - ageDiff / 50m) * 0.2m;
-            factors++;
-        }
-
-        // 兴趣相似度
-        if (InterestTags.Any() && other.InterestTags.Any())
-        {
-            var commonInterests = InterestTags.Intersect(other.InterestTags, StringComparer.OrdinalIgnoreCase).Count();
-            var totalInterests = InterestTags.Union(other.InterestTags, StringComparer.OrdinalIgnoreCase).Count();
-            similarity += (decimal)commonInterests / totalInterests * 0.4m;
-            factors++;
-        }
-
-        // 地理位置相似度
-        if (GeoInfo != null && other.GeoInfo != null)
-        {
-            if (GeoInfo.CountryCode == other.GeoInfo.CountryCode)
+            foreach (var prop in context.Properties)
             {
-                similarity += 0.1m;
-                if (GeoInfo.ProvinceCode == other.GeoInfo.ProvinceCode)
-                {
-                    similarity += 0.1m;
-                    if (GeoInfo.CityName == other.GeoInfo.CityName)
-                    {
-                        similarity += 0.1m;
-                    }
-                }
+                properties[$"{context.ContextType}_{prop.Key}"] = prop.Value;
             }
-            factors++;
         }
 
-        return factors > 0 ? similarity / factors : 0;
+        return properties.AsReadOnly();
     }
 
     /// <summary>
@@ -596,18 +624,7 @@ public class UserProfile : AggregateRoot
     private void RecalculateQualityScore()
     {
         QualityScore = CalculateQualityScore();
-
         AddDomainEvent(new UserProfileScoreUpdatedEvent(Id, UserId, "QualityScore", QualityScore.OverallScore));
-    }
-
-    /// <summary>
-    /// 重新计算价值评分
-    /// </summary>
-    private void RecalculateValueScore()
-    {
-        ValueScore = CalculateValueScore();
-
-        AddDomainEvent(new UserProfileScoreUpdatedEvent(Id, UserId, "ValueScore", ValueScore.OverallScore));
     }
 
     /// <summary>
@@ -627,36 +644,28 @@ public class UserProfile : AggregateRoot
     /// </summary>
     private int CalculateCompletenessScore()
     {
-        var totalFields = 10;
-        var filledFields = 0;
+        var totalContextTypes = 6; // 预期的定向上下文类型数量
+        var filledContexts = _targetingContexts.Count;
 
-        // 基础信息
-        if (!string.IsNullOrWhiteSpace(BasicInfo.DisplayName)) filledFields++;
-        if (BasicInfo.Gender != Gender.Unknown) filledFields++;
-        if (BasicInfo.DateOfBirth.HasValue) filledFields++;
+        // 基于定向上下文数量和质量计算完整性
+        var contextScore = (decimal)filledContexts / totalContextTypes * 100;
 
-        // 人口统计学信息
-        if (DemographicInfo != null && DemographicInfo.GetCompletenessScore() > 0) filledFields++;
+        // 基于各个上下文的完整性进一步调整
+        var contextQualitySum = 0m;
+        var validContexts = 0;
 
-        // 地理位置信息
-        if (GeoInfo != null && !string.IsNullOrWhiteSpace(GeoInfo.CountryCode)) filledFields++;
+        foreach (var context in _targetingContexts.Values)
+        {
+            if (context.Properties.Count > 0)
+            {
+                contextQualitySum += context.Properties.Count;
+                validContexts++;
+            }
+        }
 
-        // 设备信息
-        if (DeviceInfo != null && DeviceInfo.DeviceType != DeviceType.Other) filledFields++;
+        var qualityBonus = validContexts > 0 ? (contextQualitySum / validContexts) * 2 : 0;
 
-        // 兴趣标签
-        if (InterestTags.Any()) filledFields++;
-
-        // 行为标签
-        if (BehaviorTags.Any()) filledFields++;
-
-        // 用户偏好
-        if (UserPreferences != null) filledFields++;
-
-        // 隐私设置
-        if (PrivacySettings != null && PrivacySettings.HasValidConsent()) filledFields++;
-
-        return (int)Math.Round((decimal)filledFields / totalFields * 100);
+        return (int)Math.Min(100, contextScore + qualityBonus);
     }
 
     /// <summary>
@@ -664,29 +673,13 @@ public class UserProfile : AggregateRoot
     /// </summary>
     private int CalculateAccuracyScore()
     {
-        // 基于数据一致性和验证状态计算
         var score = 100;
 
-        // 年龄合理性检查
-        var age = GetAge();
-        if (age.HasValue && (age.Value < 0 || age.Value > 150))
-            score -= 10;
-
-        // 地理位置一致性检查
-        if (GeoInfo != null)
+        // 验证各个定向上下文的有效性
+        foreach (var context in _targetingContexts.Values)
         {
-            if (string.IsNullOrWhiteSpace(GeoInfo.CountryCode) && !string.IsNullOrWhiteSpace(GeoInfo.ProvinceCode))
-                score -= 5;
-        }
-
-        // 设备信息一致性检查
-        if (DeviceInfo != null)
-        {
-            if (DeviceInfo.DeviceType == DeviceType.Smartphone &&
-                !string.IsNullOrWhiteSpace(DeviceInfo.OperatingSystem) &&
-                !DeviceInfo.OperatingSystem.Contains("iOS", StringComparison.OrdinalIgnoreCase) &&
-                !DeviceInfo.OperatingSystem.Contains("Android", StringComparison.OrdinalIgnoreCase))
-                score -= 5;
+            if (!context.IsValid())
+                score -= 10;
         }
 
         return Math.Max(0, score);
@@ -713,107 +706,6 @@ public class UserProfile : AggregateRoot
     }
 
     /// <summary>
-    /// 计算价值评分
-    /// </summary>
-    private UserValueScore CalculateValueScore()
-    {
-        var engagementScore = CalculateEngagementScore();
-        var loyaltyScore = CalculateLoyaltyScore();
-        var monetaryScore = CalculateMonetaryScore();
-        var potentialScore = CalculatePotentialScore();
-
-        return new UserValueScore(engagementScore, loyaltyScore, monetaryScore, potentialScore);
-    }
-
-    /// <summary>
-    /// 计算参与度评分
-    /// </summary>
-    private int CalculateEngagementScore()
-    {
-        if (BehaviorAnalysis.IsHighlyActive)
-            return 90;
-        if (BehaviorAnalysis.IsActive)
-            return 70;
-        return 40;
-    }
-
-    /// <summary>
-    /// 计算忠诚度评分
-    /// </summary>
-    private int CalculateLoyaltyScore()
-    {
-        var daysSinceCreation = (DateTime.UtcNow - CreateTime).TotalDays;
-        var daysSinceLastActive = (DateTime.UtcNow - LastActiveTime).TotalDays;
-
-        var loyaltyScore = daysSinceCreation switch
-        {
-            >= 365 => 90,
-            >= 180 => 80,
-            >= 90 => 70,
-            >= 30 => 60,
-            _ => 50
-        };
-
-        // 根据最近活跃情况调整
-        if (daysSinceLastActive <= 7)
-            loyaltyScore += 10;
-        else if (daysSinceLastActive > 30)
-            loyaltyScore -= 20;
-
-        return Math.Max(0, Math.Min(100, loyaltyScore));
-    }
-
-    /// <summary>
-    /// 计算货币价值评分
-    /// </summary>
-    private int CalculateMonetaryScore()
-    {
-        // 这里可以基于用户的消费能力、收入水平等计算
-        // 目前基于人口统计学信息进行简单估算
-        if (DemographicInfo?.IncomeLevel?.Contains("高", StringComparison.OrdinalIgnoreCase) == true)
-            return 80;
-        if (DemographicInfo?.IncomeLevel?.Contains("中", StringComparison.OrdinalIgnoreCase) == true)
-            return 60;
-        if (DemographicInfo?.IncomeLevel?.Contains("低", StringComparison.OrdinalIgnoreCase) == true)
-            return 40;
-
-        return 50; // 默认值
-    }
-
-    /// <summary>
-    /// 计算潜力评分
-    /// </summary>
-    private int CalculatePotentialScore()
-    {
-        var score = 50; // 基础分
-
-        // 基于年龄的潜力评估
-        var age = GetAge();
-        if (age.HasValue)
-        {
-            score += age.Value switch
-            {
-                >= 18 and < 35 => 20, // 年轻用户潜力更大
-                >= 35 and < 50 => 15,
-                >= 50 and < 65 => 10,
-                _ => 5
-            };
-        }
-
-        // 基于兴趣多样性的潜力评估
-        if (InterestTags.Count > 5)
-            score += 15;
-        else if (InterestTags.Count > 2)
-            score += 10;
-
-        // 基于设备类型的潜力评估
-        if (DeviceInfo?.DeviceType == DeviceType.Smartphone)
-            score += 10;
-
-        return Math.Min(100, score);
-    }
-
-    /// <summary>
     /// 验证用户ID
     /// </summary>
     private static void ValidateUserId(string userId)
@@ -825,12 +717,5 @@ public class UserProfile : AggregateRoot
             throw new ArgumentException("用户ID长度不能超过255个字符", nameof(userId));
     }
 
-    /// <summary>
-    /// 验证基础信息
-    /// </summary>
-    private static void ValidateBasicInfo(UserBasicInfo basicInfo)
-    {
-        if (basicInfo == null)
-            throw new ArgumentNullException(nameof(basicInfo));
-    }
+    #endregion
 }

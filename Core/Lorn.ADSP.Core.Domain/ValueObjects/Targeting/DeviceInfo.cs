@@ -1,92 +1,92 @@
 ﻿using Lorn.ADSP.Core.Shared.Enums;
-using Lorn.ADSP.Core.Domain.Common;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects
+namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
-    /// 设备信息
+    /// 设备信息定向上下文
+    /// 继承自TargetingContextBase，提供设备信息数据的定向上下文功能
     /// </summary>
-    public class DeviceInfo : ValueObject
+    public class DeviceInfo : TargetingContextBase
     {
         /// <summary>
         /// 设备类型
         /// </summary>
-        public DeviceType DeviceType { get; private set; }
+        public DeviceType DeviceType => GetProperty("DeviceType", DeviceType.PersonalComputer);
 
         /// <summary>
         /// 操作系统
         /// </summary>
-        public string? OperatingSystem { get; private set; }
+        public string? OperatingSystem => GetProperty<string>("OperatingSystem");
 
         /// <summary>
         /// 操作系统版本
         /// </summary>
-        public string? OSVersion { get; private set; }
+        public string? OSVersion => GetProperty<string>("OSVersion");
 
         /// <summary>
         /// 浏览器
         /// </summary>
-        public string? Browser { get; private set; }
+        public string? Browser => GetProperty<string>("Browser");
 
         /// <summary>
         /// 浏览器版本
         /// </summary>
-        public string? BrowserVersion { get; private set; }
+        public string? BrowserVersion => GetProperty<string>("BrowserVersion");
 
         /// <summary>
         /// 设备品牌
         /// </summary>
-        public string? Brand { get; private set; }
+        public string? Brand => GetProperty<string>("Brand");
 
         /// <summary>
         /// 设备型号
         /// </summary>
-        public string? Model { get; private set; }
+        public string? Model => GetProperty<string>("Model");
 
         /// <summary>
         /// 屏幕宽度
         /// </summary>
-        public int? ScreenWidth { get; private set; }
+        public int? ScreenWidth => GetProperty<int?>("ScreenWidth");
 
         /// <summary>
         /// 屏幕高度
         /// </summary>
-        public int? ScreenHeight { get; private set; }
+        public int? ScreenHeight => GetProperty<int?>("ScreenHeight");
 
         /// <summary>
         /// 设备像素比
         /// </summary>
-        public decimal? DevicePixelRatio { get; private set; }
+        public decimal? DevicePixelRatio => GetProperty<decimal?>("DevicePixelRatio");
 
         /// <summary>
         /// 网络类型
         /// </summary>
-        public string? NetworkType { get; private set; }
+        public string? NetworkType => GetProperty<string>("NetworkType");
 
         /// <summary>
         /// 运营商
         /// </summary>
-        public string? Carrier { get; private set; }
+        public string? Carrier => GetProperty<string>("Carrier");
 
         /// <summary>
         /// 设备指纹
         /// </summary>
-        public string? DeviceFingerprint { get; private set; }
+        public string? DeviceFingerprint => GetProperty<string>("DeviceFingerprint");
 
         /// <summary>
         /// 是否支持JavaScript
         /// </summary>
-        public bool? JavaScriptEnabled { get; private set; }
+        public bool? JavaScriptEnabled => GetProperty<bool?>("JavaScriptEnabled");
 
         /// <summary>
         /// 是否支持Cookie
         /// </summary>
-        public bool? CookiesEnabled { get; private set; }
+        public bool? CookiesEnabled => GetProperty<bool?>("CookiesEnabled");
 
         /// <summary>
         /// Flash版本
         /// </summary>
-        public string? FlashVersion { get; private set; }
+        public string? FlashVersion => GetProperty<string>("FlashVersion");
 
         /// <summary>
         /// 是否移动设备
@@ -114,10 +114,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 私有构造函数
         /// </summary>
-        private DeviceInfo()
-        {
-            DeviceType = DeviceType.PersonalComputer;
-        }
+        private DeviceInfo() : base("Device") { }
 
         /// <summary>
         /// 构造函数
@@ -138,26 +135,85 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string? deviceFingerprint = null,
             bool? javaScriptEnabled = null,
             bool? cookiesEnabled = null,
-            string? flashVersion = null)
+            string? flashVersion = null,
+            string? dataSource = null)
+            : base("Device", CreateProperties(deviceType, operatingSystem, osVersion, browser, browserVersion, brand, model, screenWidth, screenHeight, devicePixelRatio, networkType, carrier, deviceFingerprint, javaScriptEnabled, cookiesEnabled, flashVersion), dataSource)
         {
             ValidateInput(screenWidth, screenHeight, devicePixelRatio);
+        }
 
-            DeviceType = deviceType;
-            OperatingSystem = operatingSystem;
-            OSVersion = osVersion;
-            Browser = browser;
-            BrowserVersion = browserVersion;
-            Brand = brand;
-            Model = model;
-            ScreenWidth = screenWidth;
-            ScreenHeight = screenHeight;
-            DevicePixelRatio = devicePixelRatio;
-            NetworkType = networkType;
-            Carrier = carrier;
-            DeviceFingerprint = deviceFingerprint;
-            JavaScriptEnabled = javaScriptEnabled;
-            CookiesEnabled = cookiesEnabled;
-            FlashVersion = flashVersion;
+        /// <summary>
+        /// 创建属性字典
+        /// </summary>
+        private static Dictionary<string, object> CreateProperties(
+            DeviceType deviceType,
+            string? operatingSystem,
+            string? osVersion,
+            string? browser,
+            string? browserVersion,
+            string? brand,
+            string? model,
+            int? screenWidth,
+            int? screenHeight,
+            decimal? devicePixelRatio,
+            string? networkType,
+            string? carrier,
+            string? deviceFingerprint,
+            bool? javaScriptEnabled,
+            bool? cookiesEnabled,
+            string? flashVersion)
+        {
+            var properties = new Dictionary<string, object>
+            {
+                ["DeviceType"] = deviceType
+            };
+
+            if (!string.IsNullOrWhiteSpace(operatingSystem))
+                properties["OperatingSystem"] = operatingSystem;
+
+            if (!string.IsNullOrWhiteSpace(osVersion))
+                properties["OSVersion"] = osVersion;
+
+            if (!string.IsNullOrWhiteSpace(browser))
+                properties["Browser"] = browser;
+
+            if (!string.IsNullOrWhiteSpace(browserVersion))
+                properties["BrowserVersion"] = browserVersion;
+
+            if (!string.IsNullOrWhiteSpace(brand))
+                properties["Brand"] = brand;
+
+            if (!string.IsNullOrWhiteSpace(model))
+                properties["Model"] = model;
+
+            if (screenWidth.HasValue)
+                properties["ScreenWidth"] = screenWidth.Value;
+
+            if (screenHeight.HasValue)
+                properties["ScreenHeight"] = screenHeight.Value;
+
+            if (devicePixelRatio.HasValue)
+                properties["DevicePixelRatio"] = devicePixelRatio.Value;
+
+            if (!string.IsNullOrWhiteSpace(networkType))
+                properties["NetworkType"] = networkType;
+
+            if (!string.IsNullOrWhiteSpace(carrier))
+                properties["Carrier"] = carrier;
+
+            if (!string.IsNullOrWhiteSpace(deviceFingerprint))
+                properties["DeviceFingerprint"] = deviceFingerprint;
+
+            if (javaScriptEnabled.HasValue)
+                properties["JavaScriptEnabled"] = javaScriptEnabled.Value;
+
+            if (cookiesEnabled.HasValue)
+                properties["CookiesEnabled"] = cookiesEnabled.Value;
+
+            if (!string.IsNullOrWhiteSpace(flashVersion))
+                properties["FlashVersion"] = flashVersion;
+
+            return properties;
         }
 
         /// <summary>
@@ -166,9 +222,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         public static DeviceInfo Create(
             DeviceType deviceType,
             string? operatingSystem = null,
-            string? browser = null)
+            string? browser = null,
+            string? dataSource = null)
         {
-            return new DeviceInfo(deviceType, operatingSystem, browser: browser);
+            return new DeviceInfo(deviceType, operatingSystem, browser: browser, dataSource: dataSource);
         }
 
         /// <summary>
@@ -179,7 +236,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string? brand = null,
             string? model = null,
             int? screenWidth = null,
-            int? screenHeight = null)
+            int? screenHeight = null,
+            string? dataSource = null)
         {
             return new DeviceInfo(
                 DeviceType.Smartphone,
@@ -187,7 +245,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 brand: brand,
                 model: model,
                 screenWidth: screenWidth,
-                screenHeight: screenHeight);
+                screenHeight: screenHeight,
+                dataSource: dataSource);
         }
 
         /// <summary>
@@ -198,7 +257,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string? browser = null,
             string? browserVersion = null,
             int? screenWidth = null,
-            int? screenHeight = null)
+            int? screenHeight = null,
+            string? dataSource = null)
         {
             return new DeviceInfo(
                 DeviceType.PersonalComputer,
@@ -206,7 +266,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 browser: browser,
                 browserVersion: browserVersion,
                 screenWidth: screenWidth,
-                screenHeight: screenHeight);
+                screenHeight: screenHeight,
+                dataSource: dataSource);
         }
 
         /// <summary>
@@ -230,7 +291,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 DeviceFingerprint,
                 JavaScriptEnabled,
                 CookiesEnabled,
-                FlashVersion);
+                FlashVersion,
+                DataSource);
         }
 
         /// <summary>
@@ -254,7 +316,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 DeviceFingerprint,
                 JavaScriptEnabled,
                 CookiesEnabled,
-                FlashVersion);
+                FlashVersion,
+                DataSource);
         }
 
         /// <summary>
@@ -278,7 +341,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 DeviceFingerprint,
                 JavaScriptEnabled,
                 CookiesEnabled,
-                FlashVersion);
+                FlashVersion,
+                DataSource);
         }
 
         /// <summary>
@@ -302,7 +366,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 deviceFingerprint,
                 JavaScriptEnabled,
                 CookiesEnabled,
-                FlashVersion);
+                FlashVersion,
+                DataSource);
         }
 
         /// <summary>
@@ -326,7 +391,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 DeviceFingerprint,
                 javaScriptEnabled,
                 cookiesEnabled,
-                flashVersion);
+                flashVersion,
+                DataSource);
         }
 
         /// <summary>
@@ -372,26 +438,34 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         }
 
         /// <summary>
-        /// 获取等价性比较的组件
+        /// 获取调试信息
         /// </summary>
-        protected override IEnumerable<object> GetEqualityComponents()
+        public override string GetDebugInfo()
         {
-            yield return DeviceType;
-            yield return OperatingSystem ?? string.Empty;
-            yield return OSVersion ?? string.Empty;
-            yield return Browser ?? string.Empty;
-            yield return BrowserVersion ?? string.Empty;
-            yield return Brand ?? string.Empty;
-            yield return Model ?? string.Empty;
-            yield return ScreenWidth ?? 0;
-            yield return ScreenHeight ?? 0;
-            yield return DevicePixelRatio ?? 0m;
-            yield return NetworkType ?? string.Empty;
-            yield return Carrier ?? string.Empty;
-            yield return DeviceFingerprint ?? string.Empty;
-            yield return JavaScriptEnabled ?? false;
-            yield return CookiesEnabled ?? false;
-            yield return FlashVersion ?? string.Empty;
+            var baseInfo = base.GetDebugInfo();
+            var deviceInfo = $"Type:{DeviceType} OS:{OperatingSystem} Browser:{Browser} Mobile:{IsMobileDevice} Resolution:{ScreenResolution}";
+            return $"{baseInfo} | {deviceInfo}";
+        }
+
+        /// <summary>
+        /// 验证上下文的有效性
+        /// </summary>
+        public override bool IsValid()
+        {
+            if (!base.IsValid())
+                return false;
+
+            // 验证屏幕尺寸
+            if (ScreenWidth.HasValue && ScreenWidth <= 0)
+                return false;
+
+            if (ScreenHeight.HasValue && ScreenHeight <= 0)
+                return false;
+
+            if (DevicePixelRatio.HasValue && DevicePixelRatio <= 0)
+                return false;
+
+            return true;
         }
 
         /// <summary>

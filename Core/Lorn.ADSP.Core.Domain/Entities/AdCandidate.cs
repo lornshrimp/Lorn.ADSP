@@ -230,6 +230,7 @@ public class AdCandidate : EntityBase
 
     /// <summary>
     /// 计算相关性分数
+    /// 注意：实际的定向匹配计算应该由定向策略计算器来处理
     /// </summary>
     public double CalculateRelevanceScore(AdContext adContext)
     {
@@ -239,28 +240,21 @@ public class AdCandidate : EntityBase
         // 基础质量分数
         double baseScore = (double)QualityScore.OverallScore;
 
-        // 定向匹配分数
-        var targetingContext = ConvertToTargetingContext(adContext);
-        double targetingScore = (double)Targeting.CalculateMatchScore(targetingContext);
-
-        // 综合计算相关性分数
-        return baseScore * 0.6 + targetingScore * 0.4;
+        // 定向匹配分数由外部策略计算器计算
+        // 这里返回基础分数，具体的定向匹配由 ITargetingMatcher 负责
+        return baseScore;
     }
 
     /// <summary>
-    /// 检查是否符合投放条件
+    /// 检查是否符合投放条件的基础检查
+    /// 具体的定向匹配由外部策略计算器负责
     /// </summary>
     public bool IsEligibleForPlacement(AdContext adContext)
     {
         if (adContext == null)
             return false;
 
-        // 检查定向匹配
-        var targetingContext = ConvertToTargetingContext(adContext);
-        if (!Targeting.IsMatch(targetingContext))
-            return false;
-
-        // 检查预算状态
+        // 基础条件检查
         if (BidPrice <= 0)
             return false;
 
@@ -268,22 +262,9 @@ public class AdCandidate : EntityBase
         if (QualityScore.OverallScore < 0.1m)
             return false;
 
+        // 注意：具体的定向匹配检查应该由外部定向策略计算器执行
+        // 这里只做基础的合格性检查
         return true;
-    }
-
-    /// <summary>
-    /// 将AdContext转换为TargetingContext
-    /// </summary>
-    private TargetingContext ConvertToTargetingContext(AdContext adContext)
-    {
-        return new TargetingContext
-        {
-            GeoLocation = adContext.GeoLocation,
-            DeviceInfo = adContext.Device,
-            RequestTime = adContext.RequestTime,
-            UserProfile = null, // 需要从其他地方获取
-            UserBehavior = null // 需要从其他地方获取
-        };
     }
 
     /// <summary>

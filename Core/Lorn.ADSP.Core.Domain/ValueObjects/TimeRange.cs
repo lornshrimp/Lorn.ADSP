@@ -1,180 +1,195 @@
-ï»¿using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Common;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects
+namespace Lorn.ADSP.Core.Domain.ValueObjects;
+
+/// <summary>
+/// ¾ßÌåµÄÊ±¼ä·¶Î§£¨Ê¹ÓÃDateTime±íÊ¾£©
+/// ÓÃÓÚ±íÊ¾¾ßÓĞÃ÷È·¿ªÊ¼ºÍ½áÊøÊ±¼äµÄÊ±¼ä·¶Î§£¬Èç»î¶¯Ê±¼ä¡¢»áÒéÊ±¼äµÈ
+/// </summary>
+public class TimeRange : ValueObject
 {
     /// <summary>
-    /// æ—¶é—´èŒƒå›´
+    /// ¿ªÊ¼Ê±¼ä
     /// </summary>
-    public class TimeRange : ValueObject
+    public DateTime StartTime { get; private set; }
+
+    /// <summary>
+    /// ½áÊøÊ±¼ä
+    /// </summary>
+    public DateTime EndTime { get; private set; }
+
+    /// <summary>
+    /// Ê±¼ä·¶Î§´óĞ¡
+    /// </summary>
+    public TimeSpan Duration => EndTime - StartTime;
+
+    /// <summary>
+    /// Ë½ÓĞ¹¹Ôìº¯Êı
+    /// </summary>
+    private TimeRange() { }
+
+    /// <summary>
+    /// ¹¹Ôìº¯Êı
+    /// </summary>
+    public TimeRange(DateTime startTime, DateTime endTime)
     {
-        /// <summary>
-        /// å¼€å§‹æ—¶é—´
-        /// </summary>
-        public DateTime StartTime { get; private set; }
+        if (startTime >= endTime)
+            throw new ArgumentException("¿ªÊ¼Ê±¼ä±ØĞëÔçÓÚ½áÊøÊ±¼ä");
 
-        /// <summary>
-        /// ç»“æŸæ—¶é—´
-        /// </summary>
-        public DateTime EndTime { get; private set; }
+        StartTime = startTime;
+        EndTime = endTime;
+    }
 
-        /// <summary>
-        /// æ—¶é—´èŒƒå›´æ˜¯å¦æœ‰æ•ˆ
-        /// </summary>
-        public bool IsValid => StartTime <= EndTime;
+    /// <summary>
+    /// ´´½¨Ê±¼ä·¶Î§
+    /// </summary>
+    public static TimeRange Create(DateTime startTime, DateTime endTime)
+    {
+        return new TimeRange(startTime, endTime);
+    }
 
-        /// <summary>
-        /// æ—¶é—´è·¨åº¦
-        /// </summary>
-        public TimeSpan Duration => EndTime - StartTime;
+    /// <summary>
+    /// ´´½¨´ÓÏÖÔÚ¿ªÊ¼µÄÊ±¼ä·¶Î§
+    /// </summary>
+    public static TimeRange CreateFromNow(TimeSpan duration)
+    {
+        var now = DateTime.UtcNow;
+        return new TimeRange(now, now.Add(duration));
+    }
 
-        /// <summary>
-        /// ç§æœ‰æ„é€ å‡½æ•°
-        /// </summary>
-        private TimeRange()
+    /// <summary>
+    /// ´´½¨Ö¸¶¨Ê±³¤µÄÊ±¼ä·¶Î§
+    /// </summary>
+    public static TimeRange CreateWithDuration(DateTime startTime, TimeSpan duration)
+    {
+        return new TimeRange(startTime, startTime.Add(duration));
+    }
+
+    /// <summary>
+    /// ´´½¨½ñÌìµÄÊ±¼ä·¶Î§
+    /// </summary>
+    public static TimeRange CreateToday()
+    {
+        var today = DateTime.Today;
+        return new TimeRange(today, today.AddDays(1).AddTicks(-1));
+    }
+
+    /// <summary>
+    /// ´´½¨±¾ÖÜµÄÊ±¼ä·¶Î§
+    /// </summary>
+    public static TimeRange CreateThisWeek()
+    {
+        var today = DateTime.Today;
+        var daysToSubtract = (int)today.DayOfWeek;
+        var startOfWeek = today.AddDays(-daysToSubtract);
+        var endOfWeek = startOfWeek.AddDays(7).AddTicks(-1);
+        return new TimeRange(startOfWeek, endOfWeek);
+    }
+
+    /// <summary>
+    /// ¼ì²éÖ¸¶¨Ê±¼äÊÇ·ñÔÚ·¶Î§ÄÚ
+    /// </summary>
+    public bool Contains(DateTime time)
+    {
+        return time >= StartTime && time <= EndTime;
+    }
+
+    /// <summary>
+    /// ¼ì²éÊÇ·ñÓëÁíÒ»¸öÊ±¼ä·¶Î§ÖØµş
+    /// </summary>
+    public bool OverlapsWith(TimeRange other)
+    {
+        return StartTime <= other.EndTime && EndTime >= other.StartTime;
+    }
+
+    /// <summary>
+    /// »ñÈ¡ÓëÁíÒ»¸öÊ±¼ä·¶Î§µÄ½»¼¯
+    /// </summary>
+    public TimeRange? GetIntersection(TimeRange other)
+    {
+        if (!OverlapsWith(other))
+            return null;
+
+        var intersectionStart = StartTime > other.StartTime ? StartTime : other.StartTime;
+        var intersectionEnd = EndTime < other.EndTime ? EndTime : other.EndTime;
+
+        return new TimeRange(intersectionStart, intersectionEnd);
+    }
+
+    /// <summary>
+    /// À©Õ¹Ê±¼ä·¶Î§
+    /// </summary>
+    public TimeRange Extend(TimeSpan beforeStart, TimeSpan afterEnd)
+    {
+        return new TimeRange(StartTime.Subtract(beforeStart), EndTime.Add(afterEnd));
+    }
+
+    /// <summary>
+    /// ¼ì²éÊÇ·ñ°üº¬µ±Ç°Ê±¼ä
+    /// </summary>
+    public bool ContainsNow()
+    {
+        return Contains(DateTime.UtcNow);
+    }
+
+    /// <summary>
+    /// ¼ì²éÊÇ·ñÒÑ¹ıÆÚ
+    /// </summary>
+    public bool IsExpired()
+    {
+        return EndTime < DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// ¼ì²éÊÇ·ñÉĞÎ´¿ªÊ¼
+    /// </summary>
+    public bool IsNotStarted()
+    {
+        return StartTime > DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// ¼ì²éÊÇ·ñÕıÔÚ½øĞĞÖĞ
+    /// </summary>
+    public bool IsActive()
+    {
+        return ContainsNow();
+    }
+
+    /// <summary>
+    /// ·Ö¸îÊ±¼ä·¶Î§ÎªÖ¸¶¨Ê±³¤µÄ¶Î
+    /// </summary>
+    public IEnumerable<TimeRange> Split(TimeSpan segmentDuration)
+    {
+        if (segmentDuration <= TimeSpan.Zero)
+            throw new ArgumentException("·Ö¶ÎÊ±³¤±ØĞë´óÓÚ0", nameof(segmentDuration));
+
+        var current = StartTime;
+        while (current < EndTime)
         {
-            StartTime = DateTime.MinValue;
-            EndTime = DateTime.MinValue;
+            var segmentEnd = current.Add(segmentDuration);
+            if (segmentEnd > EndTime)
+                segmentEnd = EndTime;
+
+            yield return new TimeRange(current, segmentEnd);
+            current = segmentEnd;
         }
+    }
 
-        /// <summary>
-        /// æ„é€ å‡½æ•°
-        /// </summary>
-        public TimeRange(DateTime startTime, DateTime endTime)
-        {
-            ValidateInput(startTime, endTime);
+    /// <summary>
+    /// »ñÈ¡µÈ¼ÛĞÔ±È½ÏµÄ×é¼ş
+    /// </summary>
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return StartTime;
+        yield return EndTime;
+    }
 
-            StartTime = startTime;
-            EndTime = endTime;
-        }
-
-        /// <summary>
-        /// åˆ›å»ºæ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange Create(DateTime startTime, DateTime endTime)
-        {
-            return new TimeRange(startTime, endTime);
-        }
-
-        /// <summary>
-        /// åˆ›å»ºæœ€è¿‘Nå¤©çš„æ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange LastDays(int days)
-        {
-            if (days < 0)
-                throw new ArgumentException("å¤©æ•°ä¸èƒ½ä¸ºè´Ÿæ•°", nameof(days));
-
-            var endTime = DateTime.UtcNow;
-            var startTime = endTime.AddDays(-days);
-            return new TimeRange(startTime, endTime);
-        }
-
-        /// <summary>
-        /// åˆ›å»ºæœ€è¿‘Nå°æ—¶çš„æ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange LastHours(int hours)
-        {
-            if (hours < 0)
-                throw new ArgumentException("å°æ—¶æ•°ä¸èƒ½ä¸ºè´Ÿæ•°", nameof(hours));
-
-            var endTime = DateTime.UtcNow;
-            var startTime = endTime.AddHours(-hours);
-            return new TimeRange(startTime, endTime);
-        }
-
-        /// <summary>
-        /// åˆ›å»ºä»Šå¤©çš„æ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange Today()
-        {
-            var today = DateTime.UtcNow.Date;
-            return new TimeRange(today, today.AddDays(1));
-        }
-
-        /// <summary>
-        /// åˆ›å»ºæœ¬å‘¨çš„æ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange ThisWeek()
-        {
-            var today = DateTime.UtcNow.Date;
-            var daysToSubtract = (int)today.DayOfWeek;
-            var startOfWeek = today.AddDays(-daysToSubtract);
-            var endOfWeek = startOfWeek.AddDays(7);
-            return new TimeRange(startOfWeek, endOfWeek);
-        }
-
-        /// <summary>
-        /// åˆ›å»ºæœ¬æœˆçš„æ—¶é—´èŒƒå›´
-        /// </summary>
-        public static TimeRange ThisMonth()
-        {
-            var today = DateTime.UtcNow.Date;
-            var startOfMonth = new DateTime(today.Year, today.Month, 1);
-            var endOfMonth = startOfMonth.AddMonths(1);
-            return new TimeRange(startOfMonth, endOfMonth);
-        }
-
-        /// <summary>
-        /// æ£€æŸ¥æ—¶é—´æ˜¯å¦åœ¨èŒƒå›´å†…
-        /// </summary>
-        public bool Contains(DateTime time)
-        {
-            return time >= StartTime && time <= EndTime;
-        }
-
-        /// <summary>
-        /// æ£€æŸ¥æ˜¯å¦ä¸å¦ä¸€ä¸ªæ—¶é—´èŒƒå›´é‡å 
-        /// </summary>
-        public bool Overlaps(TimeRange other)
-        {
-            return StartTime <= other.EndTime && EndTime >= other.StartTime;
-        }
-
-        /// <summary>
-        /// è·å–ä¸å¦ä¸€ä¸ªæ—¶é—´èŒƒå›´çš„äº¤é›†
-        /// </summary>
-        public TimeRange? Intersect(TimeRange other)
-        {
-            if (!Overlaps(other))
-                return null;
-
-            var intersectionStart = StartTime > other.StartTime ? StartTime : other.StartTime;
-            var intersectionEnd = EndTime < other.EndTime ? EndTime : other.EndTime;
-
-            return new TimeRange(intersectionStart, intersectionEnd);
-        }
-
-        /// <summary>
-        /// æ‰©å±•æ—¶é—´èŒƒå›´
-        /// </summary>
-        public TimeRange Extend(TimeSpan duration)
-        {
-            return new TimeRange(StartTime.Subtract(duration), EndTime.Add(duration));
-        }
-
-        /// <summary>
-        /// ç§»åŠ¨æ—¶é—´èŒƒå›´
-        /// </summary>
-        public TimeRange Shift(TimeSpan offset)
-        {
-            return new TimeRange(StartTime.Add(offset), EndTime.Add(offset));
-        }
-
-        /// <summary>
-        /// è·å–ç­‰ä»·æ€§æ¯”è¾ƒçš„ç»„ä»¶
-        /// </summary>
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return StartTime;
-            yield return EndTime;
-        }
-
-        /// <summary>
-        /// éªŒè¯è¾“å…¥å‚æ•°
-        /// </summary>
-        private static void ValidateInput(DateTime startTime, DateTime endTime)
-        {
-            if (startTime > endTime)
-                throw new ArgumentException("å¼€å§‹æ—¶é—´ä¸èƒ½å¤§äºç»“æŸæ—¶é—´");
-        }
+    /// <summary>
+    /// ×Ö·û´®±íÊ¾
+    /// </summary>
+    public override string ToString()
+    {
+        return $"{StartTime:yyyy-MM-dd HH:mm:ss} - {EndTime:yyyy-MM-dd HH:mm:ss} ({Duration})";
     }
 }

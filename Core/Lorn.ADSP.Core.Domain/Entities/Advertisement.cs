@@ -1,8 +1,8 @@
 using Lorn.ADSP.Core.Domain.Common;
-using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Domain.Events;
-using Lorn.ADSP.Core.Shared.Enums;
+using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Shared.Constants;
+using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
@@ -434,14 +434,6 @@ public class Advertisement : AggregateRoot
     public decimal GetAverageCostPerClick()
     {
         return TotalClicks > 0 ? TotalSpent / TotalClicks : 0m;
-    }
-
-    /// <summary>
-    /// 计算定向匹配度
-    /// </summary>
-    public decimal CalculateTargetingMatch(TargetingContext context)
-    {
-        return TargetingPolicy.CalculateMatchScore(context);
     }
 
     /// <summary>

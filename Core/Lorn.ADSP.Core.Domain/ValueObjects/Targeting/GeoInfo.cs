@@ -1,81 +1,80 @@
-﻿using Lorn.ADSP.Core.Domain.Common;
-
-namespace Lorn.ADSP.Core.Domain.ValueObjects
+﻿namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
-    /// 地理位置信息
+    /// 地理位置信息定向上下文
+    /// 继承自TargetingContextBase，提供地理位置数据的定向上下文功能
     /// </summary>
-    public class GeoInfo : ValueObject
+    public class GeoInfo : TargetingContextBase
     {
         /// <summary>
         /// 国家代码
         /// </summary>
-        public string? CountryCode { get; private set; }
+        public string? CountryCode => GetProperty<string>("CountryCode");
 
         /// <summary>
         /// 国家名称
         /// </summary>
-        public string? CountryName { get; private set; }
+        public string? CountryName => GetProperty<string>("CountryName");
 
         /// <summary>
         /// 省份代码
         /// </summary>
-        public string? ProvinceCode { get; private set; }
+        public string? ProvinceCode => GetProperty<string>("ProvinceCode");
 
         /// <summary>
         /// 省份名称
         /// </summary>
-        public string? ProvinceName { get; private set; }
+        public string? ProvinceName => GetProperty<string>("ProvinceName");
 
         /// <summary>
         /// 城市名称
         /// </summary>
-        public string? CityName { get; private set; }
+        public string? CityName => GetProperty<string>("CityName");
 
         /// <summary>
         /// 邮政编码
         /// </summary>
-        public string? PostalCode { get; private set; }
+        public string? PostalCode => GetProperty<string>("PostalCode");
 
         /// <summary>
         /// 纬度
         /// </summary>
-        public decimal? Latitude { get; private set; }
+        public decimal? Latitude => GetProperty<decimal?>("Latitude");
 
         /// <summary>
         /// 经度
         /// </summary>
-        public decimal? Longitude { get; private set; }
+        public decimal? Longitude => GetProperty<decimal?>("Longitude");
 
         /// <summary>
         /// 精度（米）
         /// </summary>
-        public int? Accuracy { get; private set; }
+        public int? Accuracy => GetProperty<int?>("Accuracy");
 
         /// <summary>
         /// 时区
         /// </summary>
-        public string? TimeZone { get; private set; }
+        public string? TimeZone => GetProperty<string>("TimeZone");
 
         /// <summary>
         /// ISP信息
         /// </summary>
-        public string? Isp { get; private set; }
+        public string? Isp => GetProperty<string>("Isp");
 
         /// <summary>
         /// 地理位置来源
         /// </summary>
-        public string? Source { get; private set; }
+        public string? Source => GetProperty<string>("Source");
 
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        public DateTime? LastUpdated { get; private set; }
+        public DateTime? LastUpdated => GetProperty<DateTime?>("LastUpdated");
 
         /// <summary>
         /// 私有构造函数
         /// </summary>
-        private GeoInfo() { }
+        private GeoInfo() : base("Geo") { }
 
         /// <summary>
         /// 构造函数
@@ -93,23 +92,73 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string? timeZone = null,
             string? isp = null,
             string? source = null,
-            DateTime? lastUpdated = null)
+            DateTime? lastUpdated = null,
+            string? dataSource = null)
+            : base("Geo", CreateProperties(countryCode, countryName, provinceCode, provinceName, cityName, postalCode, latitude, longitude, accuracy, timeZone, isp, source, lastUpdated), dataSource)
         {
             ValidateInput(latitude, longitude, accuracy);
+        }
 
-            CountryCode = countryCode;
-            CountryName = countryName;
-            ProvinceCode = provinceCode;
-            ProvinceName = provinceName;
-            CityName = cityName;
-            PostalCode = postalCode;
-            Latitude = latitude;
-            Longitude = longitude;
-            Accuracy = accuracy;
-            TimeZone = timeZone;
-            Isp = isp;
-            Source = source;
-            LastUpdated = lastUpdated;
+        /// <summary>
+        /// 创建属性字典
+        /// </summary>
+        private static Dictionary<string, object> CreateProperties(
+            string? countryCode,
+            string? countryName,
+            string? provinceCode,
+            string? provinceName,
+            string? cityName,
+            string? postalCode,
+            decimal? latitude,
+            decimal? longitude,
+            int? accuracy,
+            string? timeZone,
+            string? isp,
+            string? source,
+            DateTime? lastUpdated)
+        {
+            var properties = new Dictionary<string, object>();
+
+            if (!string.IsNullOrWhiteSpace(countryCode))
+                properties["CountryCode"] = countryCode;
+
+            if (!string.IsNullOrWhiteSpace(countryName))
+                properties["CountryName"] = countryName;
+
+            if (!string.IsNullOrWhiteSpace(provinceCode))
+                properties["ProvinceCode"] = provinceCode;
+
+            if (!string.IsNullOrWhiteSpace(provinceName))
+                properties["ProvinceName"] = provinceName;
+
+            if (!string.IsNullOrWhiteSpace(cityName))
+                properties["CityName"] = cityName;
+
+            if (!string.IsNullOrWhiteSpace(postalCode))
+                properties["PostalCode"] = postalCode;
+
+            if (latitude.HasValue)
+                properties["Latitude"] = latitude.Value;
+
+            if (longitude.HasValue)
+                properties["Longitude"] = longitude.Value;
+
+            if (accuracy.HasValue)
+                properties["Accuracy"] = accuracy.Value;
+
+            if (!string.IsNullOrWhiteSpace(timeZone))
+                properties["TimeZone"] = timeZone;
+
+            if (!string.IsNullOrWhiteSpace(isp))
+                properties["Isp"] = isp;
+
+            if (!string.IsNullOrWhiteSpace(source))
+                properties["Source"] = source;
+
+            if (lastUpdated.HasValue)
+                properties["LastUpdated"] = lastUpdated.Value;
+
+            return properties;
         }
 
         /// <summary>
@@ -120,14 +169,16 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string? countryName = null,
             string? cityName = null,
             decimal? latitude = null,
-            decimal? longitude = null)
+            decimal? longitude = null,
+            string? dataSource = null)
         {
             return new GeoInfo(
                 countryCode: countryCode,
                 countryName: countryName,
                 cityName: cityName,
                 latitude: latitude,
-                longitude: longitude);
+                longitude: longitude,
+                dataSource: dataSource);
         }
 
         /// <summary>
@@ -137,14 +188,16 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             decimal latitude,
             decimal longitude,
             int? accuracy = null,
-            string? source = null)
+            string? source = null,
+            string? dataSource = null)
         {
             return new GeoInfo(
                 latitude: latitude,
                 longitude: longitude,
                 accuracy: accuracy,
                 source: source,
-                lastUpdated: DateTime.UtcNow);
+                lastUpdated: DateTime.UtcNow,
+                dataSource: dataSource);
         }
 
         /// <summary>
@@ -154,7 +207,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         {
             return new GeoInfo(
                 CountryCode, CountryName, ProvinceCode, ProvinceName, CityName, PostalCode,
-                latitude, longitude, accuracy, TimeZone, Isp, Source, DateTime.UtcNow);
+                latitude, longitude, accuracy, TimeZone, Isp, Source, DateTime.UtcNow, DataSource);
         }
 
         /// <summary>
@@ -175,7 +228,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 provinceName ?? ProvinceName,
                 cityName ?? CityName,
                 postalCode ?? PostalCode,
-                Latitude, Longitude, Accuracy, TimeZone, Isp, Source, DateTime.UtcNow);
+                Latitude, Longitude, Accuracy, TimeZone, Isp, Source, DateTime.UtcNow, DataSource);
         }
 
         /// <summary>
@@ -202,22 +255,53 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         }
 
         /// <summary>
-        /// 获取等价性比较的组件
+        /// 获取地理位置描述
         /// </summary>
-        protected override IEnumerable<object> GetEqualityComponents()
+        public string GetLocationDescription()
         {
-            yield return CountryCode ?? string.Empty;
-            yield return CountryName ?? string.Empty;
-            yield return ProvinceCode ?? string.Empty;
-            yield return ProvinceName ?? string.Empty;
-            yield return CityName ?? string.Empty;
-            yield return PostalCode ?? string.Empty;
-            yield return Latitude ?? 0m;
-            yield return Longitude ?? 0m;
-            yield return Accuracy ?? 0;
-            yield return TimeZone ?? string.Empty;
-            yield return Isp ?? string.Empty;
-            yield return Source ?? string.Empty;
+            var parts = new List<string>();
+
+            if (!string.IsNullOrEmpty(CityName))
+                parts.Add(CityName);
+
+            if (!string.IsNullOrEmpty(ProvinceName))
+                parts.Add(ProvinceName);
+
+            if (!string.IsNullOrEmpty(CountryName))
+                parts.Add(CountryName);
+
+            return parts.Any() ? string.Join(", ", parts) : "Unknown Location";
+        }
+
+        /// <summary>
+        /// 获取调试信息
+        /// </summary>
+        public override string GetDebugInfo()
+        {
+            var baseInfo = base.GetDebugInfo();
+            var locationInfo = $"Location:{GetLocationDescription()} Coordinates:{(HasCoordinates ? $"{Latitude},{Longitude}" : "None")}";
+            return $"{baseInfo} | {locationInfo}";
+        }
+
+        /// <summary>
+        /// 验证上下文的有效性
+        /// </summary>
+        public override bool IsValid()
+        {
+            if (!base.IsValid())
+                return false;
+
+            // 验证坐标范围
+            if (Latitude.HasValue && (Latitude < -90 || Latitude > 90))
+                return false;
+
+            if (Longitude.HasValue && (Longitude < -180 || Longitude > 180))
+                return false;
+
+            if (Accuracy.HasValue && Accuracy < 0)
+                return false;
+
+            return true;
         }
 
         /// <summary>
@@ -260,7 +344,5 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         {
             return degrees * Math.PI / 180;
         }
-
-
     }
 }

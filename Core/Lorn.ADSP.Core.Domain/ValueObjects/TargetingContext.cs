@@ -1,4 +1,5 @@
 ﻿using Lorn.ADSP.Core.Domain.Entities;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects
 {
@@ -28,8 +29,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         public DateTime RequestTime { get; set; } = DateTime.UtcNow;
 
         /// <summary>
-        /// 用户行为
+        /// 用户行为上下文
         /// </summary>
-        public UserBehavior? UserBehavior { get; set; }
+        public UserBehavior? UserBehaviorContext { get; set; }
     }
 }

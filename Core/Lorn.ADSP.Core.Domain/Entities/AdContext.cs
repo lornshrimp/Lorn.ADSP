@@ -1,5 +1,6 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
@@ -271,17 +272,6 @@ public class AdContext : EntityBase
     public DayOfWeek GetDayOfWeek()
     {
         return RequestTime.DayOfWeek;
-    }
-
-    /// <summary>
-    /// 检查是否在指定时间范围内
-    /// </summary>
-    public bool IsWithinTimeRange(TimeRange timeRange)
-    {
-        if (timeRange == null)
-            return false;
-
-        return timeRange.Contains(RequestTime);
     }
 
     /// <summary>
