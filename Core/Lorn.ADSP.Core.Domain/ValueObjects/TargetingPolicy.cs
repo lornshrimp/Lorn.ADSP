@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
@@ -533,118 +534,11 @@ public class TargetingPolicy : ValueObject
             throw new ArgumentException("权重必须大于0", nameof(weight));
     }
 
-    // 便捷方法：为了保持向后兼容性，提供一些常用定向条件的快捷访问方法
-
-    /// <summary>
-    /// 获取行政区划地理定向条件模板
-    /// </summary>
-    public AdministrativeGeoTargeting? AdministrativeGeoTargeting => GetCriteriaTemplate<AdministrativeGeoTargeting>("AdministrativeGeo");
-
-    /// <summary>
-    /// 获取圆形地理围栏定向条件模板
-    /// </summary>
-    public CircularGeoFenceTargeting? CircularGeoFenceTargeting => GetCriteriaTemplate<CircularGeoFenceTargeting>("CircularGeoFence");
-
-    /// <summary>
-    /// 获取多边形地理围栏定向条件模板
-    /// </summary>
-    public PolygonGeoFenceTargeting? PolygonGeoFenceTargeting => GetCriteriaTemplate<PolygonGeoFenceTargeting>("PolygonGeoFence");
-
-    /// <summary>
-    /// 获取人口属性定向条件模板
-    /// </summary>
-    public DemographicTargeting? DemographicTargeting => GetCriteriaTemplate<DemographicTargeting>("Demographic");
-
-    /// <summary>
-    /// 获取设备定向条件模板
-    /// </summary>
-    public DeviceTargeting? DeviceTargeting => GetCriteriaTemplate<DeviceTargeting>("Device");
-
-    /// <summary>
-    /// 获取时间定向条件模板
-    /// </summary>
-    public TimeTargeting? TimeTargeting => GetCriteriaTemplate<TimeTargeting>("Time");
-
-    /// <summary>
-    /// 获取行为定向条件模板
-    /// </summary>
-    public BehaviorTargeting? BehaviorTargeting => GetCriteriaTemplate<BehaviorTargeting>("Behavior");
-
-    /// <summary>
-    /// 获取所有地理定向条件模板
-    /// </summary>
-    public IEnumerable<ITargetingCriteria> GetGeoTargetingCriteriaTemplates()
-    {
-        if (AdministrativeGeoTargeting != null && AdministrativeGeoTargeting.IsEnabled)
-            yield return AdministrativeGeoTargeting;
-
-        if (CircularGeoFenceTargeting != null && CircularGeoFenceTargeting.IsEnabled)
-            yield return CircularGeoFenceTargeting;
-
-        if (PolygonGeoFenceTargeting != null && PolygonGeoFenceTargeting.IsEnabled)
-            yield return PolygonGeoFenceTargeting;
-    }
-
-    /// <summary>
-    /// 检查是否有任何地理定向条件模板
-    /// </summary>
-    public bool HasGeoTargetingTemplates()
-    {
-        return GetGeoTargetingCriteriaTemplates().Any();
-    }
 }
 
-/// <summary>
-/// 策略状态枚举
-/// </summary>
-public enum PolicyStatus
-{
-    /// <summary>
-    /// 草稿状态
-    /// </summary>
-    Draft = 1,
 
-    /// <summary>
-    /// 已发布
-    /// </summary>
-    Published = 2,
 
-    /// <summary>
-    /// 已归档
-    /// </summary>
-    Archived = 3
-}
 
-/// <summary>
-/// 策略使用统计
-/// </summary>
-public class PolicyUsageStats
-{
-    /// <summary>
-    /// 策略ID
-    /// </summary>
-    public string PolicyId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 总配置数量
-    /// </summary>
-    public int TotalConfigs { get; set; }
-
-    /// <summary>
-    /// 活跃配置数量
-    /// </summary>
-    public int ActiveConfigs { get; set; }
-
-    /// <summary>
-    /// 最后使用时间
-    /// </summary>
-    public DateTime? LastUsedAt { get; set; }
-
-    /// <summary>
-    /// 平均性能表现
-    /// </summary>
-    public decimal AveragePerformance { get; set; }
-}
 
 
 

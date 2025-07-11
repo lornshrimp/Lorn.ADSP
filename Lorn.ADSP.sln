@@ -147,6 +147,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorn.ADSP.Infrastructure.Monitoring", "Infrastructure\Lorn.ADSP.Infrastructure.Monitoring\Lorn.ADSP.Infrastructure.Monitoring.csproj", "{263749E5-C1C8-40B2-8CB0-DB8B925AB54B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorn.ADSP.Core.Domain.Targeting", "Core\Lorn.ADSP.Core.Domain.Targeting\Lorn.ADSP.Core.Domain.Targeting.csproj", "{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,6 +171,10 @@ Global
 		{263749E5-C1C8-40B2-8CB0-DB8B925AB54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{263749E5-C1C8-40B2-8CB0-DB8B925AB54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{263749E5-C1C8-40B2-8CB0-DB8B925AB54B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +192,7 @@ Global
 		{979AC845-2512-443E-93F5-16904A27B658} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
 		{99A0FF9F-377A-477B-8F8B-55AD00AF0D0E} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
 		{263749E5-C1C8-40B2-8CB0-DB8B925AB54B} = {DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}
+		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5DE99C1-6558-470D-9A0A-12450B082042}

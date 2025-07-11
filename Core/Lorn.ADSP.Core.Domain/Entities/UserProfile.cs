@@ -86,58 +86,9 @@ public class UserProfile : AggregateRoot, ITargetingContext
         _targetingContexts = new Dictionary<string, ITargetingContext>();
     }
 
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public UserProfile(
-        string userId,
-        DemographicInfo? demographicInfo = null,
-        UserPreference? userPreferences = null,
-        PrivacySettings? privacySettings = null) : this()
-    {
-        ValidateUserId(userId);
 
-        UserId = userId;
-        LastActiveTime = DateTime.UtcNow;
-        QualityScore = ProfileQualityScore.CreateDefault();
 
-        // 初始化默认的定向上下文
-        if (demographicInfo != null)
-            SetTargetingContext(demographicInfo);
-        else
-            SetTargetingContext(DemographicInfo.CreateDefault($"UserProfile_{userId}"));
 
-        if (userPreferences != null)
-            SetTargetingContext(userPreferences);
-
-        // 发布用户画像创建事件
-        AddDomainEvent(new UserProfileCreatedEvent(Id, UserId));
-    }
-
-    /// <summary>
-    /// 创建用户画像
-    /// </summary>
-    public static UserProfile Create(
-        string userId,
-        DemographicInfo? demographicInfo = null,
-        UserPreference? userPreferences = null,
-        PrivacySettings? privacySettings = null)
-    {
-        return new UserProfile(userId, demographicInfo, userPreferences, privacySettings);
-    }
-
-    /// <summary>
-    /// 创建基础用户画像
-    /// </summary>
-    public static UserProfile CreateBasic(
-        string userId,
-        string? displayName = null,
-        Gender? gender = null,
-        DateTime? dateOfBirth = null)
-    {
-        var demographicInfo = DemographicInfo.CreateBasic(displayName, gender ?? Gender.Unknown, dateOfBirth);
-        return new UserProfile(userId, demographicInfo);
-    }
 
     /// <summary>
     /// 设置定向上下文
@@ -202,30 +153,7 @@ public class UserProfile : AggregateRoot, ITargetingContext
         return _targetingContexts.ContainsKey(contextType);
     }
 
-    /// <summary>
-    /// 记录用户活动
-    /// </summary>
-    public void RecordActivity(DateTime? activityTime = null)
-    {
-        var timestamp = activityTime ?? DateTime.UtcNow;
-        LastActiveTime = timestamp;
 
-        // 更新行为分析上下文
-        var behaviorContext = GetTargetingContext<UserBehavior>();
-        if (behaviorContext != null)
-        {
-            var updatedBehaviorContext = UserBehavior.CreateActiveUser(
-                behaviorContext.InterestTags.ToList(),
-                behaviorContext.ActiveDays + 1,
-                behaviorContext.TotalSessions + 1,
-                behaviorContext.AverageSessionDuration);
-
-            SetTargetingContext(updatedBehaviorContext);
-        }
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new UserActivityRecordedEvent(Id, UserId, timestamp));
-    }
 
     /// <summary>
     /// 激活用户
@@ -437,7 +365,7 @@ public class UserProfile : AggregateRoot, ITargetingContext
     {
         // 创建简化的用户画像副本，只包含指定的属性
         var filteredProperties = new Dictionary<string, object>();
-        
+
         foreach (var key in includeKeys)
         {
             var value = GetProperty<object>(key);
@@ -496,92 +424,16 @@ public class UserProfile : AggregateRoot, ITargetingContext
     /// </summary>
     public bool IsActive => Status == UserStatus.Active && !IsDeleted;
 
-    /// <summary>
-    /// 是否高价值用户
-    /// </summary>
-    public bool IsHighValueUser
-    {
-        get
-        {
-            var valueContext = GetTargetingContext<UserValue>();
-            return valueContext?.IsHighValueUser ?? false;
-        }
-    }
+
 
     /// <summary>
     /// 是否完整画像
     /// </summary>
     public bool IsCompleteProfile => QualityScore.CompletenessScore >= 80;
 
-    /// <summary>
-    /// 是否允许个性化广告
-    /// </summary>
-    public bool AllowPersonalizedAds
-    {
-        get
-        {
-            var preferences = GetTargetingContext<UserPreference>();
-            return preferences?.AllowPersonalizedAds ?? true;
-        }
-    }
 
-    /// <summary>
-    /// 获取用户年龄
-    /// </summary>
-    public int? GetAge()
-    {
-        var demographicInfo = GetTargetingContext<DemographicInfo>();
-        return demographicInfo?.Age;
-    }
 
-    /// <summary>
-    /// 获取用户细分群体
-    /// </summary>
-    public IReadOnlyList<string> GetUserSegments()
-    {
-        var segments = new List<string>();
-        var age = GetAge();
-        var valueContext = GetTargetingContext<UserValue>();
-        var behaviorContext = GetTargetingContext<UserBehavior>();
 
-        // 基于年龄的细分
-        if (age.HasValue)
-        {
-            segments.Add(age.Value switch
-            {
-                < 18 => "青少年",
-                >= 18 and < 25 => "年轻成人",
-                >= 25 and < 35 => "青年",
-                >= 35 and < 50 => "中年",
-                >= 50 and < 65 => "中老年",
-                >= 65 => "老年"
-            });
-        }
-
-        // 基于价值评分的细分
-        if (valueContext != null)
-        {
-            if (valueContext.IsHighValueUser)
-                segments.Add("高价值用户");
-            else if (valueContext.OverallScore >= 60)
-                segments.Add("中价值用户");
-            else
-                segments.Add("低价值用户");
-        }
-
-        // 基于活跃度的细分
-        if (behaviorContext != null)
-        {
-            if (behaviorContext.IsHighlyActiveUser)
-                segments.Add("高活跃用户");
-            else if (behaviorContext.IsActiveUser)
-                segments.Add("活跃用户");
-            else
-                segments.Add("非活跃用户");
-        }
-
-        return segments;
-    }
 
     #endregion
 

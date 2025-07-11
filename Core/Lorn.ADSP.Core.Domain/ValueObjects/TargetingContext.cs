@@ -1,5 +1,4 @@
 ﻿using Lorn.ADSP.Core.Domain.Common;
-using Lorn.ADSP.Core.Domain.Entities;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
@@ -50,7 +49,7 @@ public class TargetingContext : ValueObject
     {
         ContextId = contextId;
         RequestId = requestId;
-        
+
         if (targetingContexts != null)
         {
             foreach (var context in targetingContexts)
@@ -58,9 +57,9 @@ public class TargetingContext : ValueObject
                 _targetingContexts[context.Key] = context.Value;
             }
         }
-        
+
         CreatedAt = createdAt;
-        ContextMetadata = contextMetadata?.ToDictionary(kv => kv.Key, kv => kv.Value).AsReadOnly() ?? 
+        ContextMetadata = contextMetadata?.ToDictionary(kv => kv.Key, kv => kv.Value).AsReadOnly() ??
                           new Dictionary<string, object>().AsReadOnly();
     }
 
@@ -83,70 +82,6 @@ public class TargetingContext : ValueObject
             targetingContexts,
             createdAt,
             contextMetadata);
-    }
-
-    /// <summary>
-    /// 从AdContext创建TargetingContext
-    /// </summary>
-    public static TargetingContext FromAdContext(AdContext adContext)
-    {
-        if (adContext == null)
-            throw new ArgumentNullException(nameof(adContext));
-
-        var targetingContexts = new Dictionary<string, ITargetingContext>();
-
-        // 将Device信息转换为ITargetingContext
-        if (adContext.Device != null)
-        {
-            targetingContexts["device"] = adContext.Device;
-        }
-
-        // 将GeoLocation信息转换为ITargetingContext
-        if (adContext.GeoLocation != null)
-        {
-            targetingContexts["geo"] = adContext.GeoLocation;
-        }
-
-        // 将UserProfile信息转换为ITargetingContext
-        if (adContext.UserProfile != null)
-        {
-            targetingContexts["user"] = adContext.UserProfile;
-        }
-
-        // 从环境信息中提取其他ITargetingContext
-        foreach (var env in adContext.EnvironmentInfo)
-        {
-            if (env.Value is ITargetingContext targetingContext)
-            {
-                targetingContexts[env.Key] = targetingContext;
-            }
-        }
-
-        // 构建上下文元数据
-        var contextMetadata = new Dictionary<string, object>
-        {
-            ["requestTime"] = adContext.RequestTime,
-            ["timeSlot"] = adContext.GetTimeSlot(),
-            ["dayOfWeek"] = adContext.GetDayOfWeek().ToString(),
-            ["isMobileDevice"] = adContext.IsMobileDevice(),
-            ["isHighValueUser"] = adContext.IsHighValueUser()
-        };
-
-        // 合并AdContext的元数据
-        var requestMetadata = adContext.GetRequestMetadata();
-        foreach (var metadata in requestMetadata)
-        {
-            if (!contextMetadata.ContainsKey(metadata.Key))
-            {
-                contextMetadata[metadata.Key] = metadata.Value;
-            }
-        }
-
-        return Create(
-            requestId: adContext.RequestId,
-            targetingContexts: targetingContexts,
-            contextMetadata: contextMetadata
-        );
     }
 
     /// <summary>
@@ -230,7 +165,7 @@ public class TargetingContext : ValueObject
         if (string.IsNullOrEmpty(contextType))
             return null;
 
-        return _targetingContexts.Values.FirstOrDefault(ctx => 
+        return _targetingContexts.Values.FirstOrDefault(ctx =>
             string.Equals(ctx.ContextType, contextType, StringComparison.OrdinalIgnoreCase));
     }
 
@@ -339,7 +274,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public bool IsValid()
     {
-        return !string.IsNullOrEmpty(ContextId) && 
+        return !string.IsNullOrEmpty(ContextId) &&
                !string.IsNullOrEmpty(RequestId) &&
                _targetingContexts.Any();
     }
@@ -421,7 +356,7 @@ public class TargetingContext : ValueObject
             throw new ArgumentNullException(nameof(other));
 
         var mergedContexts = new Dictionary<string, ITargetingContext>(_targetingContexts);
-        
+
         foreach (var context in other._targetingContexts)
         {
             if (overwriteExisting || !mergedContexts.ContainsKey(context.Key))
@@ -431,7 +366,7 @@ public class TargetingContext : ValueObject
         }
 
         var mergedMetadata = new Dictionary<string, object>(ContextMetadata);
-        
+
         foreach (var metadata in other.ContextMetadata)
         {
             if (overwriteExisting || !mergedMetadata.ContainsKey(metadata.Key))
@@ -457,7 +392,7 @@ public class TargetingContext : ValueObject
         yield return ContextId;
         yield return RequestId;
         yield return CreatedAt;
-        
+
         // 上下文字典的内容哈希
         foreach (var context in _targetingContexts.OrderBy(kv => kv.Key))
         {
