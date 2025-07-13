@@ -1,28 +1,28 @@
 ﻿namespace Lorn.ADSP.Core.Domain.Enums
 {
     /// <summary>
-    /// 策略状态枚举
+    /// 用户画像状态枚举
     /// </summary>
-    public enum PolicyStatus
+    public enum ProfileStatus
     {
         /// <summary>
-        /// 草稿
+        /// 活跃
         /// </summary>
-        Draft = 1,
+        Active = 1,
 
         /// <summary>
-        /// 已发布
+        /// 非活跃
         /// </summary>
-        Published = 2,
-
-        /// <summary>
-        /// 已归档
-        /// </summary>
-        Archived = 3,
+        Inactive = 2,
 
         /// <summary>
         /// 已删除
         /// </summary>
-        Deleted = 4
+        Deleted = 3,
+
+        /// <summary>
+        /// 匿名
+        /// </summary>
+        Anonymous = 4
     }
 }

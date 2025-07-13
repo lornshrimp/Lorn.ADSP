@@ -293,6 +293,11 @@ public class CampaignBudgetUpdatedEvent : DomainEventBase
         TotalBudget = totalBudget;
         DailyBudget = dailyBudget;
     }
+    public CampaignBudgetUpdatedEvent(string campaignId, decimal totalBudget)
+    {
+        CampaignId = campaignId;
+        TotalBudget = totalBudget;
+    }
 }
 
 /// <summary>

@@ -1,37 +1,47 @@
 namespace Lorn.ADSP.Core.Shared.Enums;
 
 /// <summary>
-/// 广告活动状态枚举
+/// 活动状态枚举
 /// </summary>
 public enum CampaignStatus
 {
     /// <summary>
-    /// 草稿
+    /// 草稿状态
     /// </summary>
     Draft = 1,
 
     /// <summary>
-    /// 待审核
+    /// 已计划
     /// </summary>
-    PendingReview = 2,
+    Scheduled = 2,
 
     /// <summary>
-    /// 已激活
+    /// 运行中
     /// </summary>
-    Active = 3,
+    Running = 3,
 
     /// <summary>
-    /// 已暂停
+    /// 暂停
     /// </summary>
     Paused = 4,
 
     /// <summary>
-    /// 已结束
+    /// 已完成
     /// </summary>
-    Ended = 5,
+    Completed = 5,
 
     /// <summary>
-    /// 已删除
+    /// 已取消
     /// </summary>
-    Deleted = 6
+    Cancelled = 6,
+
+    /// <summary>
+    /// 预算耗尽
+    /// </summary>
+    BudgetExhausted = 7,
+
+    /// <summary>
+    /// 已过期
+    /// </summary>
+    Expired = 8
 }

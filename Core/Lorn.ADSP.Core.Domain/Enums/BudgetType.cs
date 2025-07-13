@@ -1,28 +1,28 @@
 ﻿namespace Lorn.ADSP.Core.Domain.Enums
 {
     /// <summary>
-    /// 策略状态枚举
+    /// 预算类型枚举
     /// </summary>
-    public enum PolicyStatus
+    public enum BudgetType
     {
         /// <summary>
-        /// 草稿
+        /// 标准预算
         /// </summary>
-        Draft = 1,
+        Standard = 1,
 
         /// <summary>
-        /// 已发布
+        /// 无限预算
         /// </summary>
-        Published = 2,
+        Unlimited = 2,
 
         /// <summary>
-        /// 已归档
+        /// 试验预算
         /// </summary>
-        Archived = 3,
+        Trial = 3,
 
         /// <summary>
-        /// 已删除
+        /// 共享预算
         /// </summary>
-        Deleted = 4
+        Shared = 4
     }
 }

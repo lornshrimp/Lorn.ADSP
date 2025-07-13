@@ -1,47 +1,37 @@
 namespace Lorn.ADSP.Core.Shared.Enums;
 
 /// <summary>
-/// 媒体类型
+/// 媒体类型枚举
 /// </summary>
 public enum MediaType
 {
     /// <summary>
-    /// 展示媒体
+    /// 展示广告（Banner）
     /// </summary>
     Display = 1,
 
     /// <summary>
-    /// 视频媒体
+    /// 视频广告
     /// </summary>
     Video = 2,
 
     /// <summary>
-    /// 音频媒体
+    /// 音频广告
     /// </summary>
     Audio = 3,
 
     /// <summary>
-    /// 移动应用
+    /// 原生广告
     /// </summary>
-    MobileApp = 4,
+    Native = 4,
 
     /// <summary>
-    /// 网站
+    /// 富媒体广告
     /// </summary>
-    Website = 5,
+    RichMedia = 5,
 
     /// <summary>
-    /// 社交媒体
+    /// 社交媒体广告
     /// </summary>
-    SocialMedia = 6,
-
-    /// <summary>
-    /// 联网电视
-    /// </summary>
-    ConnectedTV = 7,
-
-    /// <summary>
-    /// 数字户外
-    /// </summary>
-    DigitalOutOfHome = 8
+    Social = 6
 }

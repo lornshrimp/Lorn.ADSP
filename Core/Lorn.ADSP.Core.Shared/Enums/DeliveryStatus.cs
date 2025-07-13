@@ -6,27 +6,37 @@ namespace Lorn.ADSP.Core.Shared.Enums;
 public enum DeliveryStatus
 {
     /// <summary>
+    /// 待投放
+    /// </summary>
+    Pending = 1,
+
+    /// <summary>
+    /// 已投放
+    /// </summary>
+    Delivered = 2,
+
+    /// <summary>
     /// 投放成功
     /// </summary>
-    Success = 1,
+    Success = 3,
 
     /// <summary>
     /// 投放失败
     /// </summary>
-    Failed = 2,
+    Failed = 4,
 
     /// <summary>
-    /// 部分成功
+    /// 已取消
     /// </summary>
-    PartialSuccess = 3,
+    Cancelled = 5,
 
     /// <summary>
-    /// 暂停
+    /// 已过期
     /// </summary>
-    Paused = 4,
+    Expired = 6,
 
     /// <summary>
     /// 超时
     /// </summary>
-    Timeout = 5
+    Timeout = 7
 }

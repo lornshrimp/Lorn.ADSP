@@ -1,10 +1,11 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Entities;
 using Lorn.ADSP.Core.Domain.Events;
 using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Shared.Constants;
 using Lorn.ADSP.Core.Shared.Enums;
 
-namespace Lorn.ADSP.Core.Domain.Entities;
+namespace Lorn.ADSP.Core.Domain.Aggregates;
 
 /// <summary>
 /// 广告实体（聚合根）
@@ -17,11 +18,6 @@ public class Advertisement : AggregateRoot
     public string AdvertiserId { get; private set; } = string.Empty;
 
     /// <summary>
-    /// 广告活动ID
-    /// </summary>
-    public string CampaignId { get; private set; } = string.Empty;
-
-    /// <summary>
     /// 广告名称
     /// </summary>
     public string Name { get; private set; } = string.Empty;
@@ -32,12 +28,17 @@ public class Advertisement : AggregateRoot
     public string Description { get; private set; } = string.Empty;
 
     /// <summary>
+    /// 广告状态
+    /// </summary>
+    public AdStatus Status { get; private set; } = AdStatus.Draft;
+
+    /// <summary>
     /// 媒体类型
     /// </summary>
     public MediaType MediaType { get; private set; }
 
     /// <summary>
-    /// 广告类目列表
+    /// 广告分类列表
     /// </summary>
     public IReadOnlyList<string> Categories { get; private set; } = new List<string>();
 
@@ -52,27 +53,12 @@ public class Advertisement : AggregateRoot
     public IReadOnlyList<string> AdvertiserDomains { get; private set; } = new List<string>();
 
     /// <summary>
-    /// 投放开始时间
-    /// </summary>
-    public DateTime? StartTime { get; private set; }
-
-    /// <summary>
-    /// 投放结束时间
-    /// </summary>
-    public DateTime? EndTime { get; private set; }
-
-    /// <summary>
     /// 审核信息
     /// </summary>
     public AuditInfo AuditInfo { get; private set; } = AuditInfo.CreatePending();
 
     /// <summary>
-    /// 投放策略
-    /// </summary>
-    public DeliveryPolicy DeliveryPolicy { get; private set; } = null!;
-
-    /// <summary>
-    /// 广告素材信息
+    /// 创意内容信息
     /// </summary>
     public CreativeInfo CreativeInfo { get; private set; } = null!;
 
@@ -102,52 +88,49 @@ public class Advertisement : AggregateRoot
     public long TotalClicks { get; private set; } = 0;
 
     /// <summary>
-    /// 累计消费金额（分）
+    /// 累计花费（分）
     /// </summary>
     public decimal TotalSpent { get; private set; } = 0;
 
     /// <summary>
-    /// 私有构造函数（用于ORM）
+    /// 广告活动集合
+    /// </summary>
+    private readonly List<Campaign> _campaigns = new();
+    public IReadOnlyList<Campaign> Campaigns => _campaigns.AsReadOnly();
+
+    /// <summary>
+    /// 私有构造函数，用于ORM
     /// </summary>
     private Advertisement() { }
 
     /// <summary>
     /// 构造函数
-    /// 注意：Advertisement不再直接管理TargetingPolicy，定向策略通过Campaign的TargetingConfig来管理
     /// </summary>
     public Advertisement(
         string advertiserId,
-        string campaignId,
         string name,
         string description,
         MediaType mediaType,
-        DeliveryPolicy deliveryPolicy,
         CreativeInfo creativeInfo,
         IList<string>? categories = null,
         IList<int>? attributes = null,
         IList<string>? advertiserDomains = null,
-        DateTime? startTime = null,
-        DateTime? endTime = null,
         IList<string>? tags = null)
     {
-        ValidateInputs(name, advertiserId, campaignId);
+        ValidateInputs(name, advertiserId);
 
         AdvertiserId = advertiserId;
-        CampaignId = campaignId;
         Name = name;
         Description = description;
         MediaType = mediaType;
-        DeliveryPolicy = deliveryPolicy;
         CreativeInfo = creativeInfo;
         Categories = categories?.ToList() ?? new List<string>();
         Attributes = attributes?.ToList() ?? new List<int>();
         AdvertiserDomains = advertiserDomains?.ToList() ?? new List<string>();
-        StartTime = startTime;
-        EndTime = endTime;
         Tags = tags?.ToList() ?? new List<string>();
 
-        // 发布广告创建事件
-        AddDomainEvent(new AdvertisementCreatedEvent(Id, advertiserId, campaignId, name));
+        // 触发广告创建事件
+        AddDomainEvent(new AdvertisementCreatedEvent(Id, advertiserId, string.Empty, name));
     }
 
     /// <summary>
@@ -166,33 +149,6 @@ public class Advertisement : AggregateRoot
     }
 
     /// <summary>
-    /// 更新投放时间
-    /// </summary>
-    public void UpdateDeliveryTime(DateTime? startTime, DateTime? endTime)
-    {
-        ValidateDeliveryTime(startTime, endTime);
-
-        StartTime = startTime;
-        EndTime = endTime;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "投放时间"));
-    }
-
-    /// <summary>
-    /// 更新投放策略
-    /// </summary>
-    public void UpdateDeliveryPolicy(DeliveryPolicy deliveryPolicy)
-    {
-        ArgumentNullException.ThrowIfNull(deliveryPolicy);
-
-        DeliveryPolicy = deliveryPolicy;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "投放策略"));
-    }
-
-    /// <summary>
     /// 更新创意信息
     /// </summary>
     public void UpdateCreativeInfo(CreativeInfo creativeInfo)
@@ -204,11 +160,34 @@ public class Advertisement : AggregateRoot
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementUpdatedEvent(Id, "创意信息"));
 
-        // 创意更新后需要重新审核
+        // 更新创意后需要重新审核
         if (AuditInfo.IsApproved)
         {
             SubmitForAudit();
         }
+    }
+
+    /// <summary>
+    /// 添加活动
+    /// </summary>
+    public void AddCampaign(Campaign campaign)
+    {
+        ArgumentNullException.ThrowIfNull(campaign);
+
+        if (campaign.AdvertisementId != Id)
+            throw new ArgumentException("活动所属广告ID不匹配");
+
+        _campaigns.Add(campaign);
+        UpdateLastModifiedTime();
+        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "添加活动"));
+    }
+
+    /// <summary>
+    /// 获取活跃的活动
+    /// </summary>
+    public IReadOnlyList<Campaign> GetActiveCampaigns()
+    {
+        return _campaigns.Where(c => c.IsActive).ToList().AsReadOnly();
     }
 
     /// <summary>
@@ -220,6 +199,7 @@ public class Advertisement : AggregateRoot
             throw new InvalidOperationException("广告正在审核中，无法重复提交");
 
         AuditInfo = AuditInfo.CreatePending();
+        Status = AdStatus.PendingReview;
         IsActive = false; // 提交审核时暂停投放
 
         UpdateLastModifiedTime();
@@ -232,9 +212,10 @@ public class Advertisement : AggregateRoot
     public void StartAudit(string auditorId, string auditorName)
     {
         if (AuditInfo.Status != AuditStatus.Pending)
-            throw new InvalidOperationException("只有待审核状态的广告才能开始审核");
+            throw new InvalidOperationException("只有待审核状态的广告能开始审核");
 
         AuditInfo = AuditInfo.CreateInProgress(auditorId, auditorName);
+        Status = AdStatus.UnderReview;
 
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementAuditStartedEvent(Id, auditorId));
@@ -246,9 +227,10 @@ public class Advertisement : AggregateRoot
     public void ApproveAudit(string auditorId, string auditorName, string? feedback = null)
     {
         if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("只有审核中状态的广告才能审核通过");
+            throw new InvalidOperationException("只有审核中状态的广告能审核通过");
 
         AuditInfo = AuditInfo.CreateApproved(auditorId, auditorName, feedback);
+        Status = AdStatus.Approved;
 
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementAuditApprovedEvent(Id, auditorId));
@@ -260,12 +242,13 @@ public class Advertisement : AggregateRoot
     public void RejectAudit(string auditorId, string auditorName, string feedback)
     {
         if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("只有审核中状态的广告才能审核拒绝");
+            throw new InvalidOperationException("只有审核中状态的广告能审核拒绝");
 
         if (string.IsNullOrWhiteSpace(feedback))
             throw new ArgumentException("审核拒绝必须提供反馈信息");
 
         AuditInfo = AuditInfo.CreateRejected(feedback, auditorId, auditorName);
+        Status = AdStatus.Rejected;
         IsActive = false; // 审核拒绝时停止投放
 
         UpdateLastModifiedTime();
@@ -278,12 +261,13 @@ public class Advertisement : AggregateRoot
     public void RequireChanges(string auditorId, string auditorName, string correctionSuggestion)
     {
         if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("只有审核中状态的广告才能要求修改");
+            throw new InvalidOperationException("只有审核中状态的广告需要修改");
 
         if (string.IsNullOrWhiteSpace(correctionSuggestion))
-            throw new ArgumentException("要求修改必须提供修正建议");
+            throw new ArgumentException("要求修改必须提供建议信息");
 
         AuditInfo = AuditInfo.CreateRequiresChanges(correctionSuggestion, auditorId, auditorName);
+        Status = AdStatus.Draft; // 回到草稿状态
         IsActive = false; // 需要修改时停止投放
 
         UpdateLastModifiedTime();
@@ -296,12 +280,10 @@ public class Advertisement : AggregateRoot
     public void Activate()
     {
         if (!AuditInfo.CanDeliver)
-            throw new InvalidOperationException("只有审核通过的广告才能激活");
-
-        if (IsExpired)
-            throw new InvalidOperationException("已过期的广告无法激活");
+            throw new InvalidOperationException("只有审核通过的广告能激活");
 
         IsActive = true;
+        Status = AdStatus.Active;
 
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementActivatedEvent(Id));
@@ -313,9 +295,22 @@ public class Advertisement : AggregateRoot
     public void Pause()
     {
         IsActive = false;
+        Status = AdStatus.Paused;
 
         UpdateLastModifiedTime();
         AddDomainEvent(new AdvertisementPausedEvent(Id));
+    }
+
+    /// <summary>
+    /// 停止广告
+    /// </summary>
+    public void Stop()
+    {
+        IsActive = false;
+        Status = AdStatus.Stopped;
+
+        UpdateLastModifiedTime();
+        AddDomainEvent(new AdvertisementStoppedEvent(Id));
     }
 
     /// <summary>
@@ -324,7 +319,7 @@ public class Advertisement : AggregateRoot
     public void RecordImpression(decimal cost)
     {
         if (!CanDeliver)
-            throw new InvalidOperationException("广告当前状态不允许投放");
+            throw new InvalidOperationException("当前状态不允许投放");
 
         TotalImpressions++;
         TotalSpent += cost;
@@ -368,30 +363,8 @@ public class Advertisement : AggregateRoot
     /// </summary>
     public bool CanDeliver => IsActive &&
                              AuditInfo.CanDeliver &&
-                             !IsExpired &&
-                             IsWithinDeliveryTime &&
+                             Status == AdStatus.Active &&
                              !IsDeleted;
-
-    /// <summary>
-    /// 是否已过期
-    /// </summary>
-    public bool IsExpired => EndTime.HasValue && DateTime.UtcNow > EndTime.Value;
-
-    /// <summary>
-    /// 是否在投放时间范围内
-    /// </summary>
-    public bool IsWithinDeliveryTime
-    {
-        get
-        {
-            var now = DateTime.UtcNow;
-            if (StartTime.HasValue && now < StartTime.Value)
-                return false;
-            if (EndTime.HasValue && now > EndTime.Value)
-                return false;
-            return true;
-        }
-    }
 
     /// <summary>
     /// 获取点击率
@@ -402,7 +375,7 @@ public class Advertisement : AggregateRoot
     }
 
     /// <summary>
-    /// 获取平均单次展示成本
+    /// 获取平均每次展示成本
     /// </summary>
     public decimal GetAverageCostPerImpression()
     {
@@ -410,7 +383,7 @@ public class Advertisement : AggregateRoot
     }
 
     /// <summary>
-    /// 获取平均单次点击成本
+    /// 获取平均每次点击成本
     /// </summary>
     public decimal GetAverageCostPerClick()
     {
@@ -418,25 +391,14 @@ public class Advertisement : AggregateRoot
     }
 
     /// <summary>
-    /// 计算出价
-    /// </summary>
-    public decimal CalculateBid(decimal marketPrice = 0m)
-    {
-        return DeliveryPolicy.CalculateActualBid(QualityScore, marketPrice);
-    }
-
-    /// <summary>
     /// 验证输入参数
     /// </summary>
-    private static void ValidateInputs(string name, string advertiserId, string campaignId)
+    private static void ValidateInputs(string name, string advertiserId)
     {
         ValidateName(name);
 
         if (string.IsNullOrWhiteSpace(advertiserId))
             throw new ArgumentException("广告主ID不能为空", nameof(advertiserId));
-
-        if (string.IsNullOrWhiteSpace(campaignId))
-            throw new ArgumentException("广告活动ID不能为空", nameof(campaignId));
     }
 
     /// <summary>
@@ -449,14 +411,5 @@ public class Advertisement : AggregateRoot
 
         if (name.Length > ValidationConstants.StringLength.AdTitleMaxLength)
             throw new ArgumentException($"广告名称长度不能超过{ValidationConstants.StringLength.AdTitleMaxLength}个字符", nameof(name));
-    }
-
-    /// <summary>
-    /// 验证投放时间
-    /// </summary>
-    private static void ValidateDeliveryTime(DateTime? startTime, DateTime? endTime)
-    {
-        if (startTime.HasValue && endTime.HasValue && startTime.Value >= endTime.Value)
-            throw new ArgumentException("投放开始时间必须早于结束时间");
     }
 }

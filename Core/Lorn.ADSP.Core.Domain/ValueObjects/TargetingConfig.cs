@@ -547,68 +547,11 @@ public class TargetingConfig : ValueObject
     }
 }
 
-/// <summary>
-/// 验证结果
-/// </summary>
-public class ValidationResult
-{
-    private readonly List<string> _errors = new();
-    private readonly List<string> _warnings = new();
 
-    public bool IsValid => !_errors.Any();
-    public IReadOnlyList<string> Errors => _errors.AsReadOnly();
-    public IReadOnlyList<string> Warnings => _warnings.AsReadOnly();
 
-    public void AddError(string error)
-    {
-        _errors.Add(error);
-    }
 
-    public void AddWarning(string warning)
-    {
-        _warnings.Add(warning);
-    }
-}
 
-/// <summary>
-/// 优化上下文
-/// </summary>
-public class OptimizationContext
-{
-    public PerformanceMetrics? PerformanceMetrics { get; set; }
-    public List<OptimizationRecommendation>? OptimizationRecommendations { get; set; }
-    public Dictionary<string, object>? AdditionalData { get; set; }
-}
 
-/// <summary>
-/// 性能指标
-/// </summary>
-public class PerformanceMetrics
-{
-    public decimal CTR { get; set; }
-    public decimal CVR { get; set; }
-    public decimal CPC { get; set; }
-    public decimal ROI { get; set; }
-
-    public decimal GetOverallScore()
-    {
-        // 简化的综合评分计算
-        return (CTR * 0.3m + CVR * 0.4m + ROI * 0.3m);
-    }
-}
-
-/// <summary>
-/// 优化建议
-/// </summary>
-public class OptimizationRecommendation
-{
-    public OptimizationType Type { get; set; }
-    public string? CriteriaType { get; set; }
-    public decimal? NewWeight { get; set; }
-    public string? ParameterKey { get; set; }
-    public object? ParameterValue { get; set; }
-    public string? Reason { get; set; }
-}
 
 
 

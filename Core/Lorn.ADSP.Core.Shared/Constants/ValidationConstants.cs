@@ -44,6 +44,20 @@ public static class ValidationConstants
         /// URL最大长度
         /// </summary>
         public const int UrlMaxLength = 2048;
+
+        /// <summary>
+        /// 媒体名称最大长度
+        /// </summary>
+        public const int MediaNameMaxLength = 100;
+        /// <summary>
+        /// 公司名称最大长度
+        /// </summary>
+        public const int CompanyNameMaxLength = 100;
+
+        /// <summary>
+        /// 活动名称最大长度
+        /// </summary>
+        public const int CampaignNameMaxLength = 100;
     }
 
     /// <summary>

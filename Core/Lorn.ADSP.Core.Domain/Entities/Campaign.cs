@@ -1,111 +1,67 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Domain.Events;
-using Lorn.ADSP.Core.Shared.Enums;
 using Lorn.ADSP.Core.Shared.Constants;
+using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
-/// 广告活动实体（聚合根）
-/// Campaign是唯一应该直接持有TargetingConfig的实体
+/// 活动实体（非聚合根）
 /// </summary>
-public class Campaign : AggregateRoot
+public class Campaign : EntityBase
 {
     /// <summary>
-    /// 广告活动名称
+    /// 活动名
     /// </summary>
     public string Name { get; private set; } = string.Empty;
 
     /// <summary>
-    /// 广告活动描述
+    /// 活动描述
     /// </summary>
     public string Description { get; private set; } = string.Empty;
 
     /// <summary>
-    /// 广告主ID
-    /// </summary>
-    public string AdvertiserId { get; private set; } = string.Empty;
-
-    /// <summary>
     /// 活动状态
     /// </summary>
-    public CampaignStatus Status { get; private set; } = CampaignStatus.Draft;
+    public CampaignStatus Status { get; private set; }
 
     /// <summary>
-    /// 总预算（分）
+    /// 广告主ID
     /// </summary>
-    public decimal TotalBudget { get; private set; }
+    public string AdvertisementId { get; private set; } = string.Empty;
 
     /// <summary>
-    /// 日预算（分）
-    /// </summary>
-    public decimal DailyBudget { get; private set; }
-
-    /// <summary>
-    /// 已消费预算（分）
-    /// </summary>
-    public decimal SpentBudget { get; private set; } = 0;
-
-    /// <summary>
-    /// 活动开始日期
-    /// </summary>
-    public DateTime StartDate { get; private set; }
-
-    /// <summary>
-    /// 活动结束日期
-    /// </summary>
-    public DateTime EndDate { get; private set; }
-
-    /// <summary>
-    /// 时区
-    /// </summary>
-    public string TimeZone { get; private set; } = "UTC";
-
-    /// <summary>
-    /// 定向配置（运行时配置实例）
-    /// Campaign是定向配置的唯一直接持有者
+    /// 定向配置
     /// </summary>
     public TargetingConfig TargetingConfig { get; private set; } = null!;
 
     /// <summary>
-    /// 默认投放策略
+    /// 投放策略
     /// </summary>
-    public DeliveryPolicy DefaultDelivery { get; private set; } = null!;
+    public DeliveryPolicy DeliveryPolicy { get; private set; } = null!;
 
     /// <summary>
-    /// 活动标签
+    /// 预算信息
     /// </summary>
-    public IReadOnlyList<string> Tags { get; private set; } = new List<string>();
+    public BudgetInfo Budget { get; private set; } = null!;
 
     /// <summary>
-    /// 活动目标
+    /// 开始时间
     /// </summary>
-    public CampaignObjective Objective { get; private set; } = null!;
+    public DateTime? StartDate { get; private set; }
 
     /// <summary>
-    /// 累计展示次数
+    /// 结束时间
     /// </summary>
-    public long TotalImpressions { get; private set; } = 0;
+    public DateTime? EndDate { get; private set; }
 
     /// <summary>
-    /// 累计点击次数
+    /// 竞价策略
     /// </summary>
-    public long TotalClicks { get; private set; } = 0;
+    public BiddingStrategy BiddingStrategy { get; private set; }
 
     /// <summary>
-    /// 累计转化次数
-    /// </summary>
-    public long TotalConversions { get; private set; } = 0;
-
-    /// <summary>
-    /// 关联的广告列表
-    /// </summary>
-    private readonly List<string> _advertisementIds = new();
-    public IReadOnlyList<string> AdvertisementIds => _advertisementIds.AsReadOnly();
-
-    /// <summary>
-    /// 私有构造函数（用于ORM）
+    /// 私有构造函数，用于ORM
     /// </summary>
     private Campaign() { }
 
@@ -113,220 +69,43 @@ public class Campaign : AggregateRoot
     /// 构造函数
     /// </summary>
     public Campaign(
+        string advertisementId,
         string name,
         string description,
-        string advertiserId,
-        decimal totalBudget,
-        decimal dailyBudget,
-        DateTime startDate,
-        DateTime endDate,
-        DeliveryPolicy defaultDelivery,
-        CampaignObjective objective,
         TargetingConfig targetingConfig,
-        string timeZone = "UTC",
-        IList<string>? tags = null)
+        DeliveryPolicy deliveryPolicy,
+        BudgetInfo budget,
+        BiddingStrategy biddingStrategy = BiddingStrategy.AutoBid,
+        DateTime? startDate = null,
+        DateTime? endDate = null)
     {
-        ValidateInputs(name, advertiserId, totalBudget, dailyBudget, startDate, endDate);
+        ValidateInputs(advertisementId, name, targetingConfig, deliveryPolicy, budget);
 
+        AdvertisementId = advertisementId;
         Name = name;
         Description = description;
-        AdvertiserId = advertiserId;
-        TotalBudget = totalBudget;
-        DailyBudget = dailyBudget;
-        StartDate = startDate;
-        EndDate = endDate;
-        DefaultDelivery = defaultDelivery;
-        Objective = objective;
-        TargetingConfig = targetingConfig ?? throw new ArgumentNullException(nameof(targetingConfig));
-        TimeZone = timeZone;
-        Tags = tags?.ToList() ?? new List<string>();
-
-        // 发布活动创建事件
-        AddDomainEvent(new CampaignCreatedEvent(Id, advertiserId, name));
-    }
-
-    /// <summary>
-    /// 从定向策略模板创建活动（工厂方法）
-    /// 这是从TargetingPolicy创建TargetingConfig的推荐方式
-    /// </summary>
-    public static Campaign CreateFromTargetingPolicy(
-        string name,
-        string description,
-        string advertiserId,
-        decimal totalBudget,
-        decimal dailyBudget,
-        DateTime startDate,
-        DateTime endDate,
-        DeliveryPolicy defaultDelivery,
-        CampaignObjective objective,
-        TargetingPolicy targetingPolicy,
-        string timeZone = "UTC",
-        IList<string>? tags = null)
-    {
-        ArgumentNullException.ThrowIfNull(targetingPolicy);
-
-        // 从TargetingPolicy创建TargetingConfig实例
-        var targetingConfig = targetingPolicy.CreateConfig(advertiserId);
-
-        return new Campaign(
-            name,
-            description,
-            advertiserId,
-            totalBudget,
-            dailyBudget,
-            startDate,
-            endDate,
-            defaultDelivery,
-            objective,
-            targetingConfig,
-            timeZone,
-            tags);
-    }
-
-    /// <summary>
-    /// 更新基本信息
-    /// </summary>
-    public void UpdateBasicInfo(string name, string description, IList<string>? tags = null)
-    {
-        if (Status == CampaignStatus.Deleted)
-            throw new InvalidOperationException("已删除的活动无法修改");
-
-        ValidateName(name);
-
-        Name = name;
-        Description = description;
-        Tags = tags?.ToList() ?? new List<string>();
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "基本信息"));
-    }
-
-    /// <summary>
-    /// 更新预算
-    /// </summary>
-    public void UpdateBudget(decimal totalBudget, decimal dailyBudget)
-    {
-        if (Status == CampaignStatus.Deleted)
-            throw new InvalidOperationException("已删除的活动无法修改预算");
-
-        ValidateBudget(totalBudget, dailyBudget);
-
-        // 不能将预算调整到低于已消费金额
-        if (totalBudget < SpentBudget)
-            throw new InvalidOperationException("总预算不能低于已消费金额");
-
-        TotalBudget = totalBudget;
-        DailyBudget = dailyBudget;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignBudgetUpdatedEvent(Id, totalBudget, dailyBudget));
-    }
-
-    /// <summary>
-    /// 更新投放时间
-    /// </summary>
-    public void UpdateDeliveryTime(DateTime startDate, DateTime endDate)
-    {
-        if (Status == CampaignStatus.Active)
-            throw new InvalidOperationException("活跃状态的活动无法修改投放时间");
-
-        ValidateDeliveryTime(startDate, endDate);
-
-        StartDate = startDate;
-        EndDate = endDate;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "投放时间"));
-    }
-
-    /// <summary>
-    /// 更新定向配置
-    /// Campaign是定向配置的唯一管理者
-    /// </summary>
-    public void UpdateTargetingConfig(TargetingConfig targetingConfig)
-    {
-        ArgumentNullException.ThrowIfNull(targetingConfig);
-
         TargetingConfig = targetingConfig;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "定向配置"));
+        DeliveryPolicy = deliveryPolicy;
+        Budget = budget;
+        BiddingStrategy = biddingStrategy;
+        StartDate = startDate;
+        EndDate = endDate;
+        Status = CampaignStatus.Draft;
     }
 
     /// <summary>
-    /// 从定向策略模板创建新的定向配置
+    /// 开始活动
     /// </summary>
-    public void CreateTargetingFromPolicy(TargetingPolicy targetingPolicy)
+    public void Start()
     {
-        ArgumentNullException.ThrowIfNull(targetingPolicy);
+        if (Status != CampaignStatus.Draft && Status != CampaignStatus.Paused)
+            throw new InvalidOperationException("只有草稿或暂停状态的活动可开始");
 
-        // 从TargetingPolicy创建新的TargetingConfig实例
-        var newTargetingConfig = targetingPolicy.CreateConfig(AdvertiserId);
-        
-        UpdateTargetingConfig(newTargetingConfig);
-    }
+        if (!IsWithinScheduledTime())
+            throw new InvalidOperationException("不在预定的时间范围内");
 
-    /// <summary>
-    /// 更新默认投放策略
-    /// </summary>
-    public void UpdateDefaultDelivery(DeliveryPolicy deliveryPolicy)
-    {
-        ArgumentNullException.ThrowIfNull(deliveryPolicy);
-
-        DefaultDelivery = deliveryPolicy;
-
+        Status = CampaignStatus.Running;
         UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "默认投放策略"));
-    }
-
-    /// <summary>
-    /// 更新活动目标
-    /// </summary>
-    public void UpdateObjective(CampaignObjective objective)
-    {
-        ArgumentNullException.ThrowIfNull(objective);
-
-        Objective = objective;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignUpdatedEvent(Id, "活动目标"));
-    }
-
-    /// <summary>
-    /// 提交审核
-    /// </summary>
-    public void SubmitForReview()
-    {
-        if (Status != CampaignStatus.Draft)
-            throw new InvalidOperationException("只有草稿状态的活动可以提交审核");
-
-        if (!_advertisementIds.Any())
-            throw new InvalidOperationException("活动必须包含至少一个广告才能提交审核");
-
-        Status = CampaignStatus.PendingReview;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignSubmittedForReviewEvent(Id, AdvertiserId));
-    }
-
-    /// <summary>
-    /// 激活活动
-    /// </summary>
-    public void Activate()
-    {
-        if (Status != CampaignStatus.PendingReview && Status != CampaignStatus.Paused)
-            throw new InvalidOperationException("只有待审核或暂停状态的活动可以激活");
-
-        if (IsExpired)
-            throw new InvalidOperationException("已过期的活动无法激活");
-
-        if (!HasSufficientBudget(0))
-            throw new InvalidOperationException("预算不足，无法激活活动");
-
-        Status = CampaignStatus.Active;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignActivatedEvent(Id));
     }
 
     /// <summary>
@@ -334,410 +113,149 @@ public class Campaign : AggregateRoot
     /// </summary>
     public void Pause()
     {
-        if (Status != CampaignStatus.Active)
-            throw new InvalidOperationException("只有活跃状态的活动可以暂停");
+        if (Status != CampaignStatus.Running)
+            throw new InvalidOperationException("只有运行中的活动可暂停");
 
         Status = CampaignStatus.Paused;
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignPausedEvent(Id));
     }
 
     /// <summary>
-    /// 结束活动
+    /// 恢复活动
     /// </summary>
-    public void End()
+    public void Resume()
     {
-        if (Status == CampaignStatus.Ended || Status == CampaignStatus.Deleted)
-            return;
+        if (Status != CampaignStatus.Paused)
+            throw new InvalidOperationException("只有暂停的活动可恢复");
 
-        Status = CampaignStatus.Ended;
-
+        Status = CampaignStatus.Running;
         UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignEndedEvent(Id));
     }
 
     /// <summary>
-    /// 删除活动
+    /// 停止活动
     /// </summary>
-    public override void Delete()
+    public void Stop()
     {
-        if (Status == CampaignStatus.Active)
-            throw new InvalidOperationException("活跃状态的活动无法删除，请先暂停");
+        if (Status == CampaignStatus.Completed || Status == CampaignStatus.Cancelled)
+            throw new InvalidOperationException("已经完成或取消");
 
-        Status = CampaignStatus.Deleted;
-        base.Delete();
-
-        AddDomainEvent(new CampaignDeletedEvent(Id));
+        Status = CampaignStatus.Cancelled;
+        UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// 添加广告
+    /// 完成活动
     /// </summary>
-    public void AddAdvertisement(string advertisementId)
+    public void Complete()
     {
-        if (string.IsNullOrWhiteSpace(advertisementId))
-            throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
-
-        if (_advertisementIds.Contains(advertisementId))
-            throw new InvalidOperationException("广告已存在于活动中");
-
-        _advertisementIds.Add(advertisementId);
-
+        Status = CampaignStatus.Completed;
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementAddedToCampaignEvent(Id, advertisementId));
     }
 
     /// <summary>
-    /// 移除广告
+    /// 更新预算
     /// </summary>
-    public void RemoveAdvertisement(string advertisementId)
+    public void UpdateBudget(BudgetInfo budget)
     {
-        if (string.IsNullOrWhiteSpace(advertisementId))
-            throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
+        ArgumentNullException.ThrowIfNull(budget);
 
-        if (!_advertisementIds.Remove(advertisementId))
-            throw new InvalidOperationException("广告不存在于活动中");
-
+        Budget = budget;
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementRemovedFromCampaignEvent(Id, advertisementId));
     }
 
     /// <summary>
-    /// 记录展示
+    /// 更新定向配置
     /// </summary>
-    public void RecordImpression(decimal cost)
+    public void UpdateTargeting(TargetingConfig config)
     {
-        if (!CanDeliver)
-            throw new InvalidOperationException("活动当前状态不允许投放");
+        ArgumentNullException.ThrowIfNull(config);
 
-        TotalImpressions++;
-        SpentBudget += cost;
-
+        TargetingConfig = config;
         UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignImpressionRecordedEvent(Id, cost));
+    }
 
-        // 检查预算是否耗尽
-        if (!HasSufficientBudget(0))
+    /// <summary>
+    /// 从策略模板创建定向配置
+    /// </summary>
+    public TargetingConfig CreateTargetingFromPolicy(TargetingPolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+
+        var config = policy.CreateConfig(Id);
+        TargetingConfig = config;
+        UpdateLastModifiedTime();
+        return config;
+    }
+
+    /// <summary>
+    /// 检查预算可用性
+    /// </summary>
+    public bool CheckBudgetAvailability()
+    {
+        if (Budget.IsExhausted())
         {
-            AddDomainEvent(new CampaignBudgetExhaustedEvent(Id, SpentBudget));
+            // 预算用尽自动暂停活动
+            if (Status == CampaignStatus.Running)
+            {
+                Pause();
+            }
+            return false;
         }
+        return true;
     }
 
     /// <summary>
-    /// 记录点击
+    /// 是否活跃
     /// </summary>
-    public void RecordClick(decimal cost = 0)
+    public bool IsActive => Status == CampaignStatus.Running &&
+                           CheckBudgetAvailability() &&
+                           IsWithinScheduledTime() &&
+                           !IsDeleted;
+
+    public bool CanDeliver { get; internal set; }
+
+    /// <summary>
+    /// 是否在预定时间范围内
+    /// </summary>
+    public bool IsWithinScheduledTime()
     {
-        TotalClicks++;
-        if (cost > 0)
+        var now = DateTime.UtcNow;
+
+        if (StartDate.HasValue && now < StartDate.Value)
+            return false;
+
+        if (EndDate.HasValue && now > EndDate.Value)
         {
-            SpentBudget += cost;
+            // 超过结束时间状态为运行中，自动完成
+            if (Status == CampaignStatus.Running)
+            {
+                Complete();
+            }
+            return false;
         }
 
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignClickRecordedEvent(Id, cost));
-    }
-
-    /// <summary>
-    /// 记录转化
-    /// </summary>
-    public void RecordConversion()
-    {
-        TotalConversions++;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new CampaignConversionRecordedEvent(Id));
-    }
-
-    /// <summary>
-    /// 是否可以投放
-    /// </summary>
-    public bool CanDeliver => Status == CampaignStatus.Active && 
-                             !IsExpired && 
-                             IsWithinDeliveryTime &&
-                             HasSufficientBudget(0) &&
-                             !IsDeleted;
-
-    /// <summary>
-    /// 是否已过期
-    /// </summary>
-    public bool IsExpired => DateTime.UtcNow.Date > EndDate.Date;
-
-    /// <summary>
-    /// 是否在投放时间范围内
-    /// </summary>
-    public bool IsWithinDeliveryTime
-    {
-        get
-        {
-            var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, TimeZone);
-            return now.Date >= StartDate.Date && now.Date <= EndDate.Date;
-        }
-    }
-
-    /// <summary>
-    /// 是否有足够预算
-    /// </summary>
-    public bool HasSufficientBudget(decimal additionalCost)
-    {
-        return (SpentBudget + additionalCost) <= TotalBudget;
-    }
-
-    /// <summary>
-    /// 获取剩余预算
-    /// </summary>
-    public decimal GetRemainingBudget()
-    {
-        return Math.Max(0, TotalBudget - SpentBudget);
-    }
-
-    /// <summary>
-    /// 获取预算使用率
-    /// </summary>
-    public decimal GetBudgetUtilizationRate()
-    {
-        return TotalBudget > 0 ? SpentBudget / TotalBudget : 0m;
-    }
-
-    /// <summary>
-    /// 获取点击率
-    /// </summary>
-    public decimal GetClickThroughRate()
-    {
-        return TotalImpressions > 0 ? (decimal)TotalClicks / TotalImpressions : 0m;
-    }
-
-    /// <summary>
-    /// 获取转化率
-    /// </summary>
-    public decimal GetConversionRate()
-    {
-        return TotalClicks > 0 ? (decimal)TotalConversions / TotalClicks : 0m;
-    }
-
-    /// <summary>
-    /// 获取平均单次展示成本
-    /// </summary>
-    public decimal GetAverageCostPerImpression()
-    {
-        return TotalImpressions > 0 ? SpentBudget / TotalImpressions : 0m;
-    }
-
-    /// <summary>
-    /// 获取平均单次点击成本
-    /// </summary>
-    public decimal GetAverageCostPerClick()
-    {
-        return TotalClicks > 0 ? SpentBudget / TotalClicks : 0m;
-    }
-
-    /// <summary>
-    /// 获取活动剩余天数
-    /// </summary>
-    public int GetRemainingDays()
-    {
-        var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, TimeZone);
-        return Math.Max(0, (EndDate.Date - now.Date).Days);
+        return true;
     }
 
     /// <summary>
     /// 验证输入参数
     /// </summary>
-    private static void ValidateInputs(string name, string advertiserId, decimal totalBudget, 
-        decimal dailyBudget, DateTime startDate, DateTime endDate)
+    private static void ValidateInputs(string advertisementId, string name,
+        TargetingConfig targetingConfig, DeliveryPolicy deliveryPolicy, BudgetInfo budget)
     {
-        ValidateName(name);
+        if (string.IsNullOrWhiteSpace(advertisementId))
+            throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
 
-        if (string.IsNullOrWhiteSpace(advertiserId))
-            throw new ArgumentException("广告主ID不能为空", nameof(advertiserId));
-
-        ValidateBudget(totalBudget, dailyBudget);
-        ValidateDeliveryTime(startDate, endDate);
-    }
-
-    /// <summary>
-    /// 验证活动名称
-    /// </summary>
-    private static void ValidateName(string name)
-    {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("活动名称不能为空", nameof(name));
+            throw new ArgumentException("活动名不能为空", nameof(name));
 
-        if (name.Length > ValidationConstants.StringLength.AdTitleMaxLength)
-            throw new ArgumentException($"活动名称长度不能超过{ValidationConstants.StringLength.AdTitleMaxLength}个字符", nameof(name));
-    }
+        if (name.Length > ValidationConstants.StringLength.CampaignNameMaxLength)
+            throw new ArgumentException($"活动名长度不能超过{ValidationConstants.StringLength.CampaignNameMaxLength}个字符", nameof(name));
 
-    /// <summary>
-    /// 验证预算
-    /// </summary>
-    private static void ValidateBudget(decimal totalBudget, decimal dailyBudget)
-    {
-        if (totalBudget <= 0)
-            throw new ArgumentOutOfRangeException(nameof(totalBudget), "总预算必须大于0");
-
-        if (dailyBudget <= 0)
-            throw new ArgumentOutOfRangeException(nameof(dailyBudget), "日预算必须大于0");
-
-        if (dailyBudget > totalBudget)
-            throw new ArgumentException("日预算不能超过总预算");
-    }
-
-    /// <summary>
-    /// 验证投放时间
-    /// </summary>
-    private static void ValidateDeliveryTime(DateTime startDate, DateTime endDate)
-    {
-        if (startDate >= endDate)
-            throw new ArgumentException("开始日期必须早于结束日期");
-
-        if (endDate < DateTime.UtcNow.Date)
-            throw new ArgumentException("结束日期不能早于当前日期");
+        ArgumentNullException.ThrowIfNull(targetingConfig, nameof(targetingConfig));
+        ArgumentNullException.ThrowIfNull(deliveryPolicy, nameof(deliveryPolicy));
+        ArgumentNullException.ThrowIfNull(budget, nameof(budget));
     }
 }
 
-/// <summary>
-/// 活动目标值对象
-/// </summary>
-public class CampaignObjective : ValueObject
-{
-    /// <summary>
-    /// 目标类型
-    /// </summary>
-    public string ObjectiveType { get; private set; } = string.Empty;
-
-    /// <summary>
-    /// 目标展示次数
-    /// </summary>
-    public long? TargetImpressions { get; private set; }
-
-    /// <summary>
-    /// 目标点击次数
-    /// </summary>
-    public long? TargetClicks { get; private set; }
-
-    /// <summary>
-    /// 目标转化次数
-    /// </summary>
-    public long? TargetConversions { get; private set; }
-
-    /// <summary>
-    /// 目标点击率
-    /// </summary>
-    public decimal? TargetClickThroughRate { get; private set; }
-
-    /// <summary>
-    /// 目标转化率
-    /// </summary>
-    public decimal? TargetConversionRate { get; private set; }
-
-    /// <summary>
-    /// 目标每次点击成本
-    /// </summary>
-    public decimal? TargetCostPerClick { get; private set; }
-
-    /// <summary>
-    /// 目标每次转化成本
-    /// </summary>
-    public decimal? TargetCostPerConversion { get; private set; }
-
-    /// <summary>
-    /// 目标广告支出回报率
-    /// </summary>
-    public decimal? TargetReturnOnAdSpend { get; private set; }
-
-    /// <summary>
-    /// 私有构造函数
-    /// </summary>
-    private CampaignObjective() { }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public CampaignObjective(
-        string objectiveType,
-        long? targetImpressions = null,
-        long? targetClicks = null,
-        long? targetConversions = null,
-        decimal? targetClickThroughRate = null,
-        decimal? targetConversionRate = null,
-        decimal? targetCostPerClick = null,
-        decimal? targetCostPerConversion = null,
-        decimal? targetReturnOnAdSpend = null)
-    {
-        if (string.IsNullOrWhiteSpace(objectiveType))
-            throw new ArgumentException("目标类型不能为空", nameof(objectiveType));
-
-        ObjectiveType = objectiveType;
-        TargetImpressions = targetImpressions;
-        TargetClicks = targetClicks;
-        TargetConversions = targetConversions;
-        TargetClickThroughRate = targetClickThroughRate;
-        TargetConversionRate = targetConversionRate;
-        TargetCostPerClick = targetCostPerClick;
-        TargetCostPerConversion = targetCostPerConversion;
-        TargetReturnOnAdSpend = targetReturnOnAdSpend;
-    }
-
-    /// <summary>
-    /// 创建品牌知名度目标
-    /// </summary>
-    public static CampaignObjective CreateBrandAwareness(long targetImpressions)
-    {
-        return new CampaignObjective("BrandAwareness", targetImpressions: targetImpressions);
-    }
-
-    /// <summary>
-    /// 创建流量目标
-    /// </summary>
-    public static CampaignObjective CreateTraffic(long targetClicks, decimal? targetCostPerClick = null)
-    {
-        return new CampaignObjective("Traffic", targetClicks: targetClicks, targetCostPerClick: targetCostPerClick);
-    }
-
-    /// <summary>
-    /// 创建转化目标
-    /// </summary>
-    public static CampaignObjective CreateConversions(long targetConversions, decimal? targetCostPerConversion = null)
-    {
-        return new CampaignObjective("Conversions", targetConversions: targetConversions, targetCostPerConversion: targetCostPerConversion);
-    }
-
-    /// <summary>
-    /// 创建销售目标
-    /// </summary>
-    public static CampaignObjective CreateSales(decimal targetReturnOnAdSpend)
-    {
-        return new CampaignObjective("Sales", targetReturnOnAdSpend: targetReturnOnAdSpend);
-    }
-
-    /// <summary>
-    /// 计算目标完成率
-    /// </summary>
-    public decimal CalculateCompletionRate(long actualImpressions, long actualClicks, long actualConversions, decimal actualSpent)
-    {
-        return ObjectiveType switch
-        {
-            "BrandAwareness" => TargetImpressions.HasValue ? (decimal)actualImpressions / TargetImpressions.Value : 0m,
-            "Traffic" => TargetClicks.HasValue ? (decimal)actualClicks / TargetClicks.Value : 0m,
-            "Conversions" => TargetConversions.HasValue ? (decimal)actualConversions / TargetConversions.Value : 0m,
-            _ => 0m
-        };
-    }
-
-    /// <summary>
-    /// 获取相等性比较的组件
-    /// </summary>
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return ObjectiveType;
-        yield return TargetImpressions ?? 0;
-        yield return TargetClicks ?? 0;
-        yield return TargetConversions ?? 0;
-        yield return TargetClickThroughRate ?? 0m;
-        yield return TargetConversionRate ?? 0m;
-        yield return TargetCostPerClick ?? 0m;
-        yield return TargetCostPerConversion ?? 0m;
-        yield return TargetReturnOnAdSpend ?? 0m;
-    }
-}

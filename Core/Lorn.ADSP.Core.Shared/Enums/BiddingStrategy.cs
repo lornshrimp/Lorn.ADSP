@@ -1,7 +1,7 @@
 namespace Lorn.ADSP.Core.Shared.Enums;
 
 /// <summary>
-/// 竞价策略
+/// 竞价策略枚举
 /// </summary>
 public enum BiddingStrategy
 {
@@ -16,45 +16,27 @@ public enum BiddingStrategy
     AutoBid = 2,
 
     /// <summary>
-    /// 目标CPA
+    /// 目标CPA（每次获客成本）
     /// </summary>
-    TargetCpa = 3,
+    TargetCPA = 3,
 
     /// <summary>
-    /// 目标CPC
+    /// 目标ROAS（广告支出回报率）
     /// </summary>
-    TargetCpc = 4,
-
-    /// <summary>
-    /// 目标CPM
-    /// </summary>
-    TargetCpm = 5,
-
-    /// <summary>
-    /// 目标ROAS
-    /// </summary>
-    TargetRoas = 6,
+    TargetROAS = 4,
 
     /// <summary>
     /// 最大化点击
     /// </summary>
-    MaximizeClicks = 7,
+    MaximizeClicks = 5,
 
     /// <summary>
     /// 最大化转化
     /// </summary>
-    MaximizeConversions = 8,
+    MaximizeConversions = 6,
 
     /// <summary>
-    /// 最大化收入
+    /// 最大化转化价值
     /// </summary>
-    MaximizeRevenue = 9,
-    /// <summary>
-    /// 目标CPA
-    /// </summary>
-    TargetCPA = 10,
-    /// <summary>
-    /// 目标ROAS
-    /// </summary>
-    TargetROAS = 11
+    MaximizeConversionValue = 7
 }

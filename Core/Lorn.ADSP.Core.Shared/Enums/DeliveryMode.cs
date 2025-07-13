@@ -6,22 +6,22 @@ namespace Lorn.ADSP.Core.Shared.Enums;
 public enum DeliveryMode
 {
     /// <summary>
-    /// 保量投放
+    /// 保量投放（Guaranteed）
     /// </summary>
     Guaranteed = 1,
 
     /// <summary>
-    /// 竞价投放
+    /// 优先级投放（Priority）
     /// </summary>
-    Bidding = 2,
+    Priority = 2,
 
     /// <summary>
-    /// 混合投放
+    /// 竞价投放（Bidding/RTB）
     /// </summary>
-    Mixed = 3,
+    Bidding = 3,
 
     /// <summary>
-    /// 优先级投放
+    /// 混合投放（Mixed）
     /// </summary>
-    Priority = 4
+    Mixed = 4
 }

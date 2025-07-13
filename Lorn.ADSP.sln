@@ -115,6 +115,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "广告投放引擎", "广�
 	ProjectSection(SolutionItems) = preProject
 		docs_TecDesign\广告投放引擎\API设计规范.md = docs_TecDesign\广告投放引擎\API设计规范.md
 		docs_TecDesign\广告投放引擎\安全架构设计.md = docs_TecDesign\广告投放引擎\安全架构设计.md
+		docs_TecDesign\广告投放引擎\定向实体关系详解.md = docs_TecDesign\广告投放引擎\定向实体关系详解.md
+		docs_TecDesign\广告投放引擎\定向策略架构改进方案.md = docs_TecDesign\广告投放引擎\定向策略架构改进方案.md
 		docs_TecDesign\广告投放引擎\广告引擎抽象层设计.md = docs_TecDesign\广告投放引擎\广告引擎抽象层设计.md
 		docs_TecDesign\广告投放引擎\广告投放引擎技术数据结构设计.md = docs_TecDesign\广告投放引擎\广告投放引擎技术数据结构设计.md
 		docs_TecDesign\广告投放引擎\广告投放引擎技术设计.md = docs_TecDesign\广告投放引擎\广告投放引擎技术设计.md
@@ -123,8 +125,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "广告投放引擎", "广�
 		docs_TecDesign\广告投放引擎\数据外部协议对象设计.md = docs_TecDesign\广告投放引擎\数据外部协议对象设计.md
 		docs_TecDesign\广告投放引擎\数据安全与合规设计.md = docs_TecDesign\广告投放引擎\数据安全与合规设计.md
 		docs_TecDesign\广告投放引擎\数据性能优化设计.md = docs_TecDesign\广告投放引擎\数据性能优化设计.md
+		docs_TecDesign\广告投放引擎\数据模型关系修正说明.md = docs_TecDesign\广告投放引擎\数据模型关系修正说明.md
 		docs_TecDesign\广告投放引擎\数据模型分层设计.md = docs_TecDesign\广告投放引擎\数据模型分层设计.md
 		docs_TecDesign\广告投放引擎\数据结构VisualStudio项目架构映射.md = docs_TecDesign\广告投放引擎\数据结构VisualStudio项目架构映射.md
+		docs_TecDesign\广告投放引擎\数据访问层技术设计.md = docs_TecDesign\广告投放引擎\数据访问层技术设计.md
 		docs_TecDesign\广告投放引擎\消息队列设计.md = docs_TecDesign\广告投放引擎\消息队列设计.md
 		docs_TecDesign\广告投放引擎\监控与告警设计.md = docs_TecDesign\广告投放引擎\监控与告警设计.md
 		docs_TecDesign\广告投放引擎\缓存架构设计.md = docs_TecDesign\广告投放引擎\缓存架构设计.md
@@ -148,6 +152,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorn.ADSP.Infrastructure.Monitoring", "Infrastructure\Lorn.ADSP.Infrastructure.Monitoring\Lorn.ADSP.Infrastructure.Monitoring.csproj", "{263749E5-C1C8-40B2-8CB0-DB8B925AB54B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorn.ADSP.Core.Domain.Targeting", "Core\Lorn.ADSP.Core.Domain.Targeting\Lorn.ADSP.Core.Domain.Targeting.csproj", "{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lorn.ADSP.Infrastructure.Data.Abstractions", "Infrastructure\Lorn.ADSP.Infrastructure.Data.Abstractions\Lorn.ADSP.Infrastructure.Data.Abstractions.csproj", "{38030AF2-3D3C-4787-9FF2-95741BC0274C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -175,6 +181,10 @@ Global
 		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38030AF2-3D3C-4787-9FF2-95741BC0274C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38030AF2-3D3C-4787-9FF2-95741BC0274C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38030AF2-3D3C-4787-9FF2-95741BC0274C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38030AF2-3D3C-4787-9FF2-95741BC0274C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +203,7 @@ Global
 		{99A0FF9F-377A-477B-8F8B-55AD00AF0D0E} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
 		{263749E5-C1C8-40B2-8CB0-DB8B925AB54B} = {DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}
 		{40BC87D0-8F5A-4C0C-9CA2-75B2C049E3C6} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
+		{38030AF2-3D3C-4787-9FF2-95741BC0274C} = {DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C5DE99C1-6558-470D-9A0A-12450B082042}
