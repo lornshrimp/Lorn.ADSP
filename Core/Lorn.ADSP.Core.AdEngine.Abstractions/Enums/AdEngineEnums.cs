@@ -50,3 +50,10 @@ public enum StrategyType
     /// </summary>
     Custom = 99
 }
+
+
+
+
+
+
+

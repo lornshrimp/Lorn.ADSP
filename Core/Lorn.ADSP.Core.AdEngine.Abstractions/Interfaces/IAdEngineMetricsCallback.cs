@@ -13,7 +13,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="metrics">策略指标</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>上报任务</returns>
+    /// <returns>上报结果</returns>
     Task ReportStrategyMetricsAsync(
         StrategyMetrics metrics,
         CancellationToken cancellationToken = default);
@@ -23,7 +23,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="error">错误信息</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>记录任务</returns>
+    /// <returns>记录结果</returns>
     Task RecordErrorAsync(
         StrategyError error,
         CancellationToken cancellationToken = default);
@@ -33,7 +33,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="performance">性能数据</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>记录任务</returns>
+    /// <returns>记录结果</returns>
     Task RecordPerformanceAsync(
         PerformanceMetrics performance,
         CancellationToken cancellationToken = default);
@@ -43,7 +43,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="metrics">业务指标</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>记录任务</returns>
+    /// <returns>记录结果</returns>
     Task RecordBusinessMetricsAsync(
         BusinessMetrics metrics,
         CancellationToken cancellationToken = default);
@@ -53,7 +53,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="statistics">执行统计</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>记录任务</returns>
+    /// <returns>记录结果</returns>
     Task RecordExecutionStatisticsAsync(
         ExecutionStatistics statistics,
         CancellationToken cancellationToken = default);
@@ -63,7 +63,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="metricsBatch">指标批次</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>上报任务</returns>
+    /// <returns>上报结果</returns>
     Task ReportMetricsBatchAsync(
         IReadOnlyList<MetricsBatch> metricsBatch,
         CancellationToken cancellationToken = default);
@@ -73,7 +73,7 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="alert">告警事件</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>上报任务</returns>
+    /// <returns>上报结果</returns>
     Task ReportAlertAsync(
         AlertEvent alert,
         CancellationToken cancellationToken = default);
@@ -83,8 +83,129 @@ public interface IAdEngineMetricsCallback : IAdEngineCallback
     /// </summary>
     /// <param name="auditLog">审计日志</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>记录任务</returns>
+    /// <returns>记录结果</returns>
     Task RecordAuditLogAsync(
         AuditLog auditLog,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 增量上报指标数据
+    /// </summary>
+    /// <param name="metricName">指标名称</param>
+    /// <param name="value">指标值</param>
+    /// <param name="tags">标签字典</param>
+    /// <param name="timestamp">时间戳</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>上报结果</returns>
+    Task IncrementMetricAsync(
+        string metricName,
+        double value,
+        IReadOnlyDictionary<string, string>? tags = null,
+        DateTime? timestamp = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 计数器指标上报
+    /// </summary>
+    /// <param name="counterName">计数器名称</param>
+    /// <param name="increment">增量值</param>
+    /// <param name="tags">标签字典</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>上报结果</returns>
+    Task IncrementCounterAsync(
+        string counterName,
+        long increment = 1,
+        IReadOnlyDictionary<string, string>? tags = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 直方图指标上报
+    /// </summary>
+    /// <param name="histogramName">直方图名称</param>
+    /// <param name="value">测量值</param>
+    /// <param name="tags">标签字典</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>上报结果</returns>
+    Task RecordHistogramAsync(
+        string histogramName,
+        double value,
+        IReadOnlyDictionary<string, string>? tags = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 计时器指标上报
+    /// </summary>
+    /// <param name="timerName">计时器名称</param>
+    /// <param name="duration">持续时间</param>
+    /// <param name="tags">标签字典</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>上报结果</returns>
+    Task RecordTimerAsync(
+        string timerName,
+        TimeSpan duration,
+        IReadOnlyDictionary<string, string>? tags = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 记录自定义事件
+    /// </summary>
+    /// <param name="eventName">事件名称</param>
+    /// <param name="properties">事件属性</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>记录结果</returns>
+    Task RecordCustomEventAsync(
+        string eventName,
+        IReadOnlyDictionary<string, object> properties,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 开始性能追踪
+    /// </summary>
+    /// <param name="operationName">操作名称</param>
+    /// <param name="tags">标签字典</param>
+    /// <returns>追踪上下文</returns>
+    IPerformanceTracker StartPerformanceTracking(
+        string operationName,
+        IReadOnlyDictionary<string, string>? tags = null);
+}
+
+/// <summary>
+/// 性能追踪器接口
+/// </summary>
+public interface IPerformanceTracker : IDisposable
+{
+    /// <summary>
+    /// 操作名称
+    /// </summary>
+    string OperationName { get; }
+
+    /// <summary>
+    /// 开始时间
+    /// </summary>
+    DateTime StartTime { get; }
+
+    /// <summary>
+    /// 添加标签
+    /// </summary>
+    void AddTag(string key, string value);
+
+    /// <summary>
+    /// 添加属性
+    /// </summary>
+    void AddProperty(string key, object value);
+
+    /// <summary>
+    /// 标记成功
+    /// </summary>
+    void MarkSuccess();
+
+    /// <summary>
+    /// 标记失败
+    /// </summary>
+    void MarkFailure(string? reason = null);
+
+    /// <summary>
+    /// 停止追踪
+    /// </summary>
+    Task StopAsync(CancellationToken cancellationToken = default);
 }
