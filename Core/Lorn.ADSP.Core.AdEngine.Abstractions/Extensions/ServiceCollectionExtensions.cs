@@ -1,6 +1,6 @@
+using Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces;
 
 namespace Lorn.ADSP.Core.AdEngine.Abstractions.Extensions;
 
@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
     /// <param name="lifetime">服务生命周期</param>
     /// <returns>服务集合</returns>
     public static IServiceCollection AddAdProcessingStrategy<TStrategy>(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
         where TStrategy : class, IAdProcessingStrategy
     {
@@ -132,117 +132,5 @@ public static class ServiceCollectionExtensions
     }
 }
 
-/// <summary>
-/// 广告引擎抽象层选项
-/// </summary>
-public class AdEngineAbstractionsOptions
-{
-    /// <summary>
-    /// 是否注册策略服务
-    /// </summary>
-    public bool RegisterStrategyServices { get; set; } = true;
 
-    /// <summary>
-    /// 是否注册回调服务
-    /// </summary>
-    public bool RegisterCallbackServices { get; set; } = true;
 
-    /// <summary>
-    /// 是否注册监控服务
-    /// </summary>
-    public bool RegisterMonitoringServices { get; set; } = true;
-
-    /// <summary>
-    /// 默认超时时间
-    /// </summary>
-    public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
-
-    /// <summary>
-    /// 最大重试次数
-    /// </summary>
-    public int MaxRetries { get; set; } = 3;
-
-    /// <summary>
-    /// 是否启用性能监控
-    /// </summary>
-    public bool EnablePerformanceMonitoring { get; set; } = true;
-
-    /// <summary>
-    /// 是否启用详细日志
-    /// </summary>
-    public bool EnableVerboseLogging { get; set; } = false;
-}
-
-/// <summary>
-/// 默认回调提供者实现
-/// </summary>
-internal class DefaultCallbackProvider : ICallbackProvider
-{
-    private readonly IServiceProvider _serviceProvider;
-    private readonly Dictionary<string, IAdEngineCallback> _namedCallbacks = new();
-
-    public DefaultCallbackProvider(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
-    public T GetCallback<T>() where T : class, IAdEngineCallback
-    {
-        var callback = _serviceProvider.GetService<T>();
-        if (callback == null)
-        {
-            throw new Exceptions.CallbackNotFoundException(typeof(T));
-        }
-        return callback;
-    }
-
-    public T GetCallback<T>(string name) where T : class, IAdEngineCallback
-    {
-        if (_namedCallbacks.TryGetValue(name, out var namedCallback) && namedCallback is T typedCallback)
-        {
-            return typedCallback;
-        }
-
-        throw new Exceptions.CallbackNotFoundException(name, typeof(T));
-    }
-
-    public bool HasCallback<T>() where T : class, IAdEngineCallback
-    {
-        return _serviceProvider.GetService<T>() != null;
-    }
-
-    public bool HasCallback(string callbackName)
-    {
-        return _namedCallbacks.ContainsKey(callbackName);
-    }
-
-    public IReadOnlyDictionary<string, IAdEngineCallback> GetAllCallbacks()
-    {
-        return _namedCallbacks.AsReadOnly();
-    }
-
-    public bool TryGetCallback<T>(out T? callback) where T : class, IAdEngineCallback
-    {
-        callback = _serviceProvider.GetService<T>();
-        return callback != null;
-    }
-
-    public bool TryGetCallback<T>(string name, out T? callback) where T : class, IAdEngineCallback
-    {
-        callback = null;
-        if (_namedCallbacks.TryGetValue(name, out var namedCallback) && namedCallback is T typedCallback)
-        {
-            callback = typedCallback;
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// 注册命名回调
-    /// </summary>
-    public void RegisterCallback(string name, IAdEngineCallback callback)
-    {
-        _namedCallbacks[name] = callback;
-    }
-}
