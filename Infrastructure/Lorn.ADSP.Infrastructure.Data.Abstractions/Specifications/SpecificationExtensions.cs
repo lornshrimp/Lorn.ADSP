@@ -88,54 +88,6 @@ public static class SpecificationExtensions
     }
 
     /// <summary>
-    /// 应用规格到查询
-    /// </summary>
-    /// <typeparam name="T">实体类型</typeparam>
-    /// <param name="query">查询</param>
-    /// <param name="specification">规格</param>
-    /// <returns>应用规格后的查询</returns>
-    public static IQueryable<T> ApplySpecification<T>(this IQueryable<T> query, ISpecification<T> specification)
-    {
-        // 应用查询条件
-        if (specification.Criteria != null)
-        {
-            query = query.Where(specification.Criteria);
-        }
-
-        // 应用包含
-        query = specification.Includes
-            .Aggregate(query, (current, include) => current.Include(include));
-
-        query = specification.IncludeStrings
-            .Aggregate(query, (current, include) => current.Include(include));
-
-        // 应用排序
-        if (specification.OrderBy != null)
-        {
-            query = query.OrderBy(specification.OrderBy);
-        }
-        else if (specification.OrderByDescending != null)
-        {
-            query = query.OrderByDescending(specification.OrderByDescending);
-        }
-
-        // 应用分组
-        if (specification.GroupBy != null)
-        {
-            // 注意：GroupBy通常需要在具体的实现中处理
-            // 这里只是标记，实际的分组逻辑在仓储实现中处理
-        }
-
-        // 应用分页
-        if (specification.IsPagingEnabled)
-        {
-            query = query.Skip(specification.Skip).Take(specification.Take);
-        }
-
-        return query;
-    }
-
-    /// <summary>
     /// 组合多个规格
     /// </summary>
     /// <typeparam name="T">实体类型</typeparam>

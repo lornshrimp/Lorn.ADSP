@@ -5,53 +5,6 @@ using Lorn.ADSP.Infrastructure.Data.Abstractions.Interfaces;
 namespace Lorn.ADSP.Infrastructure.Data.Abstractions.Models;
 
 /// <summary>
-/// 批量操作结果
-/// </summary>
-/// <typeparam name="T">数据类型</typeparam>
-public class BatchOperationResult<T> where T : class
-{
-    /// <summary>
-    /// 操作是否成功
-    /// </summary>
-    public bool IsSuccessful { get; set; } = true;
-
-    /// <summary>
-    /// 成功处理的项目数量
-    /// </summary>
-    public int SuccessCount { get; set; }
-
-    /// <summary>
-    /// 失败的项目数量
-    /// </summary>
-    public int FailureCount { get; set; }
-
-    /// <summary>
-    /// 总项目数量
-    /// </summary>
-    public int TotalCount { get; set; }
-
-    /// <summary>
-    /// 操作结果
-    /// </summary>
-    public IReadOnlyList<T> Results { get; set; } = Array.Empty<T>();
-
-    /// <summary>
-    /// 错误信息
-    /// </summary>
-    public IReadOnlyList<BatchOperationError> Errors { get; set; } = Array.Empty<BatchOperationError>();
-
-    /// <summary>
-    /// 操作耗时
-    /// </summary>
-    public TimeSpan Duration { get; set; }
-
-    /// <summary>
-    /// 操作统计信息
-    /// </summary>
-    public Dictionary<string, object> Statistics { get; set; } = new();
-}
-
-/// <summary>
 /// 批量操作错误
 /// </summary>
 public class BatchOperationError
@@ -80,53 +33,6 @@ public class BatchOperationError
     /// 错误上下文
     /// </summary>
     public Dictionary<string, object> Context { get; set; } = new();
-}
-
-/// <summary>
-/// 查询结果
-/// </summary>
-/// <typeparam name="T">结果类型</typeparam>
-public class QueryResult<T> where T : class
-{
-    /// <summary>
-    /// 查询结果数据
-    /// </summary>
-    public IReadOnlyList<T> Data { get; set; } = Array.Empty<T>();
-
-    /// <summary>
-    /// 总数量（用于分页）
-    /// </summary>
-    public long TotalCount { get; set; }
-
-    /// <summary>
-    /// 是否还有更多数据
-    /// </summary>
-    public bool HasMore { get; set; }
-
-    /// <summary>
-    /// 查询是否成功
-    /// </summary>
-    public bool IsSuccessful { get; set; } = true;
-
-    /// <summary>
-    /// 错误消息
-    /// </summary>
-    public string? ErrorMessage { get; set; }
-
-    /// <summary>
-    /// 查询耗时
-    /// </summary>
-    public TimeSpan Duration { get; set; }
-
-    /// <summary>
-    /// 查询统计信息
-    /// </summary>
-    public Dictionary<string, object> Statistics { get; set; } = new();
-
-    /// <summary>
-    /// 下一页令牌
-    /// </summary>
-    public string? NextPageToken { get; set; }
 }
 
 
