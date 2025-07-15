@@ -31,29 +31,29 @@ public enum DatabaseType
     Oracle = 5,
 
     /// <summary>
-    /// 阿里云PolarDB
+    /// PolarDB
     /// </summary>
     PolarDB = 6,
 
     /// <summary>
-    /// 阿里云RDS
+    /// Redis
     /// </summary>
-    AlibabaRDS = 7,
+    Redis = 10,
 
     /// <summary>
-    /// Azure SQL Database
+    /// MongoDB
     /// </summary>
-    AzureSqlDatabase = 8,
+    MongoDB = 11,
 
     /// <summary>
-    /// AWS RDS
+    /// InfluxDB
     /// </summary>
-    AwsRDS = 9,
+    InfluxDB = 12,
 
     /// <summary>
-    /// AWS Aurora
+    /// Elasticsearch
     /// </summary>
-    AwsAurora = 10
+    Elasticsearch = 13
 }
 
 /// <summary>
@@ -151,67 +151,6 @@ public enum TransactionStatus
     /// 超时
     /// </summary>
     Timeout = 10
-}
-
-/// <summary>
-/// 分布式事务状态枚举
-/// </summary>
-public enum DistributedTransactionStatus
-{
-    /// <summary>
-    /// 未开始
-    /// </summary>
-    NotStarted = 1,
-
-    /// <summary>
-    /// 活跃中
-    /// </summary>
-    Active = 2,
-
-    /// <summary>
-    /// 准备中
-    /// </summary>
-    Preparing = 3,
-
-    /// <summary>
-    /// 已准备
-    /// </summary>
-    Prepared = 4,
-
-    /// <summary>
-    /// 提交中
-    /// </summary>
-    Committing = 5,
-
-    /// <summary>
-    /// 已提交
-    /// </summary>
-    Committed = 6,
-
-    /// <summary>
-    /// 回滚中
-    /// </summary>
-    RollingBack = 7,
-
-    /// <summary>
-    /// 已回滚
-    /// </summary>
-    RolledBack = 8,
-
-    /// <summary>
-    /// 已中止
-    /// </summary>
-    Aborted = 9,
-
-    /// <summary>
-    /// 部分提交
-    /// </summary>
-    PartiallyCommitted = 10,
-
-    /// <summary>
-    /// 部分回滚
-    /// </summary>
-    PartiallyRolledBack = 11
 }
 
 /// <summary>

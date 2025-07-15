@@ -16,6 +16,16 @@ public interface ITransactionScope : IDisposable, IAsyncDisposable
     string TransactionId { get; }
 
     /// <summary>
+    /// 事务类型
+    /// </summary>
+    TransactionType Type { get; }
+
+    /// <summary>
+    /// 事务隔离级别
+    /// </summary>
+    IsolationLevel IsolationLevel { get; }
+
+    /// <summary>
     /// 事务状态
     /// </summary>
     TransactionStatus Status { get; }
@@ -26,14 +36,9 @@ public interface ITransactionScope : IDisposable, IAsyncDisposable
     DateTime StartedAt { get; }
 
     /// <summary>
-    /// 事务超时时间
+    /// 事务持续时间
     /// </summary>
-    TimeSpan Timeout { get; }
-
-    /// <summary>
-    /// 事务隔离级别
-    /// </summary>
-    IsolationLevel IsolationLevel { get; }
+    TimeSpan Duration { get; }
 
     /// <summary>
     /// 提交事务
@@ -50,46 +55,40 @@ public interface ITransactionScope : IDisposable, IAsyncDisposable
     Task RollbackAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 添加补偿操作
+    /// 创建保存点
+    /// </summary>
+    /// <param name="name">保存点名称</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>保存点事务范围</returns>
+    Task<ITransactionScope> CreateSavepointAsync(string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 回滚到保存点
+    /// </summary>
+    /// <param name="name">保存点名称</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>回滚任务</returns>
+    Task RollbackToSavepointAsync(string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 注册补偿操作
     /// 在事务回滚时执行的操作
     /// </summary>
     /// <param name="compensation">补偿操作</param>
-    void AddCompensation(Func<Task> compensation);
-
-    /// <summary>
-    /// 检查事务是否可以提交
-    /// </summary>
-    /// <returns>是否可以提交</returns>
-    Task<bool> CanCommitAsync();
+    void RegisterCompensation(Func<CancellationToken, Task> compensation);
 
     /// <summary>
     /// 获取事务统计信息
     /// </summary>
     /// <returns>事务统计</returns>
-    TransactionStatistics GetStatistics();
-
-    /// <summary>
-    /// 创建保存点
-    /// </summary>
-    /// <param name="savepointName">保存点名称</param>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>创建任务</returns>
-    Task CreateSavepointAsync(string savepointName, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// 回滚到保存点
-    /// </summary>
-    /// <param name="savepointName">保存点名称</param>
-    /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>回滚任务</returns>
-    Task RollbackToSavepointAsync(string savepointName, CancellationToken cancellationToken = default);
+    Task<TransactionStatistics> GetStatisticsAsync();
 }
 
 /// <summary>
-/// 分布式事务接口
+/// 分布式事务范围接口
 /// 管理跨多个资源的分布式事务
 /// </summary>
-public interface IDistributedTransaction : IDisposable, IAsyncDisposable
+public interface IDistributedTransactionScope : IDisposable, IAsyncDisposable
 {
     /// <summary>
     /// 全局事务标识
@@ -97,22 +96,18 @@ public interface IDistributedTransaction : IDisposable, IAsyncDisposable
     string GlobalTransactionId { get; }
 
     /// <summary>
-    /// 事务范围列表
+    /// 本地事务范围列表
     /// </summary>
-    IReadOnlyList<ITransactionScope> Scopes { get; }
+    IReadOnlyList<ITransactionScope> LocalScopes { get; }
 
     /// <summary>
-    /// 分布式事务状态
-    /// </summary>
-    DistributedTransactionStatus Status { get; }
-
-    /// <summary>
-    /// 创建事务范围
+    /// 创建本地事务范围
     /// </summary>
     /// <param name="scopeName">范围名称</param>
+    /// <param name="options">事务选项</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>事务范围</returns>
-    Task<ITransactionScope> CreateScopeAsync(string scopeName, CancellationToken cancellationToken = default);
+    /// <returns>本地事务范围</returns>
+    Task<ITransactionScope> CreateLocalScopeAsync(string scopeName, TransactionOptions options, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 提交所有事务范围
@@ -129,16 +124,16 @@ public interface IDistributedTransaction : IDisposable, IAsyncDisposable
     Task RollbackAllAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 执行分布式事务操作
+    /// 准备阶段
+    /// 两阶段提交的第一阶段
     /// </summary>
-    /// <param name="operation">事务操作</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>事务结果</returns>
-    Task<TransactionResult> ExecuteAsync(Func<ITransactionScope, Task> operation, CancellationToken cancellationToken = default);
+    /// <returns>准备结果</returns>
+    Task<bool> PreparePhaseAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 获取分布式事务统计信息
+    /// 获取分布式事务结果
     /// </summary>
-    /// <returns>统计信息</returns>
-    DistributedTransactionStatistics GetStatistics();
+    /// <returns>事务结果</returns>
+    Task<DistributedTransactionResult> GetResultAsync();
 }
