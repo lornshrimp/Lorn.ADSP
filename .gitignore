@@ -19,6 +19,9 @@ local.properties
 视频课程/
 免费专栏/
 收费专栏/
+.vscode/
+.sarif/
+.kiro/
 
 # External tool builders
 .externalToolBuilders/

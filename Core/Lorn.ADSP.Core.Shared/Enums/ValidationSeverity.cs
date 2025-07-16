@@ -1,4 +1,4 @@
-﻿namespace Lorn.ADSP.Core.AdEngine.Abstractions.Enums
+﻿namespace Lorn.ADSP.Core.Shared.Enums
 {
     /// <summary>
     /// 验证严重程度

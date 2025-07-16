@@ -1,3 +1,4 @@
+using Lorn.ADSP.Core.Shared.Entities;
 using Lorn.ADSP.Infrastructure.Data.Abstractions.Enums;
 
 namespace Lorn.ADSP.Infrastructure.Data.Abstractions.Models;
@@ -284,73 +285,7 @@ public class ConnectionInfo
         }
 
         return errors.Count == 0
-            ? ValidationResult.Success()
-            : ValidationResult.Failure(errors);
-    }
-}
-
-/// <summary>
-/// 验证结果
-/// </summary>
-public class ValidationResult
-{
-    /// <summary>
-    /// 是否验证成功
-    /// </summary>
-    public bool IsValid { get; set; }
-
-    /// <summary>
-    /// 错误消息列表
-    /// </summary>
-    public List<string> Errors { get; set; } = [];
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    public ValidationResult()
-    {
-    }
-
-    /// <summary>
-    /// 构造函数
-    /// </summary>
-    /// <param name="isValid">是否有效</param>
-    /// <param name="errors">错误列表</param>
-    public ValidationResult(bool isValid, IEnumerable<string>? errors = null)
-    {
-        IsValid = isValid;
-        if (errors != null)
-        {
-            Errors.AddRange(errors);
-        }
-    }
-
-    /// <summary>
-    /// 创建成功结果
-    /// </summary>
-    /// <returns>成功结果</returns>
-    public static ValidationResult Success()
-    {
-        return new ValidationResult(true);
-    }
-
-    /// <summary>
-    /// 创建失败结果
-    /// </summary>
-    /// <param name="errors">错误列表</param>
-    /// <returns>失败结果</returns>
-    public static ValidationResult Failure(IEnumerable<string> errors)
-    {
-        return new ValidationResult(false, errors);
-    }
-
-    /// <summary>
-    /// 创建失败结果
-    /// </summary>
-    /// <param name="error">错误消息</param>
-    /// <returns>失败结果</returns>
-    public static ValidationResult Failure(string error)
-    {
-        return new ValidationResult(false, [error]);
+            ? Lorn.ADSP.Core.Shared.Entities.ValidationResult.Success()
+            : Lorn.ADSP.Core.Shared.Entities.ValidationResult.Failure(errors);
     }
 }

@@ -1,6 +1,7 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using Lorn.ADSP.Core.Shared.Entities;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
 
@@ -356,7 +357,7 @@ public class TargetingConfig : ValueObject
     /// </summary>
     public ValidationResult ValidateConfig()
     {
-        var validationResult = new ValidationResult();
+        var validationResult = new ValidationResult(string.Empty);
 
         // 验证基本属性
         if (string.IsNullOrEmpty(ConfigId))

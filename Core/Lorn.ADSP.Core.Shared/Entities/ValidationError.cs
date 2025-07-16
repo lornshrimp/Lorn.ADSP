@@ -1,6 +1,6 @@
-﻿using Lorn.ADSP.Core.AdEngine.Abstractions.Enums;
+﻿using Lorn.ADSP.Core.Shared.Enums;
 
-namespace Lorn.ADSP.Core.AdEngine.Abstractions.Models;
+namespace Lorn.ADSP.Core.Shared.Entities;
 
 /// <summary>
 /// 验证错误

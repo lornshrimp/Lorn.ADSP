@@ -1,4 +1,6 @@
-﻿namespace Lorn.ADSP.Infrastructure.Data.Abstractions.Models
+﻿using Lorn.ADSP.Core.Shared.Entities;
+
+namespace Lorn.ADSP.Infrastructure.Data.Abstractions.Models
 {
     /// <summary>
     /// 分页选项

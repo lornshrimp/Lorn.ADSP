@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Common\Lorn.ADSP.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Configuration\Lorn.ADSP.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DependencyInjection\Lorn.ADSP.Infrastructure.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+  </ItemGroup>
+
+</Project>
