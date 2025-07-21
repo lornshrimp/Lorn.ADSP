@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>Lorn.ADSP 数据访问层仓储模式实现</Description>
+    <Authors>Lorn.ADSP</Authors>
+    <Company>Lorn.ADSP</Company>
+    <Product>Lorn.ADSP Infrastructure</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DataAccess.Abstractions\Lorn.ADSP.Infrastructure.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DataAccess.Core\Lorn.ADSP.Infrastructure.DataAccess.Core.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Common\Lorn.ADSP.Infrastructure.Common.csproj" />
+  </ItemGroup>
+
+</Project>

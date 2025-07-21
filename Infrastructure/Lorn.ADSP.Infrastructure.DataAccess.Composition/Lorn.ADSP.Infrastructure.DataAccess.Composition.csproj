@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>Lorn.ADSP 数据访问层组合服务</Description>
+    <Authors>Lorn.ADSP</Authors>
+    <Company>Lorn.ADSP</Company>
+    <Product>Lorn.ADSP Infrastructure</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DataAccess.Abstractions\Lorn.ADSP.Infrastructure.DataAccess.Abstractions.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DataAccess.Core\Lorn.ADSP.Infrastructure.DataAccess.Core.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.DataAccess.Repository\Lorn.ADSP.Infrastructure.DataAccess.Repository.csproj" />
+    <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Composition\Lorn.ADSP.Infrastructure.Composition.csproj" />
+  </ItemGroup>
+
+</Project>
