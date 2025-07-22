@@ -1,6 +1,7 @@
 using Lorn.ADSP.Infrastructure.DataAccess.Abstractions.Enums;
 using Lorn.ADSP.Infrastructure.DataAccess.Abstractions.Interfaces;
 using Lorn.ADSP.Infrastructure.DataAccess.Abstractions.Models;
+using Lorn.ADSP.Infrastructure.DataAccess.Core.Chain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Collections.Concurrent;
@@ -70,6 +71,100 @@ public class DataAccessRouter : IDataAccessRouter
             providers.Count(), context.RequestId);
 
         return providers;
+    }
+
+    /// <inheritdoc />
+    public async Task<IDataAccessProviderChain> BuildProviderChainAsync(DataAccessContext context, CancellationToken cancellationToken = default)
+    {
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
+
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            // 1. 获取所有候选提供者
+            var candidateProviders = (await GetCandidateProvidersAsync(context, cancellationToken)).ToList();
+
+            if (!candidateProviders.Any())
+            {
+                _logger.LogWarning("No candidate providers found for request {RequestId}", context.RequestId);
+                throw new InvalidOperationException($"No suitable providers found for request {context.RequestId}");
+            }
+
+            // 2. 按类型分组提供者
+            var cacheProviders = candidateProviders
+                .Where(p => p.GetMetadata().ProviderType == DataProviderType.Cache)
+                .OrderBy(p => p.GetMetadata().Priority)
+                .ToList();
+
+            var databaseProviders = candidateProviders
+                .Where(p => p.GetMetadata().ProviderType == DataProviderType.Database)
+                .OrderBy(p => p.GetMetadata().Priority)
+                .ToList();
+
+            // 3. 构建提供者链节点
+            var chainNodes = new List<DataProviderChainNode>();
+
+            // 添加缓存提供者（作为主要数据源）
+            if (cacheProviders.Any())
+            {
+                var primaryCacheProvider = cacheProviders.First();
+                chainNodes.Add(new DataProviderChainNode
+                {
+                    Provider = primaryCacheProvider,
+                    Role = ProviderNodeRole.Cache
+                });
+            }
+
+            // 添加数据库提供者（作为回退数据源）
+            if (databaseProviders.Any())
+            {
+                var primaryDatabaseProvider = databaseProviders.First();
+                chainNodes.Add(new DataProviderChainNode
+                {
+                    Provider = primaryDatabaseProvider,
+                    Role = ProviderNodeRole.Database
+                });
+            }
+
+            // 添加缓存回写节点（如果有缓存提供者）
+            if (cacheProviders.Any())
+            {
+                var writeBackCacheProvider = cacheProviders.First();
+                chainNodes.Add(new DataProviderChainNode
+                {
+                    Provider = writeBackCacheProvider,
+                    Role = ProviderNodeRole.Cache // 缓存回写也是 Cache 角色
+                });
+            }
+
+            // 4. 创建并返回提供者链执行器
+            var chainId = $"Chain_{context.RequestId}_{Guid.NewGuid():N}";
+
+            // 使用类型不安全但可工作的日志记录器转换
+            var chainLogger = (ILogger<DataAccessProviderChain>)(object)_logger;
+
+            var chainExecutor = new DataAccessProviderChain(
+                chainId,
+                chainNodes.AsReadOnly(),
+                CacheWriteBackStrategy.Asynchronous,
+                chainLogger);
+
+            stopwatch.Stop();
+
+            _logger.LogDebug("Built provider chain with {NodeCount} nodes for request {RequestId} in {Duration}ms",
+                chainNodes.Count, context.RequestId, stopwatch.ElapsedMilliseconds);
+
+            return chainExecutor;
+        }
+        catch (Exception ex)
+        {
+            stopwatch.Stop();
+            _logger.LogError(ex, "Error building provider chain for request {RequestId} after {Duration}ms",
+                context.RequestId, stopwatch.ElapsedMilliseconds);
+            throw;
+        }
     }
 
     /// <inheritdoc />

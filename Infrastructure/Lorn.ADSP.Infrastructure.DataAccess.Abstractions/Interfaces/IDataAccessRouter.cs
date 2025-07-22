@@ -4,7 +4,7 @@ namespace Lorn.ADSP.Infrastructure.DataAccess.Abstractions.Interfaces;
 
 /// <summary>
 /// 数据访问路由器接口
-/// 负责根据上下文信息智能选择合适的数据提供者
+/// 负责根据上下文信息智能选择合适的数据提供者或构建提供者执行链
 /// </summary>
 public interface IDataAccessRouter
 {
@@ -23,6 +23,15 @@ public interface IDataAccessRouter
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns>候选数据提供者列表</returns>
     Task<IEnumerable<IDataAccessProvider>> GetCandidateProvidersAsync(DataAccessContext context, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 异步构建数据访问提供者链
+    /// 根据路由策略创建有序的提供者执行链，支持缓存优先和自动回写
+    /// </summary>
+    /// <param name="context">数据访问上下文</param>
+    /// <param name="cancellationToken">取消令牌</param>
+    /// <returns>构建的提供者执行链</returns>
+    Task<IDataAccessProviderChain> BuildProviderChainAsync(DataAccessContext context, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 异步更新路由规则
