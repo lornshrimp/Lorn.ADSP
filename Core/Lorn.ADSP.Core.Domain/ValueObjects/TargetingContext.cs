@@ -1,17 +1,18 @@
-﻿using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using System.Text.Json;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;
 
 /// <summary>
 /// 定向上下文值对象
-/// 通过ITargetingContext接口的字典来动态管理各种定向信息，以方便扩展
+/// 通过ITargetingContext接口的集合来动态管理各种定向信息，以方便扩展
 /// 符合数据模型设计中定向上下文的定义，支持多种上下文信息的动态封装
 /// </summary>
 public class TargetingContext : ValueObject
 {
     /// <summary>
-    /// 上下文唯一标识
+    /// 上下文标识
     /// </summary>
     public string ContextId { get; private set; }
 
@@ -22,10 +23,9 @@ public class TargetingContext : ValueObject
 
     /// <summary>
     /// 定向上下文集合
-    /// 支持多种ITargetingContext实现的动态字典管理
+    /// 支持多种ITargetingContext实现的集合管理
     /// </summary>
-    private readonly Dictionary<string, ITargetingContext> _targetingContexts = new();
-    public IReadOnlyDictionary<string, ITargetingContext> TargetingContexts => _targetingContexts.AsReadOnly();
+    public IReadOnlyList<ITargetingContext> TargetingContexts { get; private set; }
 
     /// <summary>
     /// 创建时间
@@ -33,9 +33,9 @@ public class TargetingContext : ValueObject
     public DateTime CreatedAt { get; private set; }
 
     /// <summary>
-    /// 上下文元数据
+    /// 上下文元数据属性集合
     /// </summary>
-    public IReadOnlyDictionary<string, object> ContextMetadata { get; private set; }
+    public IReadOnlyList<ContextProperty> ContextMetadataProperties { get; private set; }
 
     /// <summary>
     /// 私有构造函数
@@ -43,24 +43,27 @@ public class TargetingContext : ValueObject
     private TargetingContext(
         string contextId,
         string requestId,
-        IDictionary<string, ITargetingContext>? targetingContexts,
+        IEnumerable<ITargetingContext>? targetingContexts,
         DateTime createdAt,
         IDictionary<string, object>? contextMetadata)
     {
         ContextId = contextId;
         RequestId = requestId;
-
-        if (targetingContexts != null)
-        {
-            foreach (var context in targetingContexts)
-            {
-                _targetingContexts[context.Key] = context.Value;
-            }
-        }
-
+        TargetingContexts = targetingContexts?.ToList() ?? new List<ITargetingContext>();
         CreatedAt = createdAt;
-        ContextMetadata = contextMetadata?.ToDictionary(kv => kv.Key, kv => kv.Value).AsReadOnly() ??
-                          new Dictionary<string, object>().AsReadOnly();
+
+        // 将元数据字典转换为 ContextProperty 集合
+        ContextMetadataProperties = contextMetadata?.Select(kvp =>
+            new ContextProperty(
+                kvp.Key,
+                JsonSerializer.Serialize(kvp.Value),
+                kvp.Value?.GetType().Name ?? "String",
+                "ContextMetadata",
+                false,
+                1.0m,
+                null,
+                "TargetingContext")
+        ).ToList() ?? new List<ContextProperty>();
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public static TargetingContext Create(
         string requestId,
-        IDictionary<string, ITargetingContext>? targetingContexts = null,
+        IEnumerable<ITargetingContext>? targetingContexts = null,
         IDictionary<string, object>? contextMetadata = null)
     {
         ValidateInputs(requestId);
@@ -85,47 +88,73 @@ public class TargetingContext : ValueObject
     }
 
     /// <summary>
+    /// 从字典创建（兼容性方法）
+    /// </summary>
+    public static TargetingContext CreateFromDictionary(
+        string requestId,
+        IDictionary<string, ITargetingContext>? targetingContexts = null,
+        IDictionary<string, object>? contextMetadata = null)
+    {
+        return Create(requestId, targetingContexts?.Values, contextMetadata);
+    }
+
+    /// <summary>
     /// 添加定向上下文
     /// </summary>
-    public TargetingContext AddTargetingContext(string key, ITargetingContext targetingContext)
+    public TargetingContext WithTargetingContext(ITargetingContext targetingContext)
     {
-        if (string.IsNullOrEmpty(key))
-            throw new ArgumentException("上下文键不能为空", nameof(key));
-
         if (targetingContext == null)
             throw new ArgumentNullException(nameof(targetingContext));
 
-        var newContexts = new Dictionary<string, ITargetingContext>(_targetingContexts)
-        {
-            [key] = targetingContext
-        };
+        // 移除同类型的现有上下文，添加新的
+        var newContexts = TargetingContexts.Where(c => c.ContextType != targetingContext.ContextType)
+                                          .Concat(new[] { targetingContext })
+                                          .ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
             newContexts,
             CreatedAt,
-            ContextMetadata.ToDictionary(kv => kv.Key, kv => kv.Value)
+            ContextMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
     /// <summary>
-    /// 移除定向上下文
+    /// 移除指定类型的定向上下文
     /// </summary>
-    public TargetingContext RemoveTargetingContext(string key)
+    public TargetingContext WithoutTargetingContext(string contextType)
     {
-        if (string.IsNullOrEmpty(key))
-            throw new ArgumentException("上下文键不能为空", nameof(key));
+        if (string.IsNullOrEmpty(contextType))
+            return this;
 
-        var newContexts = new Dictionary<string, ITargetingContext>(_targetingContexts);
-        newContexts.Remove(key);
+        var newContexts = TargetingContexts.Where(c => c.ContextType != contextType).ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
             newContexts,
             CreatedAt,
-            ContextMetadata.ToDictionary(kv => kv.Key, kv => kv.Value)
+            ContextMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
+        );
+    }
+
+    /// <summary>
+    /// 移除指定的定向上下文实例
+    /// </summary>
+    public TargetingContext WithoutTargetingContext(ITargetingContext targetingContext)
+    {
+        if (targetingContext == null)
+            return this;
+
+        var newContexts = TargetingContexts.Where(c => !ReferenceEquals(c, targetingContext)).ToList();
+
+        return new TargetingContext(
+            ContextId,
+            RequestId,
+            newContexts,
+            CreatedAt,
+            ContextMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
@@ -134,47 +163,28 @@ public class TargetingContext : ValueObject
     /// </summary>
     public T? GetTargetingContext<T>() where T : class, ITargetingContext
     {
-        return _targetingContexts.Values.OfType<T>().FirstOrDefault();
-    }
-
-    /// <summary>
-    /// 获取指定键的定向上下文
-    /// </summary>
-    public ITargetingContext? GetTargetingContext(string key)
-    {
-        if (string.IsNullOrEmpty(key))
-            return null;
-
-        return _targetingContexts.TryGetValue(key, out var context) ? context : null;
-    }
-
-    /// <summary>
-    /// 获取指定键和类型的定向上下文
-    /// </summary>
-    public T? GetTargetingContext<T>(string key) where T : class, ITargetingContext
-    {
-        var context = GetTargetingContext(key);
-        return context as T;
+        return TargetingContexts.OfType<T>().FirstOrDefault();
     }
 
     /// <summary>
     /// 获取指定类型名称的定向上下文
     /// </summary>
-    public ITargetingContext? GetTargetingContextByType(string contextType)
+    public ITargetingContext? GetTargetingContext(string contextType)
     {
         if (string.IsNullOrEmpty(contextType))
             return null;
 
-        return _targetingContexts.Values.FirstOrDefault(ctx =>
+        return TargetingContexts.FirstOrDefault(ctx =>
             string.Equals(ctx.ContextType, contextType, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
-    /// 是否包含指定键的定向上下文
+    /// 获取指定类型名称的定向上下文（泛型版本）
     /// </summary>
-    public bool HasTargetingContext(string key)
+    public T? GetTargetingContext<T>(string contextType) where T : class, ITargetingContext
     {
-        return !string.IsNullOrEmpty(key) && _targetingContexts.ContainsKey(key);
+        var context = GetTargetingContext(contextType);
+        return context as T;
     }
 
     /// <summary>
@@ -182,7 +192,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public bool HasTargetingContextOfType<T>() where T : class, ITargetingContext
     {
-        return _targetingContexts.Values.OfType<T>().Any();
+        return TargetingContexts.OfType<T>().Any();
     }
 
     /// <summary>
@@ -190,15 +200,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public bool HasTargetingContextOfType(string contextType)
     {
-        return GetTargetingContextByType(contextType) != null;
-    }
-
-    /// <summary>
-    /// 获取所有定向上下文的键
-    /// </summary>
-    public IReadOnlyList<string> GetTargetingContextKeys()
-    {
-        return _targetingContexts.Keys.ToList().AsReadOnly();
+        return GetTargetingContext(contextType) != null;
     }
 
     /// <summary>
@@ -206,7 +208,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public IReadOnlyList<string> GetTargetingContextTypes()
     {
-        return _targetingContexts.Values
+        return TargetingContexts
             .Select(ctx => ctx.ContextType)
             .Distinct()
             .ToList()
@@ -221,10 +223,18 @@ public class TargetingContext : ValueObject
         if (string.IsNullOrEmpty(key))
             return default;
 
-        if (ContextMetadata.TryGetValue(key, out var value) && value is T typedValue)
-            return typedValue;
+        var contextProperty = ContextMetadataProperties.FirstOrDefault(p => p.PropertyKey == key);
+        if (contextProperty == null)
+            return default;
 
-        return default;
+        try
+        {
+            return JsonSerializer.Deserialize<T>(contextProperty.PropertyValue);
+        }
+        catch
+        {
+            return default;
+        }
     }
 
     /// <summary>
@@ -235,17 +245,26 @@ public class TargetingContext : ValueObject
         if (string.IsNullOrEmpty(key))
             throw new ArgumentException("元数据键不能为空", nameof(key));
 
-        var newMetadata = new Dictionary<string, object>(ContextMetadata)
-        {
-            [key] = value
-        };
+        var newProperty = new ContextProperty(
+            key,
+            JsonSerializer.Serialize(value),
+            value?.GetType().Name ?? "String",
+            "ContextMetadata",
+            false,
+            1.0m,
+            null,
+            "TargetingContext");
+
+        var newProperties = ContextMetadataProperties.Where(p => p.PropertyKey != key)
+                                                    .Concat(new[] { newProperty })
+                                                    .ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
-            _targetingContexts,
+            TargetingContexts,
             CreatedAt,
-            newMetadata
+            newProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
@@ -255,17 +274,16 @@ public class TargetingContext : ValueObject
     public TargetingContext WithoutMetadata(string key)
     {
         if (string.IsNullOrEmpty(key))
-            throw new ArgumentException("元数据键不能为空", nameof(key));
+            return this;
 
-        var newMetadata = new Dictionary<string, object>(ContextMetadata);
-        newMetadata.Remove(key);
+        var newProperties = ContextMetadataProperties.Where(p => p.PropertyKey != key).ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
-            _targetingContexts,
+            TargetingContexts,
             CreatedAt,
-            newMetadata
+            newProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
@@ -276,7 +294,7 @@ public class TargetingContext : ValueObject
     {
         return !string.IsNullOrEmpty(ContextId) &&
                !string.IsNullOrEmpty(RequestId) &&
-               _targetingContexts.Any();
+               TargetingContexts.Any();
     }
 
     /// <summary>
@@ -284,7 +302,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public Dictionary<string, object> GetSummary()
     {
-        var contextTypeCounts = _targetingContexts.Values
+        var contextTypeCounts = TargetingContexts
             .GroupBy(ctx => ctx.ContextType)
             .ToDictionary(g => g.Key, g => g.Count());
 
@@ -292,10 +310,10 @@ public class TargetingContext : ValueObject
         {
             ["ContextId"] = ContextId,
             ["RequestId"] = RequestId,
-            ["TargetingContextsCount"] = _targetingContexts.Count,
+            ["TargetingContextsCount"] = TargetingContexts.Count,
             ["TargetingContextTypes"] = GetTargetingContextTypes(),
             ["ContextTypeCounts"] = contextTypeCounts,
-            ["MetadataKeysCount"] = ContextMetadata.Count,
+            ["MetadataKeysCount"] = ContextMetadataProperties.Count,
             ["CreatedAt"] = CreatedAt,
             ["IsValid"] = IsValid()
         };
@@ -311,39 +329,32 @@ public class TargetingContext : ValueObject
             return this; // 返回当前实例，因为是不可变的
         }
 
-        var filteredContexts = _targetingContexts
-            .Where(kv => includeContextTypes.Contains(kv.Value.ContextType, StringComparer.OrdinalIgnoreCase))
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        var filteredContexts = TargetingContexts
+            .Where(ctx => includeContextTypes.Contains(ctx.ContextType, StringComparer.OrdinalIgnoreCase))
+            .ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
             filteredContexts,
             CreatedAt,
-            ContextMetadata.ToDictionary(kv => kv.Key, kv => kv.Value)
+            ContextMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
     /// <summary>
-    /// 创建包含指定键的轻量级副本
+    /// 创建包含指定类型的轻量级副本
     /// </summary>
-    public TargetingContext CreateLightweightCopyByKeys(params string[] includeKeys)
+    public TargetingContext CreateLightweightCopyByTypes<T>() where T : class, ITargetingContext
     {
-        if (includeKeys == null || includeKeys.Length == 0)
-        {
-            return this; // 返回当前实例，因为是不可变的
-        }
-
-        var filteredContexts = _targetingContexts
-            .Where(kv => includeKeys.Contains(kv.Key, StringComparer.OrdinalIgnoreCase))
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
+        var filteredContexts = TargetingContexts.OfType<T>().Cast<ITargetingContext>().ToList();
 
         return new TargetingContext(
             ContextId,
             RequestId,
             filteredContexts,
             CreatedAt,
-            ContextMetadata.ToDictionary(kv => kv.Key, kv => kv.Value)
+            ContextMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
@@ -355,23 +366,41 @@ public class TargetingContext : ValueObject
         if (other == null)
             throw new ArgumentNullException(nameof(other));
 
-        var mergedContexts = new Dictionary<string, ITargetingContext>(_targetingContexts);
+        var mergedContexts = new List<ITargetingContext>(TargetingContexts);
 
-        foreach (var context in other._targetingContexts)
+        foreach (var context in other.TargetingContexts)
         {
-            if (overwriteExisting || !mergedContexts.ContainsKey(context.Key))
+            var existingIndex = mergedContexts.FindIndex(c => c.ContextType == context.ContextType);
+
+            if (existingIndex >= 0)
             {
-                mergedContexts[context.Key] = context.Value;
+                if (overwriteExisting)
+                {
+                    mergedContexts[existingIndex] = context;
+                }
+            }
+            else
+            {
+                mergedContexts.Add(context);
             }
         }
 
-        var mergedMetadata = new Dictionary<string, object>(ContextMetadata);
+        var mergedMetadataProperties = new List<ContextProperty>(ContextMetadataProperties);
 
-        foreach (var metadata in other.ContextMetadata)
+        foreach (var property in other.ContextMetadataProperties)
         {
-            if (overwriteExisting || !mergedMetadata.ContainsKey(metadata.Key))
+            var existingIndex = mergedMetadataProperties.FindIndex(p => p.PropertyKey == property.PropertyKey);
+
+            if (existingIndex >= 0)
             {
-                mergedMetadata[metadata.Key] = metadata.Value;
+                if (overwriteExisting)
+                {
+                    mergedMetadataProperties[existingIndex] = property;
+                }
+            }
+            else
+            {
+                mergedMetadataProperties.Add(property);
             }
         }
 
@@ -380,7 +409,7 @@ public class TargetingContext : ValueObject
             RequestId, // 保持原有的RequestId
             mergedContexts,
             CreatedAt, // 保持原有的创建时间
-            mergedMetadata
+            mergedMetadataProperties.ToDictionary(p => p.PropertyKey, p => JsonSerializer.Deserialize<object>(p.PropertyValue) ?? p.PropertyValue)
         );
     }
 
@@ -393,19 +422,18 @@ public class TargetingContext : ValueObject
         yield return RequestId;
         yield return CreatedAt;
 
-        // 上下文字典的内容哈希
-        foreach (var context in _targetingContexts.OrderBy(kv => kv.Key))
+        // 上下文集合的内容哈希
+        foreach (var context in TargetingContexts.OrderBy(ctx => ctx.ContextType))
         {
-            yield return context.Key;
-            yield return context.Value.ContextId;
-            yield return context.Value.ContextType;
+            yield return context.ContextId;
+            yield return context.ContextType;
         }
 
         // 元数据的内容哈希
-        foreach (var metadata in ContextMetadata.OrderBy(kv => kv.Key))
+        foreach (var property in ContextMetadataProperties.OrderBy(p => p.PropertyKey))
         {
-            yield return metadata.Key;
-            yield return metadata.Value?.GetHashCode() ?? 0;
+            yield return property.PropertyKey;
+            yield return property.PropertyValue;
         }
     }
 

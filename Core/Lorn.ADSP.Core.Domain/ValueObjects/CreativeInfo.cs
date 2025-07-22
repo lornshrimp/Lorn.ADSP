@@ -61,7 +61,7 @@ public class CreativeInfo : ValueObject
     /// <summary>
     /// 扩展属性
     /// </summary>
-    public IReadOnlyDictionary<string, object> Attributes { get; private set; }
+    public IReadOnlyList<ContextProperty> Attributes { get; private set; }
 
     /// <summary>
     /// 私有构造函数
@@ -77,7 +77,7 @@ public class CreativeInfo : ValueObject
         long fileSize,
         CreativeFormat format,
         string? description = null,
-        IReadOnlyDictionary<string, object>? attributes = null)
+        IReadOnlyList<ContextProperty>? attributes = null)
     {
         CreativeId = creativeId;
         Title = title;
@@ -89,7 +89,7 @@ public class CreativeInfo : ValueObject
         MimeType = mimeType;
         FileSize = fileSize;
         Format = format;
-        Attributes = attributes ?? new Dictionary<string, object>();
+        Attributes = attributes?.ToList().AsReadOnly() ?? new List<ContextProperty>().AsReadOnly();
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public class CreativeInfo : ValueObject
         long fileSize,
         CreativeFormat format = CreativeFormat.Banner,
         string? description = null,
-        IReadOnlyDictionary<string, object>? attributes = null)
+        IReadOnlyList<ContextProperty>? attributes = null)
     {
         ValidateCreativeId(creativeId);
         ValidateTitle(title);
@@ -190,7 +190,7 @@ public class CreativeInfo : ValueObject
         string materialUrl,
         string clickUrl,
         string? description = null,
-        IReadOnlyDictionary<string, object>? nativeAttributes = null)
+        IReadOnlyList<ContextProperty>? nativeAttributes = null)
     {
         return Create(
             creativeId,
@@ -228,7 +228,7 @@ public class CreativeInfo : ValueObject
     /// <summary>
     /// 链式操作：更新扩展属性
     /// </summary>
-    public CreativeInfo WithAttributes(IReadOnlyDictionary<string, object> attributes)
+    public CreativeInfo WithAttributes(IReadOnlyList<ContextProperty> attributes)
     {
         return new CreativeInfo(
             CreativeId,
@@ -249,11 +249,15 @@ public class CreativeInfo : ValueObject
     /// </summary>
     public CreativeInfo WithAttribute(string key, object value)
     {
-        var newAttributes = new Dictionary<string, object>(Attributes)
-        {
-            [key] = value
-        };
-        return WithAttributes(newAttributes);
+        var newAttributes = new List<ContextProperty>(Attributes);
+
+        // 移除已存在的相同键的属性
+        newAttributes.RemoveAll(attr => attr.PropertyKey == key);
+
+        // 添加新属性
+        newAttributes.Add(new ContextProperty(key, value?.ToString() ?? string.Empty));
+
+        return WithAttributes(newAttributes.AsReadOnly());
     }
 
     /// <summary>
@@ -322,6 +326,47 @@ public class CreativeInfo : ValueObject
     public string GetDisplayInfo()
     {
         return $"{Title} ({Width}x{Height}, {Format})";
+    }
+
+    /// <summary>
+    /// 获取指定键的属性值
+    /// </summary>
+    /// <param name="key">属性键</param>
+    /// <returns>属性值，如果不存在则返回null</returns>
+    public string? GetAttributeValue(string key)
+    {
+        return Attributes.FirstOrDefault(attr => attr.PropertyKey == key)?.PropertyValue;
+    }
+
+    /// <summary>
+    /// 获取指定键的强类型属性值
+    /// </summary>
+    /// <typeparam name="T">目标类型</typeparam>
+    /// <param name="key">属性键</param>
+    /// <returns>转换后的属性值</returns>
+    public T? GetAttributeValue<T>(string key) where T : class
+    {
+        var property = Attributes.FirstOrDefault(attr => attr.PropertyKey == key);
+        return property?.GetValue<T>();
+    }
+
+    /// <summary>
+    /// 检查是否包含指定键的属性
+    /// </summary>
+    /// <param name="key">属性键</param>
+    /// <returns>是否包含</returns>
+    public bool HasAttribute(string key)
+    {
+        return Attributes.Any(attr => attr.PropertyKey == key);
+    }
+
+    /// <summary>
+    /// 获取所有属性键
+    /// </summary>
+    /// <returns>属性键列表</returns>
+    public IEnumerable<string> GetAttributeKeys()
+    {
+        return Attributes.Select(attr => attr.PropertyKey);
     }
 
     #region 参数校验
@@ -409,11 +454,11 @@ public class CreativeInfo : ValueObject
         yield return FileSize;
         yield return Format;
 
-        // 注意：对于字典类型，需要特殊处理
-        foreach (var kvp in Attributes.OrderBy(x => x.Key))
+        // 注意：对于ContextProperty集合，按键排序以确保一致的相等性比较
+        foreach (var attr in Attributes.OrderBy(x => x.PropertyKey))
         {
-            yield return kvp.Key;
-            yield return kvp.Value;
+            yield return attr.PropertyKey;
+            yield return attr.PropertyValue;
         }
     }
 

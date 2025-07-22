@@ -39,9 +39,9 @@ public class MatchResult : ValueObject
     public string NotMatchReason { get; private set; }
 
     /// <summary>
-    /// 详细匹配信息字典
+    /// 详细匹配信息
     /// </summary>
-    public IReadOnlyDictionary<string, object> MatchDetails { get; private set; }
+    public IReadOnlyList<ContextProperty> MatchDetails { get; private set; }
 
     /// <summary>
     /// 单个条件计算耗时
@@ -78,7 +78,7 @@ public class MatchResult : ValueObject
         decimal matchScore,
         string matchReason,
         string notMatchReason,
-        IReadOnlyDictionary<string, object> matchDetails,
+        IReadOnlyList<ContextProperty> matchDetails,
         TimeSpan executionTime,
         DateTime calculatedAt,
         int priority,
@@ -111,9 +111,11 @@ public class MatchResult : ValueObject
         int priority = 0,
         decimal weight = 1.0m,
         bool isRequired = false,
-        IDictionary<string, object>? matchDetails = null)
+        IEnumerable<ContextProperty>? matchDetails = null)
     {
         ValidateInputs(criteriaType, criteriaId, matchScore, weight);
+
+        var details = matchDetails?.ToList().AsReadOnly() ?? new List<ContextProperty>().AsReadOnly();
 
         return new MatchResult(
             criteriaType,
@@ -122,7 +124,7 @@ public class MatchResult : ValueObject
             matchScore,
             matchReason,
             string.Empty,
-            matchDetails?.AsReadOnly() ?? new Dictionary<string, object>().AsReadOnly(),
+            details,
             executionTime,
             DateTime.UtcNow,
             priority,
@@ -141,9 +143,11 @@ public class MatchResult : ValueObject
         int priority = 0,
         decimal weight = 1.0m,
         bool isRequired = false,
-        IDictionary<string, object>? matchDetails = null)
+        IEnumerable<ContextProperty>? matchDetails = null)
     {
         ValidateInputs(criteriaType, criteriaId, 0m, weight);
+
+        var details = matchDetails?.ToList().AsReadOnly() ?? new List<ContextProperty>().AsReadOnly();
 
         return new MatchResult(
             criteriaType,
@@ -152,12 +156,88 @@ public class MatchResult : ValueObject
             0m,
             string.Empty,
             notMatchReason,
-            matchDetails?.AsReadOnly() ?? new Dictionary<string, object>().AsReadOnly(),
+            details,
             executionTime,
             DateTime.UtcNow,
             priority,
             weight,
             isRequired);
+    }
+
+    /// <summary>
+    /// 创建匹配结果（从字典参数）
+    /// </summary>
+    public static MatchResult CreateMatchFromDictionary(
+        string criteriaType,
+        string criteriaId,
+        decimal matchScore,
+        string matchReason,
+        TimeSpan executionTime,
+        int priority = 0,
+        decimal weight = 1.0m,
+        bool isRequired = false,
+        IDictionary<string, object>? matchDetails = null)
+    {
+        var details = ConvertDictionaryToContextProperties(matchDetails);
+        return CreateMatch(criteriaType, criteriaId, matchScore, matchReason, executionTime, priority, weight, isRequired, details);
+    }
+
+    /// <summary>
+    /// 创建不匹配结果（从字典参数）
+    /// </summary>
+    public static MatchResult CreateNoMatchFromDictionary(
+        string criteriaType,
+        string criteriaId,
+        string notMatchReason,
+        TimeSpan executionTime,
+        int priority = 0,
+        decimal weight = 1.0m,
+        bool isRequired = false,
+        IDictionary<string, object>? matchDetails = null)
+    {
+        var details = ConvertDictionaryToContextProperties(matchDetails);
+        return CreateNoMatch(criteriaType, criteriaId, notMatchReason, executionTime, priority, weight, isRequired, details);
+    }
+
+    /// <summary>
+    /// 将字典转换为 ContextProperty 集合
+    /// </summary>
+    private static IEnumerable<ContextProperty> ConvertDictionaryToContextProperties(IDictionary<string, object>? dictionary)
+    {
+        if (dictionary == null)
+            return Enumerable.Empty<ContextProperty>();
+
+        return dictionary.Select(kvp =>
+        {
+            string propertyValue;
+            string dataType;
+
+            if (kvp.Value is string stringValue)
+            {
+                propertyValue = stringValue;
+                dataType = "String";
+            }
+            else if (kvp.Value.GetType().IsPrimitive || kvp.Value is decimal || kvp.Value is DateTime)
+            {
+                propertyValue = kvp.Value.ToString() ?? string.Empty;
+                dataType = kvp.Value.GetType().Name;
+            }
+            else
+            {
+                propertyValue = System.Text.Json.JsonSerializer.Serialize(kvp.Value);
+                dataType = "Json";
+            }
+
+            return new ContextProperty(
+                kvp.Key,
+                propertyValue,
+                dataType,
+                "MatchDetail",
+                false,
+                1.0m,
+                null,
+                "MatchResult");
+        });
     }
 
     /// <summary>
@@ -192,17 +272,50 @@ public class MatchResult : ValueObject
     /// </summary>
     public bool HasDetail(string key)
     {
-        return MatchDetails.ContainsKey(key);
+        return MatchDetails.Any(p => p.PropertyKey == key);
     }
 
     /// <summary>
     /// 获取指定详情
     /// </summary>
-    public T? GetDetail<T>(string key)
+    public T? GetDetail<T>(string key) where T : struct
     {
-        if (MatchDetails.TryGetValue(key, out var value) && value is T typedValue)
-            return typedValue;
-        return default;
+        var detail = MatchDetails.FirstOrDefault(p => p.PropertyKey == key);
+        return detail?.GetValue<T>();
+    }
+
+    /// <summary>
+    /// 获取指定详情（引用类型）
+    /// </summary>
+    public T? GetDetailRef<T>(string key) where T : class
+    {
+        var detail = MatchDetails.FirstOrDefault(p => p.PropertyKey == key);
+        return detail?.GetValue<T>();
+    }
+
+    /// <summary>
+    /// 获取所有详情作为字典（向后兼容）
+    /// </summary>
+    public Dictionary<string, object> GetDetailsAsDictionary()
+    {
+        var result = new Dictionary<string, object>();
+        foreach (var detail in MatchDetails)
+        {
+            try
+            {
+                var value = detail.GetValue<object>();
+                if (value != null)
+                {
+                    result[detail.PropertyKey] = value;
+                }
+            }
+            catch
+            {
+                // 如果转换失败，使用原始字符串值
+                result[detail.PropertyKey] = detail.PropertyValue;
+            }
+        }
+        return result;
     }
 
     /// <summary>
@@ -210,7 +323,7 @@ public class MatchResult : ValueObject
     /// </summary>
     public bool IsValidResult()
     {
-        return !string.IsNullOrEmpty(CriteriaType) && 
+        return !string.IsNullOrEmpty(CriteriaType) &&
                !string.IsNullOrEmpty(CriteriaId) &&
                (IsMatch ? !string.IsNullOrEmpty(MatchReason) : !string.IsNullOrEmpty(NotMatchReason));
     }
@@ -222,8 +335,8 @@ public class MatchResult : ValueObject
     {
         var status = IsMatch ? "MATCH" : "NO_MATCH";
         var reason = IsMatch ? MatchReason : NotMatchReason;
-        var details = MatchDetails.Any() 
-            ? string.Join(", ", MatchDetails.Take(3).Select(kv => $"{kv.Key}:{kv.Value}"))
+        var details = MatchDetails.Any()
+            ? string.Join(", ", MatchDetails.Take(3).Select(detail => $"{detail.PropertyKey}:{detail.PropertyValue}"))
             : "No Details";
 
         return $"{CriteriaType}[{CriteriaId}]: {status} Score:{MatchScore:F3} Weight:{Weight:F2} " +

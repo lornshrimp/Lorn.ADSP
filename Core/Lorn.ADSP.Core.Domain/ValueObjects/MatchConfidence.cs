@@ -42,7 +42,7 @@ public class MatchConfidence : ValueObject
     /// <summary>
     /// 详细统计指标
     /// </summary>
-    public IReadOnlyDictionary<string, decimal> StatisticalMetrics { get; private set; }
+    public IReadOnlyList<ContextProperty> StatisticalMetrics { get; private set; }
 
     /// <summary>
     /// 最后更新时间
@@ -64,7 +64,7 @@ public class MatchConfidence : ValueObject
         decimal confidenceInterval,
         ConfidenceLevel level,
         string calculationMethod,
-        IReadOnlyDictionary<string, decimal> statisticalMetrics,
+        IReadOnlyList<ContextProperty> statisticalMetrics,
         DateTime lastUpdated,
         bool isReliable)
     {
@@ -88,13 +88,13 @@ public class MatchConfidence : ValueObject
         decimal standardDeviation,
         decimal confidenceInterval,
         string calculationMethod = "Standard",
-        IDictionary<string, decimal>? statisticalMetrics = null)
+        IEnumerable<ContextProperty>? statisticalMetrics = null)
     {
         ValidateInputs(confidenceScore, sampleSize, standardDeviation, confidenceInterval);
 
         var level = DetermineConfidenceLevel(confidenceScore);
         var isReliable = DetermineReliability(confidenceScore, sampleSize);
-        var metrics = statisticalMetrics?.AsReadOnly() ?? new Dictionary<string, decimal>().AsReadOnly();
+        var metrics = statisticalMetrics?.ToList().AsReadOnly() ?? new List<ContextProperty>().AsReadOnly();
 
         return new MatchConfidence(
             confidenceScore,
@@ -106,6 +106,30 @@ public class MatchConfidence : ValueObject
             metrics,
             DateTime.UtcNow,
             isReliable);
+    }
+
+    /// <summary>
+    /// 创建匹配置信度（从字典参数）
+    /// </summary>
+    public static MatchConfidence CreateFromDictionary(
+        decimal confidenceScore,
+        int sampleSize,
+        decimal standardDeviation,
+        decimal confidenceInterval,
+        string calculationMethod = "Standard",
+        IDictionary<string, decimal>? statisticalMetrics = null)
+    {
+        var metrics = statisticalMetrics?.Select(kvp => new ContextProperty(
+            kvp.Key,
+            kvp.Value.ToString(),
+            "Decimal",
+            "StatisticalMetric",
+            false,
+            1.0m,
+            null,
+            "MatchConfidence")) ?? Enumerable.Empty<ContextProperty>();
+
+        return Create(confidenceScore, sampleSize, standardDeviation, confidenceInterval, calculationMethod, metrics);
     }
 
     /// <summary>
@@ -137,6 +161,48 @@ public class MatchConfidence : ValueObject
     }
 
     /// <summary>
+    /// 获取统计度量值
+    /// </summary>
+    public T? GetStatisticalMetric<T>(string metricKey) where T : struct
+    {
+        var metric = StatisticalMetrics.FirstOrDefault(m => m.PropertyKey == metricKey);
+        return metric?.GetValue<T>();
+    }
+
+    /// <summary>
+    /// 获取统计度量值（引用类型）
+    /// </summary>
+    public T? GetStatisticalMetricRef<T>(string metricKey) where T : class
+    {
+        var metric = StatisticalMetrics.FirstOrDefault(m => m.PropertyKey == metricKey);
+        return metric?.GetValue<T>();
+    }
+
+    /// <summary>
+    /// 获取所有统计度量作为字典（向后兼容）
+    /// </summary>
+    public Dictionary<string, decimal> GetStatisticalMetricsAsDictionary()
+    {
+        var result = new Dictionary<string, decimal>();
+        foreach (var metric in StatisticalMetrics)
+        {
+            if (decimal.TryParse(metric.PropertyValue, out decimal value))
+            {
+                result[metric.PropertyKey] = value;
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 检查是否包含特定的统计度量
+    /// </summary>
+    public bool HasStatisticalMetric(string metricKey)
+    {
+        return StatisticalMetrics.Any(m => m.PropertyKey == metricKey);
+    }
+
+    /// <summary>
     /// 获取置信度等级
     /// </summary>
     public ConfidenceLevel GetConfidenceLevel()
@@ -154,17 +220,23 @@ public class MatchConfidence : ValueObject
 
         var totalSamples = SampleSize + newSamples.Count;
         var allSamples = new List<decimal> { ConfidenceScore }.Concat(newSamples).ToList();
-        
+
         var newMean = allSamples.Average();
         var newStandardDeviation = CalculateStandardDeviation(allSamples, newMean);
         var newConfidenceInterval = CalculateConfidenceInterval(newStandardDeviation, totalSamples);
+
+        // 创建更新的统计度量，添加新的样本统计信息
+        var updatedMetrics = StatisticalMetrics.ToList();
+        updatedMetrics.Add(new ContextProperty("SampleCount", newSamples.Count.ToString(), "Int32", "UpdatedStatistic", false, 1.0m, null, "UpdateStatistics"));
+        updatedMetrics.Add(new ContextProperty("NewMean", newMean.ToString(), "Decimal", "UpdatedStatistic", false, 1.0m, null, "UpdateStatistics"));
 
         return Create(
             newMean,
             totalSamples,
             newStandardDeviation,
             newConfidenceInterval,
-            $"{CalculationMethod}_Updated"
+            $"{CalculationMethod}_Updated",
+            updatedMetrics
         );
     }
 
@@ -224,6 +296,12 @@ public class MatchConfidence : ValueObject
         yield return Level;
         yield return CalculationMethod;
         yield return IsReliable;
+
+        // 集合的相等性比较
+        foreach (var metric in StatisticalMetrics.OrderBy(m => m.PropertyKey))
+        {
+            yield return metric;
+        }
     }
 
     /// <summary>

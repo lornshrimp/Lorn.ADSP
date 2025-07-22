@@ -249,16 +249,14 @@ public class MediaResource : AggregateRoot
         var totalImpressions = _deliveryRecords.Sum(r => r.Metrics.Impressions);
         var totalClicks = _deliveryRecords.Sum(r => r.Metrics.Clicks);
         var totalRevenue = _deliveryRecords.Sum(r => r.Cost * SlotConfig.RevenueShareRate);
+        var fillRate = TrafficProfile.DailyInventory > 0 ? (decimal)GetTodayDeliveryCount() / TrafficProfile.DailyInventory : 0m;
 
-        return new MediaPerformanceStats
-        {
-            TotalImpressions = totalImpressions,
-            TotalClicks = totalClicks,
-            TotalRevenue = totalRevenue,
-            ClickThroughRate = totalImpressions > 0 ? (decimal)totalClicks / totalImpressions : 0m,
-            RevenuePerThousandImpressions = totalImpressions > 0 ? totalRevenue / totalImpressions * 1000 : 0m,
-            FillRate = TrafficProfile.DailyInventory > 0 ? (decimal)GetTodayDeliveryCount() / TrafficProfile.DailyInventory : 0m
-        };
+        return MediaPerformanceStats.Create(
+            totalImpressions,
+            totalClicks,
+            totalRevenue,
+            fillRate
+        );
     }
 
     /// <summary>

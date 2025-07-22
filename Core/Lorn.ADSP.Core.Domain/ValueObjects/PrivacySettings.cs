@@ -85,7 +85,7 @@ public class PrivacySettings : ValueObject
     /// <summary>
     /// 自定义隐私设置
     /// </summary>
-    public IReadOnlyDictionary<string, object> CustomSettings { get; private set; } = new Dictionary<string, object>();
+    public IReadOnlyList<ContextProperty> CustomSettings { get; private set; } = new List<ContextProperty>();
 
     /// <summary>
     /// 私有构造函数
@@ -111,7 +111,7 @@ public class PrivacySettings : ValueObject
         DateTime? optOutTimestamp = null,
         GdprSettings? gdprSettings = null,
         CcpaSettings? ccpaSettings = null,
-        IDictionary<string, object>? customSettings = null)
+        IEnumerable<ContextProperty>? customSettings = null)
     {
         ValidateDataRetentionDays(dataRetentionDays);
 
@@ -130,7 +130,7 @@ public class PrivacySettings : ValueObject
         OptOutTimestamp = optOutTimestamp;
         GdprSettings = gdprSettings;
         CcpaSettings = ccpaSettings;
-        CustomSettings = customSettings?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ?? new Dictionary<string, object>();
+        CustomSettings = customSettings?.ToList() ?? new List<ContextProperty>();
     }
 
     /// <summary>
@@ -139,6 +139,58 @@ public class PrivacySettings : ValueObject
     public static PrivacySettings CreateDefault()
     {
         return new PrivacySettings();
+    }
+
+    /// <summary>
+    /// 从字典创建隐私设置（向后兼容）
+    /// </summary>
+    public static PrivacySettings CreateFromDictionary(
+        bool consentToDataCollection = false,
+        bool consentToDataProcessing = false,
+        bool consentToDataSharing = false,
+        bool consentToMarketing = false,
+        DateTime? consentTimestamp = null,
+        string? consentVersion = null,
+        string? consentIpAddress = null,
+        string? consentUserAgent = null,
+        int? dataRetentionDays = null,
+        bool requestDataDeletion = false,
+        DateTime? dataDeletionRequestedAt = null,
+        bool optOut = false,
+        DateTime? optOutTimestamp = null,
+        GdprSettings? gdprSettings = null,
+        CcpaSettings? ccpaSettings = null,
+        IDictionary<string, object>? customSettings = null)
+    {
+        var contextProperties = customSettings?.Select(kvp =>
+            new ContextProperty(
+                kvp.Key,
+                kvp.Value?.ToString() ?? string.Empty,
+                kvp.Value?.GetType().Name ?? "String",
+                "Privacy",
+                false,
+                1.0m,
+                null,
+                "PrivacySettings")
+        ).ToList() ?? new List<ContextProperty>();
+
+        return new PrivacySettings(
+            consentToDataCollection,
+            consentToDataProcessing,
+            consentToDataSharing,
+            consentToMarketing,
+            consentTimestamp,
+            consentVersion,
+            consentIpAddress,
+            consentUserAgent,
+            dataRetentionDays,
+            requestDataDeletion,
+            dataDeletionRequestedAt,
+            optOut,
+            optOutTimestamp,
+            gdprSettings,
+            ccpaSettings,
+            contextProperties);
     }
 
     /// <summary>
@@ -184,7 +236,7 @@ public class PrivacySettings : ValueObject
     /// </summary>
     public bool HasValidConsent()
     {
-        return ConsentTimestamp.HasValue && 
+        return ConsentTimestamp.HasValue &&
                !string.IsNullOrWhiteSpace(ConsentVersion) &&
                (ConsentToDataCollection || ConsentToDataProcessing);
     }
@@ -194,9 +246,9 @@ public class PrivacySettings : ValueObject
     /// </summary>
     public bool CanUseForMarketing()
     {
-        return HasValidConsent() && 
-               ConsentToMarketing && 
-               !OptOut && 
+        return HasValidConsent() &&
+               ConsentToMarketing &&
+               !OptOut &&
                !RequestDataDeletion;
     }
 
@@ -205,9 +257,9 @@ public class PrivacySettings : ValueObject
     /// </summary>
     public bool CanShareData()
     {
-        return HasValidConsent() && 
-               ConsentToDataSharing && 
-               !OptOut && 
+        return HasValidConsent() &&
+               ConsentToDataSharing &&
+               !OptOut &&
                !RequestDataDeletion;
     }
 
@@ -233,8 +285,11 @@ public class PrivacySettings : ValueObject
     /// </summary>
     public T? GetCustomSetting<T>(string key)
     {
-        if (CustomSettings.TryGetValue(key, out var value) && value is T typedValue)
-            return typedValue;
+        var contextProperty = CustomSettings.FirstOrDefault(p => p.PropertyKey == key);
+        if (contextProperty != null)
+        {
+            return contextProperty.GetValue<T>();
+        }
 
         return default;
     }

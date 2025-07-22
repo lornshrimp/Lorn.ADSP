@@ -55,7 +55,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 竞价环境数据
         /// </summary>
-        public IReadOnlyDictionary<string, object> EnvironmentData { get; private set; }
+        public IReadOnlyList<ContextProperty> EnvironmentData { get; private set; }
 
         /// <summary>
         /// 私有构造函数
@@ -63,7 +63,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         private BiddingContext()
         {
             RequestId = string.Empty;
-            EnvironmentData = new Dictionary<string, object>();
+            EnvironmentData = new List<ContextProperty>().AsReadOnly();
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             decimal? highestBid = null,
             decimal? averageBid = null,
             decimal? marketPrice = null,
-            IReadOnlyDictionary<string, object>? environmentData = null)
+            IReadOnlyList<ContextProperty>? environmentData = null)
         {
             ValidateInput(requestId, biddingRound, competingAdsCount, floorPrice, competitionIntensity, biddingDeadline);
 
@@ -92,7 +92,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             CompetitionIntensity = competitionIntensity;
             MarketPrice = marketPrice;
             BiddingDeadline = biddingDeadline;
-            EnvironmentData = environmentData ?? new Dictionary<string, object>();
+            EnvironmentData = environmentData ?? new List<ContextProperty>().AsReadOnly();
         }
 
         /// <summary>
@@ -143,10 +143,40 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// </summary>
         public BiddingContext WithEnvironmentData(string key, object value)
         {
-            var newEnvironmentData = new Dictionary<string, object>(EnvironmentData)
+            var newEnvironmentData = EnvironmentData.ToList();
+
+            // 移除已存在的相同key的属性
+            newEnvironmentData.RemoveAll(p => p.PropertyKey == key);
+
+            // 添加新的环境属性
+            string propertyValue;
+            string dataType;
+
+            if (value is string stringValue)
             {
-                [key] = value
-            };
+                propertyValue = stringValue;
+                dataType = "String";
+            }
+            else if (value.GetType().IsPrimitive || value is decimal || value is DateTime)
+            {
+                propertyValue = value.ToString() ?? string.Empty;
+                dataType = value.GetType().Name;
+            }
+            else
+            {
+                propertyValue = System.Text.Json.JsonSerializer.Serialize(value);
+                dataType = "Json";
+            }
+
+            newEnvironmentData.Add(new ContextProperty(
+                key,
+                propertyValue,
+                dataType,
+                "EnvironmentData",
+                false,
+                1.0m,
+                null,
+                "BiddingContext"));
 
             return new BiddingContext(
                 RequestId,
@@ -158,7 +188,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 HighestBid,
                 AverageBid,
                 MarketPrice,
-                newEnvironmentData);
+                newEnvironmentData.AsReadOnly());
         }
 
         /// <summary>
@@ -177,6 +207,111 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
                 AverageBid,
                 MarketPrice,
                 EnvironmentData);
+        }
+
+        /// <summary>
+        /// 获取环境数据值
+        /// </summary>
+        public T? GetEnvironmentData<T>(string key) where T : struct
+        {
+            var property = EnvironmentData.FirstOrDefault(p => p.PropertyKey == key);
+            return property?.GetValue<T>();
+        }
+
+        /// <summary>
+        /// 获取环境数据值（引用类型）
+        /// </summary>
+        public T? GetEnvironmentDataRef<T>(string key) where T : class
+        {
+            var property = EnvironmentData.FirstOrDefault(p => p.PropertyKey == key);
+            return property?.GetValue<T>();
+        }
+
+        /// <summary>
+        /// 获取所有环境数据作为字典（向后兼容）
+        /// </summary>
+        public Dictionary<string, object> GetEnvironmentDataAsDictionary()
+        {
+            var result = new Dictionary<string, object>();
+            foreach (var property in EnvironmentData)
+            {
+                try
+                {
+                    var value = property.GetValue<object>();
+                    if (value != null)
+                    {
+                        result[property.PropertyKey] = value;
+                    }
+                }
+                catch
+                {
+                    // 如果转换失败，使用原始字符串值
+                    result[property.PropertyKey] = property.PropertyValue;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 检查是否包含特定的环境数据
+        /// </summary>
+        public bool HasEnvironmentData(string key)
+        {
+            return EnvironmentData.Any(p => p.PropertyKey == key);
+        }
+
+        /// <summary>
+        /// 创建竞价上下文（从字典参数）
+        /// </summary>
+        public static BiddingContext CreateFromDictionary(
+            string requestId,
+            decimal floorPrice,
+            DateTime biddingDeadline,
+            int biddingRound = 1,
+            int competingAdsCount = 0,
+            decimal competitionIntensity = 0m,
+            IDictionary<string, object>? environmentData = null)
+        {
+            var environmentProperties = environmentData?.Select(kvp =>
+            {
+                string propertyValue;
+                string dataType;
+
+                if (kvp.Value is string stringValue)
+                {
+                    propertyValue = stringValue;
+                    dataType = "String";
+                }
+                else if (kvp.Value.GetType().IsPrimitive || kvp.Value is decimal || kvp.Value is DateTime)
+                {
+                    propertyValue = kvp.Value.ToString() ?? string.Empty;
+                    dataType = kvp.Value.GetType().Name;
+                }
+                else
+                {
+                    propertyValue = System.Text.Json.JsonSerializer.Serialize(kvp.Value);
+                    dataType = "Json";
+                }
+
+                return new ContextProperty(
+                    kvp.Key,
+                    propertyValue,
+                    dataType,
+                    "EnvironmentData",
+                    false,
+                    1.0m,
+                    null,
+                    "BiddingContext");
+            }) ?? Enumerable.Empty<ContextProperty>();
+
+            return new BiddingContext(
+                requestId,
+                biddingRound,
+                competingAdsCount,
+                floorPrice,
+                competitionIntensity,
+                biddingDeadline,
+                environmentData: environmentProperties.ToList().AsReadOnly());
         }
 
         /// <summary>
@@ -224,12 +359,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             yield return CompetitionIntensity;
             yield return MarketPrice ?? 0m;
             yield return BiddingDeadline;
-            
+
             // 环境数据的比较
-            foreach (var kvp in EnvironmentData.OrderBy(x => x.Key))
+            foreach (var property in EnvironmentData.OrderBy(x => x.PropertyKey))
             {
-                yield return kvp.Key;
-                yield return kvp.Value;
+                yield return property;
             }
         }
 

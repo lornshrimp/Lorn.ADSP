@@ -7,12 +7,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects;
 
 /// <summary>
 /// 定向策略模板值对象
-/// 作为可复用的定向规则模板，支持创建TargetingConfig实例
+/// 作为可复用的定向规则模template，支持创建TargetingConfig实例
 /// 提供预配置的定向条件集合和版本管理功能
 /// </summary>
 public class TargetingPolicy : ValueObject
 {
-    private readonly Dictionary<string, ITargetingCriteria> _criteriaTemplates;
     private readonly List<string> _tags;
 
     /// <summary>
@@ -41,9 +40,9 @@ public class TargetingPolicy : ValueObject
     public string CreatedBy { get; private set; }
 
     /// <summary>
-    /// 定向条件模板集合（只读）
+    /// 定向条件模板集合
     /// </summary>
-    public IReadOnlyDictionary<string, ITargetingCriteria> CriteriaTemplates => _criteriaTemplates.AsReadOnly();
+    public IReadOnlyList<ITargetingCriteria> CriteriaTemplates { get; private set; }
 
     /// <summary>
     /// 策略权重
@@ -126,7 +125,7 @@ public class TargetingPolicy : ValueObject
         Description = description;
         Version = version;
         CreatedBy = createdBy;
-        _criteriaTemplates = criteriaTemplates?.ToDictionary(kv => kv.Key, kv => kv.Value) ?? new Dictionary<string, ITargetingCriteria>();
+        CriteriaTemplates = criteriaTemplates?.Values.ToList() ?? new List<ITargetingCriteria>();
         Category = category;
         IsPublic = isPublic;
         _tags = tags?.ToList() ?? new List<string>();
@@ -174,22 +173,23 @@ public class TargetingPolicy : ValueObject
     /// 从现有策略创建TargetingConfig实例
     /// </summary>
     /// <param name="advertisementId">广告ID</param>
-    /// <param name="configId">配置ID（可选）</param>
+    /// <param name="runtimeParameters">运行时参数（可选）</param>
     /// <returns>配置实例</returns>
-    public TargetingConfig CreateConfig(string advertisementId, string? configId = null)
+    public TargetingConfig CreateConfig(string advertisementId, IDictionary<string, object>? runtimeParameters = null)
     {
         if (string.IsNullOrEmpty(advertisementId))
             throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
 
-        return TargetingConfig.CreateFromPolicy(this, advertisementId, configId);
+        return TargetingConfig.CreateFromPolicy(this, advertisementId, runtimeParameters);
     }
 
     /// <summary>
-    /// 添加或更新定向条件模板
+    /// 添加或更新定向条件模板（返回新实例）
     /// </summary>
     /// <param name="criteriaType">条件类型</param>
     /// <param name="criteria">定向条件</param>
-    public void AddCriteriaTemplate(string criteriaType, ITargetingCriteria criteria)
+    /// <returns>包含新条件的策略实例</returns>
+    public TargetingPolicy WithCriteriaTemplate(string criteriaType, ITargetingCriteria criteria)
     {
         if (string.IsNullOrEmpty(criteriaType))
             throw new ArgumentException("条件类型不能为空", nameof(criteriaType));
@@ -198,28 +198,51 @@ public class TargetingPolicy : ValueObject
         if (Status == PolicyStatus.Archived)
             throw new InvalidOperationException("已归档的策略不能修改");
 
-        _criteriaTemplates[criteriaType] = criteria;
-        UpdatedAt = DateTime.UtcNow;
+        var existingCriteria = CriteriaTemplates.FirstOrDefault(c => c.CriteriaType == criteriaType);
+        var criteriaList = CriteriaTemplates.ToList();
+
+        if (existingCriteria != null)
+        {
+            var index = criteriaList.IndexOf(existingCriteria);
+            criteriaList[index] = criteria;
+        }
+        else
+        {
+            criteriaList.Add(criteria);
+        }
+
+        // 转换为字典以使用现有构造函数
+        var criteriaDict = criteriaList.ToDictionary(c => c.CriteriaType, c => c);
+
+        return new TargetingPolicy(
+            PolicyId, Name, CreatedBy, Description, Version,
+            criteriaDict, Category, IsPublic, _tags,
+            Weight, IsEnabled, Status);
     }
 
     /// <summary>
-    /// 移除定向条件模板
+    /// 移除定向条件模板（返回新实例）
     /// </summary>
     /// <param name="criteriaType">条件类型</param>
-    /// <returns>是否成功移除</returns>
-    public bool RemoveCriteriaTemplate(string criteriaType)
+    /// <returns>移除指定条件后的策略实例</returns>
+    public TargetingPolicy WithoutCriteriaTemplate(string criteriaType)
     {
         if (string.IsNullOrEmpty(criteriaType))
-            return false;
+            return this;
         if (Status == PolicyStatus.Archived)
             throw new InvalidOperationException("已归档的策略不能修改");
 
-        var result = _criteriaTemplates.Remove(criteriaType);
-        if (result)
-        {
-            UpdatedAt = DateTime.UtcNow;
-        }
-        return result;
+        var criteriaToRemove = CriteriaTemplates.FirstOrDefault(c => c.CriteriaType == criteriaType);
+        if (criteriaToRemove == null)
+            return this;
+
+        var criteriaList = CriteriaTemplates.Where(c => c.CriteriaType != criteriaType).ToList();
+        var criteriaDict = criteriaList.ToDictionary(c => c.CriteriaType, c => c);
+
+        return new TargetingPolicy(
+            PolicyId, Name, CreatedBy, Description, Version,
+            criteriaDict, Category, IsPublic, _tags,
+            Weight, IsEnabled, Status);
     }
 
     /// <summary>
@@ -233,7 +256,7 @@ public class TargetingPolicy : ValueObject
         if (string.IsNullOrEmpty(criteriaType))
             return null;
 
-        return _criteriaTemplates.TryGetValue(criteriaType, out var criteria) ? criteria as T : null;
+        return CriteriaTemplates.FirstOrDefault(c => c.CriteriaType == criteriaType) as T;
     }
 
     /// <summary>
@@ -243,7 +266,7 @@ public class TargetingPolicy : ValueObject
     /// <returns>是否包含</returns>
     public bool HasCriteriaTemplate(string criteriaType)
     {
-        return !string.IsNullOrEmpty(criteriaType) && _criteriaTemplates.ContainsKey(criteriaType);
+        return !string.IsNullOrEmpty(criteriaType) && CriteriaTemplates.Any(c => c.CriteriaType == criteriaType);
     }
 
     /// <summary>
@@ -251,7 +274,7 @@ public class TargetingPolicy : ValueObject
     /// </summary>
     public IEnumerable<ITargetingCriteria> GetEnabledCriteriaTemplates()
     {
-        return _criteriaTemplates.Values.Where(c => c.IsEnabled);
+        return CriteriaTemplates.Where(c => c.IsEnabled);
     }
 
     /// <summary>
@@ -259,7 +282,7 @@ public class TargetingPolicy : ValueObject
     /// </summary>
     public IReadOnlyCollection<string> GetCriteriaTypes()
     {
-        return _criteriaTemplates.Keys.ToList().AsReadOnly();
+        return CriteriaTemplates.Select(c => c.CriteriaType).ToList().AsReadOnly();
     }
 
     /// <summary>
@@ -387,10 +410,10 @@ public class TargetingPolicy : ValueObject
         var newPolicyId = Guid.NewGuid().ToString();
         var clonedCriteriaTemplates = new Dictionary<string, ITargetingCriteria>();
 
-        foreach (var templateKvp in _criteriaTemplates)
+        foreach (var template in CriteriaTemplates)
         {
             // 假设ITargetingCriteria实现了深拷贝方法
-            clonedCriteriaTemplates[templateKvp.Key] = templateKvp.Value; // 这里需要实现深拷贝
+            clonedCriteriaTemplates[template.CriteriaType] = template; // 这里需要实现深拷贝
         }
 
         return new TargetingPolicy(
@@ -416,14 +439,13 @@ public class TargetingPolicy : ValueObject
     {
         // 这里应该通过仓储或服务获取实际使用统计
         // 为演示目的，返回模拟数据
-        return new PolicyUsageStats
-        {
-            PolicyId = PolicyId,
-            TotalConfigs = 0, // 需要从数据库查询
-            ActiveConfigs = 0, // 需要从数据库查询
-            LastUsedAt = null, // 需要从数据库查询
-            AveragePerformance = 0 // 需要从性能数据计算
-        };
+        return PolicyUsageStats.Create(
+            PolicyId,
+            0, // 需要从数据库查询
+            0, // 需要从数据库查询
+            null, // 需要从数据库查询
+            0 // 需要从性能数据计算
+        );
     }
 
     /// <summary>
@@ -512,10 +534,10 @@ public class TargetingPolicy : ValueObject
         yield return IsPublic;
 
         // 按条件类型排序，确保一致的比较结果
-        foreach (var template in _criteriaTemplates.OrderBy(kv => kv.Key))
+        foreach (var template in CriteriaTemplates.OrderBy(c => c.CriteriaType))
         {
-            yield return template.Key;
-            yield return template.Value;
+            yield return template.CriteriaType;
+            yield return template;
         }
 
         // 按标签排序，确保一致的比较结果
