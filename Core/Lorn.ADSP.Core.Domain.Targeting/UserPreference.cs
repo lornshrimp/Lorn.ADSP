@@ -12,62 +12,62 @@ public class UserPreference : TargetingContextBase
     /// <summary>
     /// 每日广告曝光次数限制
     /// </summary>
-    public int? MaxDailyAdImpressions => GetProperty<int?>("MaxDailyAdImpressions");
+    public int? MaxDailyAdImpressions => GetPropertyValue<int?>("MaxDailyAdImpressions");
 
     /// <summary>
     /// 偏好的广告类型
     /// </summary>
-    public IReadOnlyList<AdType> PreferredAdTypes => GetProperty<List<AdType>>("PreferredAdTypes") ?? new List<AdType>();
+    public IReadOnlyList<AdType> PreferredAdTypes => GetPropertyValue<List<AdType>>("PreferredAdTypes") ?? new List<AdType>();
 
     /// <summary>
     /// 屏蔽的广告类别
     /// </summary>
-    public IReadOnlyList<string> BlockedCategories => GetProperty<List<string>>("BlockedCategories") ?? new List<string>();
+    public IReadOnlyList<string> BlockedCategories => GetPropertyValue<List<string>>("BlockedCategories") ?? new List<string>();
 
     /// <summary>
     /// 偏好的内容主题
     /// </summary>
-    public IReadOnlyList<string> PreferredTopics => GetProperty<List<string>>("PreferredTopics") ?? new List<string>();
+    public IReadOnlyList<string> PreferredTopics => GetPropertyValue<List<string>>("PreferredTopics") ?? new List<string>();
 
     /// <summary>
     /// 是否允许个性化广告
     /// </summary>
-    public bool AllowPersonalizedAds => GetProperty("AllowPersonalizedAds", true);
+    public bool AllowPersonalizedAds => GetPropertyValue("AllowPersonalizedAds", true);
 
     /// <summary>
     /// 是否允许行为追踪
     /// </summary>
-    public bool AllowBehaviorTracking => GetProperty("AllowBehaviorTracking", true);
+    public bool AllowBehaviorTracking => GetPropertyValue("AllowBehaviorTracking", true);
 
     /// <summary>
     /// 是否允许跨设备追踪
     /// </summary>
-    public bool AllowCrossDeviceTracking => GetProperty("AllowCrossDeviceTracking", true);
+    public bool AllowCrossDeviceTracking => GetPropertyValue("AllowCrossDeviceTracking", true);
 
     /// <summary>
     /// 偏好的广告投放时段
     /// </summary>
-    public IReadOnlyList<TimeWindow> PreferredTimeSlots => GetProperty<List<TimeWindow>>("PreferredTimeSlots") ?? new List<TimeWindow>();
+    public IReadOnlyList<TimeWindow> PreferredTimeSlots => GetPropertyValue<List<TimeWindow>>("PreferredTimeSlots") ?? new List<TimeWindow>();
 
     /// <summary>
     /// 隐私级别
     /// </summary>
-    public PrivacyLevel PrivacyLevel => GetProperty("PrivacyLevel", PrivacyLevel.Standard);
+    public PrivacyLevel PrivacyLevel => GetPropertyValue("PrivacyLevel", PrivacyLevel.Standard);
 
     /// <summary>
     /// 偏好的语言列表
     /// </summary>
-    public IReadOnlyList<string> PreferredLanguages => GetProperty<List<string>>("PreferredLanguages") ?? new List<string>();
+    public IReadOnlyList<string> PreferredLanguages => GetPropertyValue<List<string>>("PreferredLanguages") ?? new List<string>();
 
     /// <summary>
     /// 内容成熟度级别偏好
     /// </summary>
-    public ContentMaturityLevel ContentMaturityLevel => GetProperty("ContentMaturityLevel", ContentMaturityLevel.General);
+    public ContentMaturityLevel ContentMaturityLevel => GetPropertyValue("ContentMaturityLevel", ContentMaturityLevel.General);
 
     /// <summary>
     /// 自定义偏好设置
     /// </summary>
-    public IReadOnlyDictionary<string, object> CustomPreferences => GetProperty<Dictionary<string, object>>("CustomPreferences") ?? new Dictionary<string, object>();
+    public IReadOnlyDictionary<string, object> CustomPreferences => GetPropertyValue<Dictionary<string, object>>("CustomPreferences") ?? new Dictionary<string, object>();
 
     /// <summary>
     /// 私有构造函数

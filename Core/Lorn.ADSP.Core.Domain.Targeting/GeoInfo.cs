@@ -1,4 +1,4 @@
-﻿namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
     /// 地理位置信息定向上下文
@@ -9,67 +9,67 @@
         /// <summary>
         /// 国家代码
         /// </summary>
-        public string? CountryCode => GetProperty<string>("CountryCode");
+        public string? CountryCode => GetPropertyValue<string>("CountryCode");
 
         /// <summary>
         /// 国家名称
         /// </summary>
-        public string? CountryName => GetProperty<string>("CountryName");
+        public string? CountryName => GetPropertyValue<string>("CountryName");
 
         /// <summary>
         /// 省份代码
         /// </summary>
-        public string? ProvinceCode => GetProperty<string>("ProvinceCode");
+        public string? ProvinceCode => GetPropertyValue<string>("ProvinceCode");
 
         /// <summary>
         /// 省份名称
         /// </summary>
-        public string? ProvinceName => GetProperty<string>("ProvinceName");
+        public string? ProvinceName => GetPropertyValue<string>("ProvinceName");
 
         /// <summary>
         /// 城市名称
         /// </summary>
-        public string? CityName => GetProperty<string>("CityName");
+        public string? CityName => GetPropertyValue<string>("CityName");
 
         /// <summary>
         /// 邮政编码
         /// </summary>
-        public string? PostalCode => GetProperty<string>("PostalCode");
+        public string? PostalCode => GetPropertyValue<string>("PostalCode");
 
         /// <summary>
         /// 纬度
         /// </summary>
-        public decimal? Latitude => GetProperty<decimal?>("Latitude");
+        public decimal? Latitude => GetPropertyValue<decimal?>("Latitude");
 
         /// <summary>
         /// 经度
         /// </summary>
-        public decimal? Longitude => GetProperty<decimal?>("Longitude");
+        public decimal? Longitude => GetPropertyValue<decimal?>("Longitude");
 
         /// <summary>
         /// 精度（米）
         /// </summary>
-        public int? Accuracy => GetProperty<int?>("Accuracy");
+        public int? Accuracy => GetPropertyValue<int?>("Accuracy");
 
         /// <summary>
         /// 时区
         /// </summary>
-        public string? TimeZone => GetProperty<string>("TimeZone");
+        public string? TimeZone => GetPropertyValue<string>("TimeZone");
 
         /// <summary>
         /// ISP信息
         /// </summary>
-        public string? Isp => GetProperty<string>("Isp");
+        public string? Isp => GetPropertyValue<string>("Isp");
 
         /// <summary>
         /// 地理位置来源
         /// </summary>
-        public string? Source => GetProperty<string>("Source");
+        public string? Source => GetPropertyValue<string>("Source");
 
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        public DateTime? LastUpdated => GetProperty<DateTime?>("LastUpdated");
+        public DateTime? LastUpdated => GetPropertyValue<DateTime?>("LastUpdated");
 
         /// <summary>
         /// 私有构造函数

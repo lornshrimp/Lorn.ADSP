@@ -2,37 +2,37 @@ using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Events;
 
-// Ìí¼ÓÈ±Ê§µÄÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½È±Ê§ï¿½ï¿½ï¿½Â¼ï¿½
 
 /// <summary>
-/// ¹ã¸æÍ£Ö¹ÊÂ¼þ
+/// ï¿½ï¿½ï¿½Í£Ö¹ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertisementStoppedEvent : DomainEventBase
 {
     public override string EventType => "AdvertisementStopped";
 
-    public string AdvertisementId { get; }
+    public Guid AdvertisementId { get; }
 
-    public AdvertisementStoppedEvent(string advertisementId)
+    public AdvertisementStoppedEvent(Guid advertisementId)
     {
         AdvertisementId = advertisementId;
     }
 }
 
 /// <summary>
-/// »î¶¯¿ªÊ¼ÊÂ¼þ
+/// ï¿½î¶¯ï¿½ï¿½Ê¼ï¿½Â¼ï¿½
 /// </summary>
 public class CampaignStartedEvent : DomainEventBase
 {
     public override string EventType => "CampaignStarted";
 
-    public string CampaignId { get; }
-    public string AdvertisementId { get; }
+    public Guid CampaignId { get; }
+    public Guid AdvertisementId { get; }
     public decimal Budget { get; }
     public DateTime? StartDate { get; }
     public DateTime? EndDate { get; }
 
-    public CampaignStartedEvent(string campaignId, string advertisementId, decimal budget, DateTime? startDate, DateTime? endDate)
+    public CampaignStartedEvent(Guid campaignId, Guid advertisementId, decimal budget, DateTime? startDate, DateTime? endDate)
     {
         CampaignId = campaignId;
         AdvertisementId = advertisementId;
@@ -43,78 +43,78 @@ public class CampaignStartedEvent : DomainEventBase
 }
 
 /// <summary>
-/// »î¶¯»Ö¸´ÊÂ¼þ
+/// ï¿½î¶¯ï¿½Ö¸ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class CampaignResumedEvent : DomainEventBase
 {
     public override string EventType => "CampaignResumed";
 
-    public string CampaignId { get; }
+    public Guid CampaignId { get; }
 
-    public CampaignResumedEvent(string campaignId)
+    public CampaignResumedEvent(Guid campaignId)
     {
         CampaignId = campaignId;
     }
 }
 
 /// <summary>
-/// »î¶¯Í£Ö¹ÊÂ¼þ
+/// ï¿½î¶¯Í£Ö¹ï¿½Â¼ï¿½
 /// </summary>
 public class CampaignStoppedEvent : DomainEventBase
 {
     public override string EventType => "CampaignStopped";
 
-    public string CampaignId { get; }
+    public Guid CampaignId { get; }
 
-    public CampaignStoppedEvent(string campaignId)
+    public CampaignStoppedEvent(Guid campaignId)
     {
         CampaignId = campaignId;
     }
 }
 
 /// <summary>
-/// »î¶¯Íê³ÉÊÂ¼þ
+/// ï¿½î¶¯ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class CampaignCompletedEvent : DomainEventBase
 {
     public override string EventType => "CampaignCompleted";
 
-    public string CampaignId { get; }
+    public Guid CampaignId { get; }
 
-    public CampaignCompletedEvent(string campaignId)
+    public CampaignCompletedEvent(Guid campaignId)
     {
         CampaignId = campaignId;
     }
 }
 
 /// <summary>
-/// »î¶¯¶¨Ïò¸üÐÂÊÂ¼þ
+/// ï¿½î¶¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class CampaignTargetingUpdatedEvent : DomainEventBase
 {
     public override string EventType => "CampaignTargetingUpdated";
 
-    public string CampaignId { get; }
+    public Guid CampaignId { get; }
 
-    public CampaignTargetingUpdatedEvent(string campaignId)
+    public CampaignTargetingUpdatedEvent(Guid campaignId)
     {
         CampaignId = campaignId;
     }
 }
 
 /// <summary>
-/// Ô¤ËãºÄ¾¡ÊÂ¼þ
+/// Ô¤ï¿½ï¿½Ä¾ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class BudgetExhaustedEvent : DomainEventBase
 {
     public override string EventType => "BudgetExhausted";
 
-    public string CampaignId { get; }
+    public Guid CampaignId { get; }
     public decimal BudgetLimit { get; }
     public decimal SpentAmount { get; }
     public DateTime ExhaustedAt { get; }
 
-    public BudgetExhaustedEvent(string campaignId, decimal budgetLimit, decimal spentAmount, DateTime exhaustedAt)
+    public BudgetExhaustedEvent(Guid campaignId, decimal budgetLimit, decimal spentAmount, DateTime exhaustedAt)
     {
         CampaignId = campaignId;
         BudgetLimit = budgetLimit;
@@ -124,17 +124,17 @@ public class BudgetExhaustedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Í¶·Å¼ÇÂ¼ÊÂ¼þ
+/// Í¶ï¿½Å¼ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryRecordedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryRecorded";
 
-    public string CampaignId { get; }
-    public string DeliveryRecordId { get; }
+    public Guid CampaignId { get; }
+    public Guid DeliveryRecordId { get; }
     public decimal Cost { get; }
 
-    public DeliveryRecordedEvent(string campaignId, string deliveryRecordId, decimal cost)
+    public DeliveryRecordedEvent(Guid campaignId, Guid deliveryRecordId, decimal cost)
     {
         CampaignId = campaignId;
         DeliveryRecordId = deliveryRecordId;
@@ -145,17 +145,17 @@ public class DeliveryRecordedEvent : DomainEventBase
 #region Advertiser Events
 
 /// <summary>
-/// ¹ã¸æÖ÷×¢²áÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserRegisteredEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserRegistered";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
     public string CompanyName { get; }
     public string Email { get; }
 
-    public AdvertiserRegisteredEvent(string advertiserId, string companyName, string email)
+    public AdvertiserRegisteredEvent(Guid advertiserId, string companyName, string email)
     {
         AdvertiserId = advertiserId;
         CompanyName = companyName;
@@ -164,16 +164,16 @@ public class AdvertiserRegisteredEvent : DomainEventBase
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷×ÊÖÊÌá½»ÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á½»ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserQualificationSubmittedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserQualificationSubmitted";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
     public string BusinessLicense { get; }
 
-    public AdvertiserQualificationSubmittedEvent(string advertiserId, string businessLicense)
+    public AdvertiserQualificationSubmittedEvent(Guid advertiserId, string businessLicense)
     {
         AdvertiserId = advertiserId;
         BusinessLicense = businessLicense;
@@ -181,31 +181,31 @@ public class AdvertiserQualificationSubmittedEvent : DomainEventBase
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷¼¤»îÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserActivatedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserActivated";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
 
-    public AdvertiserActivatedEvent(string advertiserId)
+    public AdvertiserActivatedEvent(Guid advertiserId)
     {
         AdvertiserId = advertiserId;
     }
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷ÔÝÍ£ÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserSuspendedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserSuspended";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
     public string Reason { get; }
 
-    public AdvertiserSuspendedEvent(string advertiserId, string reason)
+    public AdvertiserSuspendedEvent(Guid advertiserId, string reason)
     {
         AdvertiserId = advertiserId;
         Reason = reason;
@@ -213,16 +213,16 @@ public class AdvertiserSuspendedEvent : DomainEventBase
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷¾Ü¾øÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¾ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserRejectedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserRejected";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
     public string Reason { get; }
 
-    public AdvertiserRejectedEvent(string advertiserId, string reason)
+    public AdvertiserRejectedEvent(Guid advertiserId, string reason)
     {
         AdvertiserId = advertiserId;
         Reason = reason;
@@ -230,46 +230,46 @@ public class AdvertiserRejectedEvent : DomainEventBase
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷»Ö¸´ÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserResumedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserResumed";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
 
-    public AdvertiserResumedEvent(string advertiserId)
+    public AdvertiserResumedEvent(Guid advertiserId)
     {
         AdvertiserId = advertiserId;
     }
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷ÕËµ¥¸üÐÂÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserBillingUpdatedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserBillingUpdated";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
 
-    public AdvertiserBillingUpdatedEvent(string advertiserId)
+    public AdvertiserBillingUpdatedEvent(Guid advertiserId)
     {
         AdvertiserId = advertiserId;
     }
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷ÁªÏµÐÅÏ¢¸üÐÂÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserContactUpdatedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserContactUpdated";
 
-    public string AdvertiserId { get; }
+    public Guid AdvertiserId { get; }
     public string Email { get; }
 
-    public AdvertiserContactUpdatedEvent(string advertiserId, string email)
+    public AdvertiserContactUpdatedEvent(Guid advertiserId, string email)
     {
         AdvertiserId = advertiserId;
         Email = email;
@@ -277,16 +277,16 @@ public class AdvertiserContactUpdatedEvent : DomainEventBase
 }
 
 /// <summary>
-/// ¹ã¸æÖ÷Ìí¼Ó¹ã¸æÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class AdvertiserAdvertisementAddedEvent : DomainEventBase
 {
     public override string EventType => "AdvertiserAdvertisementAdded";
 
-    public string AdvertiserId { get; }
-    public string AdvertisementId { get; }
+    public Guid AdvertiserId { get; }
+    public Guid AdvertisementId { get; }
 
-    public AdvertiserAdvertisementAddedEvent(string advertiserId, string advertisementId)
+    public AdvertiserAdvertisementAddedEvent(Guid advertiserId, Guid advertisementId)
     {
         AdvertiserId = advertiserId;
         AdvertisementId = advertisementId;
@@ -298,18 +298,18 @@ public class AdvertiserAdvertisementAddedEvent : DomainEventBase
 #region MediaResource Events
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´´´½¨ÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceCreatedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceCreated";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
     public string Name { get; }
     public MediaType Type { get; }
-    public string PublisherId { get; }
+    public Guid PublisherId { get; }
 
-    public MediaResourceCreatedEvent(string mediaResourceId, string name, MediaType type, string publisherId)
+    public MediaResourceCreatedEvent(Guid mediaResourceId, string name, MediaType type, Guid publisherId)
     {
         MediaResourceId = mediaResourceId;
         Name = name;
@@ -319,91 +319,91 @@ public class MediaResourceCreatedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´ÅäÖÃÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceConfiguredEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceConfigured";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
 
-    public MediaResourceConfiguredEvent(string mediaResourceId)
+    public MediaResourceConfiguredEvent(Guid mediaResourceId)
     {
         MediaResourceId = mediaResourceId;
     }
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´Á÷Á¿¸üÐÂÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceTrafficUpdatedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceTrafficUpdated";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
 
-    public MediaResourceTrafficUpdatedEvent(string mediaResourceId)
+    public MediaResourceTrafficUpdatedEvent(Guid mediaResourceId)
     {
         MediaResourceId = mediaResourceId;
     }
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´ÆôÓÃÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceEnabledEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceEnabled";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
 
-    public MediaResourceEnabledEvent(string mediaResourceId)
+    public MediaResourceEnabledEvent(Guid mediaResourceId)
     {
         MediaResourceId = mediaResourceId;
     }
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´½ûÓÃÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceDisabledEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceDisabled";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
 
-    public MediaResourceDisabledEvent(string mediaResourceId)
+    public MediaResourceDisabledEvent(Guid mediaResourceId)
     {
         MediaResourceId = mediaResourceId;
     }
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´ÉóºËÍ¨¹ýÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceApprovedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceApproved";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
 
-    public MediaResourceApprovedEvent(string mediaResourceId)
+    public MediaResourceApprovedEvent(Guid mediaResourceId)
     {
         MediaResourceId = mediaResourceId;
     }
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´ÉóºË¾Ü¾øÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Ë¾Ü¾ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceRejectedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceRejected";
 
-    public string MediaResourceId { get; }
+    public Guid MediaResourceId { get; }
     public string Reason { get; }
 
-    public MediaResourceRejectedEvent(string mediaResourceId, string reason)
+    public MediaResourceRejectedEvent(Guid mediaResourceId, string reason)
     {
         MediaResourceId = mediaResourceId;
         Reason = reason;
@@ -411,16 +411,16 @@ public class MediaResourceRejectedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´Ìí¼Ó¹ã¸æÎ»ÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½Î»ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourcePlacementAddedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourcePlacementAdded";
 
-    public string MediaResourceId { get; }
-    public string PlacementId { get; }
+    public Guid MediaResourceId { get; }
+    public Guid PlacementId { get; }
 
-    public MediaResourcePlacementAddedEvent(string mediaResourceId, string placementId)
+    public MediaResourcePlacementAddedEvent(Guid mediaResourceId, Guid placementId)
     {
         MediaResourceId = mediaResourceId;
         PlacementId = placementId;
@@ -428,16 +428,16 @@ public class MediaResourcePlacementAddedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´ÒÆ³ý¹ã¸æÎ»ÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Æ³ï¿½ï¿½ï¿½ï¿½Î»ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourcePlacementRemovedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourcePlacementRemoved";
 
-    public string MediaResourceId { get; }
-    public string PlacementId { get; }
+    public Guid MediaResourceId { get; }
+    public Guid PlacementId { get; }
 
-    public MediaResourcePlacementRemovedEvent(string mediaResourceId, string placementId)
+    public MediaResourcePlacementRemovedEvent(Guid mediaResourceId, Guid placementId)
     {
         MediaResourceId = mediaResourceId;
         PlacementId = placementId;
@@ -445,16 +445,16 @@ public class MediaResourcePlacementRemovedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Ã½Ìå×ÊÔ´Í¶·Å¼ÇÂ¼ÊÂ¼þ
+/// Ã½ï¿½ï¿½ï¿½ï¿½Ô´Í¶ï¿½Å¼ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class MediaResourceDeliveryRecordedEvent : DomainEventBase
 {
     public override string EventType => "MediaResourceDeliveryRecorded";
 
-    public string MediaResourceId { get; }
-    public string DeliveryRecordId { get; }
+    public Guid MediaResourceId { get; }
+    public Guid DeliveryRecordId { get; }
 
-    public MediaResourceDeliveryRecordedEvent(string mediaResourceId, string deliveryRecordId)
+    public MediaResourceDeliveryRecordedEvent(Guid mediaResourceId, Guid deliveryRecordId)
     {
         MediaResourceId = mediaResourceId;
         DeliveryRecordId = deliveryRecordId;
@@ -466,18 +466,18 @@ public class MediaResourceDeliveryRecordedEvent : DomainEventBase
 #region DeliveryRecord Events
 
 /// <summary>
-/// Í¶·Å¼ÇÂ¼´´½¨ÊÂ¼þ
+/// Í¶ï¿½Å¼ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryRecordCreatedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryRecordCreated";
 
-    public string DeliveryRecordId { get; }
-    public string RequestId { get; }
-    public string CampaignId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid RequestId { get; }
+    public Guid CampaignId { get; }
     public decimal Cost { get; }
 
-    public DeliveryRecordCreatedEvent(string deliveryRecordId, string requestId, string campaignId, decimal cost)
+    public DeliveryRecordCreatedEvent(Guid deliveryRecordId, Guid requestId, Guid campaignId, decimal cost)
     {
         DeliveryRecordId = deliveryRecordId;
         RequestId = requestId;
@@ -487,17 +487,17 @@ public class DeliveryRecordCreatedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Õ¹Ê¾¼ÇÂ¼ÊÂ¼þ
+/// Õ¹Ê¾ï¿½ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class ImpressionRecordedEvent : DomainEventBase
 {
     public override string EventType => "ImpressionRecorded";
 
-    public string DeliveryRecordId { get; }
-    public string RequestId { get; }
-    public string CampaignId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid RequestId { get; }
+    public Guid CampaignId { get; }
 
-    public ImpressionRecordedEvent(string deliveryRecordId, string requestId, string campaignId)
+    public ImpressionRecordedEvent(Guid deliveryRecordId, Guid requestId, Guid campaignId)
     {
         DeliveryRecordId = deliveryRecordId;
         RequestId = requestId;
@@ -506,17 +506,17 @@ public class ImpressionRecordedEvent : DomainEventBase
 }
 
 /// <summary>
-/// µã»÷¼ÇÂ¼ÊÂ¼þ
+/// ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class ClickRecordedEvent : DomainEventBase
 {
     public override string EventType => "ClickRecorded";
 
-    public string DeliveryRecordId { get; }
-    public string RequestId { get; }
-    public string CampaignId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid RequestId { get; }
+    public Guid CampaignId { get; }
 
-    public ClickRecordedEvent(string deliveryRecordId, string requestId, string campaignId)
+    public ClickRecordedEvent(Guid deliveryRecordId, Guid requestId, Guid campaignId)
     {
         DeliveryRecordId = deliveryRecordId;
         RequestId = requestId;
@@ -525,17 +525,17 @@ public class ClickRecordedEvent : DomainEventBase
 }
 
 /// <summary>
-/// ×ª»¯¼ÇÂ¼ÊÂ¼þ
+/// ×ªï¿½ï¿½ï¿½ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class ConversionRecordedEvent : DomainEventBase
 {
     public override string EventType => "ConversionRecorded";
 
-    public string DeliveryRecordId { get; }
-    public string RequestId { get; }
-    public string CampaignId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid RequestId { get; }
+    public Guid CampaignId { get; }
 
-    public ConversionRecordedEvent(string deliveryRecordId, string requestId, string campaignId)
+    public ConversionRecordedEvent(Guid deliveryRecordId, Guid requestId, Guid campaignId)
     {
         DeliveryRecordId = deliveryRecordId;
         RequestId = requestId;
@@ -544,16 +544,16 @@ public class ConversionRecordedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Í¶·Å×´Ì¬¸üÐÂÊÂ¼þ
+/// Í¶ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryStatusUpdatedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryStatusUpdated";
 
-    public string DeliveryRecordId { get; }
+    public Guid DeliveryRecordId { get; }
     public DeliveryStatus Status { get; }
 
-    public DeliveryStatusUpdatedEvent(string deliveryRecordId, DeliveryStatus status)
+    public DeliveryStatusUpdatedEvent(Guid deliveryRecordId, DeliveryStatus status)
     {
         DeliveryRecordId = deliveryRecordId;
         Status = status;
@@ -566,17 +566,17 @@ public class DeliveryStatusUpdatedEvent : DomainEventBase
 
 
 /// <summary>
-/// Í¶·Åµã»÷¼ÇÂ¼ÊÂ¼þ
+/// Í¶ï¿½Åµï¿½ï¿½ï¿½ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryClickRecordedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryClickRecorded";
 
-    public string DeliveryRecordId { get; }
-    public string AdId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid AdId { get; }
     public decimal ClickCost { get; }
 
-    public DeliveryClickRecordedEvent(string deliveryRecordId, string adId, decimal clickCost)
+    public DeliveryClickRecordedEvent(Guid deliveryRecordId, Guid adId, decimal clickCost)
     {
         DeliveryRecordId = deliveryRecordId;
         AdId = adId;
@@ -585,17 +585,17 @@ public class DeliveryClickRecordedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Í¶·Å×ª»¯¼ÇÂ¼ÊÂ¼þ
+/// Í¶ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Â¼ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryConversionRecordedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryConversionRecorded";
 
-    public string DeliveryRecordId { get; }
-    public string AdId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid AdId { get; }
     public decimal Revenue { get; }
 
-    public DeliveryConversionRecordedEvent(string deliveryRecordId, string adId, decimal revenue)
+    public DeliveryConversionRecordedEvent(Guid deliveryRecordId, Guid adId, decimal revenue)
     {
         DeliveryRecordId = deliveryRecordId;
         AdId = adId;
@@ -604,17 +604,17 @@ public class DeliveryConversionRecordedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Í¶·ÅÊ§°ÜÊÂ¼þ
+/// Í¶ï¿½ï¿½Ê§ï¿½ï¿½ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryFailedEvent : DomainEventBase
 {
     public override string EventType => "DeliveryFailed";
 
-    public string DeliveryRecordId { get; }
-    public string AdId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid AdId { get; }
     public string Reason { get; }
 
-    public DeliveryFailedEvent(string deliveryRecordId, string adId, string reason)
+    public DeliveryFailedEvent(Guid deliveryRecordId, Guid adId, string reason)
     {
         DeliveryRecordId = deliveryRecordId;
         AdId = adId;
@@ -623,16 +623,16 @@ public class DeliveryFailedEvent : DomainEventBase
 }
 
 /// <summary>
-/// Í¶·Å³¬Ê±ÊÂ¼þ
+/// Í¶ï¿½Å³ï¿½Ê±ï¿½Â¼ï¿½
 /// </summary>
 public class DeliveryTimeoutEvent : DomainEventBase
 {
     public override string EventType => "DeliveryTimeout";
 
-    public string DeliveryRecordId { get; }
-    public string AdId { get; }
+    public Guid DeliveryRecordId { get; }
+    public Guid AdId { get; }
 
-    public DeliveryTimeoutEvent(string deliveryRecordId, string adId)
+    public DeliveryTimeoutEvent(Guid deliveryRecordId, Guid adId)
     {
         DeliveryRecordId = deliveryRecordId;
         AdId = adId;

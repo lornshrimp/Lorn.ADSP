@@ -4,35 +4,35 @@ using Lorn.ADSP.Core.Shared.Enums;
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 /// <summary>
-/// ÈË¿ÚÍ³¼ÆÑ§ÐÅÏ¢¶¨ÏòÉÏÏÂÎÄ
-/// ¼Ì³Ð×ÔTargetingContextBase£¬Ìá¹©ÈË¿ÚÍ³¼ÆÑ§Êý¾ÝµÄ¶¨ÏòÉÏÏÂÎÄ¹¦ÄÜ
-/// ÕûºÏÁË»ù´¡ÓÃ»§ÐÅÏ¢ºÍÈË¿ÚÍ³¼ÆÑ§Êý¾Ý£¬×¨×¢ÓÚ¹ã¸æ¶¨ÏòÐèÇó
+/// ï¿½Ë¿ï¿½Í³ï¿½ï¿½Ñ§ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+/// ï¿½Ì³ï¿½ï¿½ï¿½TargetingContextBaseï¿½ï¿½ï¿½á¹©ï¿½Ë¿ï¿½Í³ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ÝµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½
+/// ï¿½ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ë¿ï¿½Í³ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½Ý£ï¿½×¨×¢ï¿½Ú¹ï¿½æ¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 public class DemographicInfo : TargetingContextBase
 {
     /// <summary>
-    /// ÏÔÊ¾Ãû³Æ
+    /// ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public string? DisplayName => GetProperty<string>("DisplayName");
+    public string? DisplayName => GetPropertyValue<string>("DisplayName");
 
     /// <summary>
-    /// ÐÔ±ð
+    /// ï¿½Ô±ï¿½
     /// </summary>
-    public Gender Gender => GetProperty<Gender>("Gender", Gender.Unknown);
+    public Gender Gender => GetPropertyValue<Gender>("Gender", Gender.Unknown);
 
     /// <summary>
-    /// ³öÉúÈÕÆÚ
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public DateTime? DateOfBirth => GetProperty<DateTime?>("DateOfBirth");
+    public DateTime? DateOfBirth => GetPropertyValue<DateTime?>("DateOfBirth");
 
     /// <summary>
-    /// ÄêÁä£¨¸ù¾Ý³öÉúÈÕÆÚ¼ÆËã£©
+    /// ï¿½ï¿½ï¿½ä£¨ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ã£©
     /// </summary>
     public int? Age
     {
         get
         {
-            if (!DateOfBirth.HasValue) return GetProperty<int?>("Age");
+            if (!DateOfBirth.HasValue) return GetPropertyValue<int?>("Age");
             var today = DateTime.Today;
             var age = today.Year - DateOfBirth.Value.Year;
             if (DateOfBirth.Value.Date > today.AddYears(-age)) age--;
@@ -41,77 +41,77 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// µç×ÓÓÊ¼þ
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½
     /// </summary>
-    public string? Email => GetProperty<string>("Email");
+    public string? Email => GetPropertyValue<string>("Email");
 
     /// <summary>
-    /// ÊÖ»úºÅÂë
+    /// ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public string? PhoneNumber => GetProperty<string>("PhoneNumber");
+    public string? PhoneNumber => GetPropertyValue<string>("PhoneNumber");
 
     /// <summary>
-    /// Ê±Çø
+    /// Ê±ï¿½ï¿½
     /// </summary>
-    public string? TimeZone => GetProperty<string>("TimeZone");
+    public string? TimeZone => GetPropertyValue<string>("TimeZone");
 
     /// <summary>
-    /// Ê×Ñ¡ÓïÑÔ
+    /// ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public string? PreferredLanguage => GetProperty<string>("PreferredLanguage");
+    public string? PreferredLanguage => GetPropertyValue<string>("PreferredLanguage");
 
     /// <summary>
-    /// ½ÌÓý³Ì¶È
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½
     /// </summary>
-    public string? Education => GetProperty<string>("Education");
+    public string? Education => GetPropertyValue<string>("Education");
 
     /// <summary>
-    /// ÊÕÈëË®Æ½
+    /// ï¿½ï¿½ï¿½ï¿½Ë®Æ½
     /// </summary>
-    public string? IncomeLevel => GetProperty<string>("IncomeLevel");
+    public string? IncomeLevel => GetPropertyValue<string>("IncomeLevel");
 
     /// <summary>
-    /// »éÒö×´¿ö
+    /// ï¿½ï¿½ï¿½ï¿½×´ï¿½ï¿½
     /// </summary>
-    public string? MaritalStatus => GetProperty<string>("MaritalStatus");
+    public string? MaritalStatus => GetPropertyValue<string>("MaritalStatus");
 
     /// <summary>
     /// Ö°Òµ
     /// </summary>
-    public string? Occupation => GetProperty<string>("Occupation");
+    public string? Occupation => GetPropertyValue<string>("Occupation");
 
     /// <summary>
-    /// ÐÐÒµ
+    /// ï¿½ï¿½Òµ
     /// </summary>
-    public string? Industry => GetProperty<string>("Industry");
+    public string? Industry => GetPropertyValue<string>("Industry");
 
     /// <summary>
-    /// ÓïÑÔÆ«ºÃ£¨¶àÓïÑÔÖ§³Ö£©
+    /// ï¿½ï¿½ï¿½ï¿½Æ«ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½Ö£ï¿½
     /// </summary>
-    public IReadOnlyList<string> Languages => GetProperty<List<string>>("Languages") ?? new List<string>();
+    public IReadOnlyList<string> Languages => GetPropertyValue<List<string>>("Languages") ?? new List<string>();
 
     /// <summary>
-    /// ¼ÒÍ¥¹æÄ£
+    /// ï¿½ï¿½Í¥ï¿½ï¿½Ä£
     /// </summary>
-    public int? HouseholdSize => GetProperty<int?>("HouseholdSize");
+    public int? HouseholdSize => GetPropertyValue<int?>("HouseholdSize");
 
     /// <summary>
-    /// ÊÇ·ñÓÐº¢×Ó
+    /// ï¿½Ç·ï¿½ï¿½Ðºï¿½ï¿½ï¿½
     /// </summary>
-    public bool? HasChildren => GetProperty<bool?>("HasChildren");
+    public bool? HasChildren => GetPropertyValue<bool?>("HasChildren");
 
     /// <summary>
-    /// Éú»î·½Ê½±êÇ©
+    /// ï¿½ï¿½ï¿½î·½Ê½ï¿½ï¿½Ç©
     /// </summary>
-    public IReadOnlyList<string> LifestyleTags => GetProperty<List<string>>("LifestyleTags") ?? new List<string>();
+    public IReadOnlyList<string> LifestyleTags => GetPropertyValue<List<string>>("LifestyleTags") ?? new List<string>();
 
     /// <summary>
-    /// Ë½ÓÐ¹¹Ôìº¯Êý
+    /// Ë½ï¿½Ð¹ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     private DemographicInfo() : base("Demographic") { }
 
     /// <summary>
-    /// ¹¹Ôìº¯Êý
+    /// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     public DemographicInfo(
         string? displayName = null,
@@ -139,7 +139,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨ÊôÐÔ×Öµä
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
     /// </summary>
     private static Dictionary<string, object> CreateProperties(
         string? displayName,
@@ -217,7 +217,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨»ù´¡ÈË¿ÚÍ³¼ÆÐÅÏ¢£¨Ô­UserBasicInfo¹¦ÄÜ£©
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¿ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ô­UserBasicInfoï¿½ï¿½ï¿½Ü£ï¿½
     /// </summary>
     public static DemographicInfo CreateBasic(
         string? displayName = null,
@@ -241,7 +241,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨ÏêÏ¸ÈË¿ÚÍ³¼ÆÐÅÏ¢
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½Ë¿ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ï¢
     /// </summary>
     public static DemographicInfo CreateDetailed(
         string? displayName,
@@ -283,7 +283,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨Ä¬ÈÏÈË¿ÚÍ³¼ÆÐÅÏ¢
+    /// ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½Ë¿ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ï¢
     /// </summary>
     public static DemographicInfo CreateDefault(string? dataSource = null)
     {
@@ -291,11 +291,11 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡Êý¾ÝÍêÕû¶ÈÆÀ·Ö
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public decimal GetCompletenessScore()
     {
-        var totalFields = 16; // ¸üÐÂ×Ö¶Î×ÜÊý
+        var totalFields = 16; // ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
         var filledFields = 0;
 
         if (!string.IsNullOrWhiteSpace(DisplayName)) filledFields++;
@@ -319,11 +319,11 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ·ûºÏÄêÁä·¶Î§¶¨Ïò
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä·¶Î§ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public bool MatchesAgeRange(int? minAge, int? maxAge)
     {
-        if (!Age.HasValue) return true; // Î´ÖªÄêÁäÄ¬ÈÏÆ¥Åä
+        if (!Age.HasValue) return true; // Î´Öªï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Æ¥ï¿½ï¿½
 
         if (minAge.HasValue && Age.Value < minAge.Value) return false;
         if (maxAge.HasValue && Age.Value > maxAge.Value) return false;
@@ -332,20 +332,20 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ·ûºÏÐÔ±ð¶¨Ïò
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½
     /// </summary>
     public bool MatchesGender(IEnumerable<Gender> targetGenders)
     {
-        if (!targetGenders.Any()) return true; // ÎÞÐÔ±ðÏÞÖÆÊ±Ä¬ÈÏÆ¥Åä
+        if (!targetGenders.Any()) return true; // ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ä¬ï¿½ï¿½Æ¥ï¿½ï¿½
         return targetGenders.Contains(Gender);
     }
 
     /// <summary>
-    /// ÊÇ·ñ°üº¬Ö¸¶¨ÓïÑÔ
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public bool HasLanguage(string language)
     {
-        if (!string.IsNullOrWhiteSpace(PreferredLanguage) && 
+        if (!string.IsNullOrWhiteSpace(PreferredLanguage) &&
             string.Equals(PreferredLanguage, language, StringComparison.OrdinalIgnoreCase))
             return true;
 
@@ -353,7 +353,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ°üº¬Ö¸¶¨Éú»î·½Ê½±êÇ©
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½î·½Ê½ï¿½ï¿½Ç©
     /// </summary>
     public bool HasLifestyleTag(string tag)
     {
@@ -361,7 +361,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ·ûºÏ½ÌÓý³Ì¶È¶¨Ïò
+    /// ï¿½Ç·ï¿½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ï¿½Ì¶È¶ï¿½ï¿½ï¿½
     /// </summary>
     public bool MatchesEducation(IEnumerable<string> targetEducations)
     {
@@ -372,7 +372,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ·ûºÏÊÕÈëË®Æ½¶¨Ïò
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public bool MatchesIncomeLevel(IEnumerable<string> targetIncomeLevels)
     {
@@ -383,7 +383,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡µ÷ÊÔÐÅÏ¢
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     /// </summary>
     public override string GetDebugInfo()
     {
@@ -393,22 +393,22 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÑéÖ¤ÉÏÏÂÎÄµÄÓÐÐ§ÐÔ
+    /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ð§ï¿½ï¿½
     /// </summary>
     public override bool IsValid()
     {
         if (!base.IsValid())
             return false;
 
-        // ÑéÖ¤ÄêÁäºÏÀíÐÔ
+        // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (Age.HasValue && (Age.Value < 0 || Age.Value > 150))
             return false;
 
-        // ÑéÖ¤¼ÒÍ¥¹æÄ£·¶Î§
+        // ï¿½ï¿½Ö¤ï¿½ï¿½Í¥ï¿½ï¿½Ä£ï¿½ï¿½Î§
         if (HouseholdSize.HasValue && (HouseholdSize.Value < 1 || HouseholdSize.Value > 20))
             return false;
 
-        // ÑéÖ¤ÓÊÏä¸ñÊ½£¨¼òµ¥ÑéÖ¤£©
+        // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½
         if (!string.IsNullOrWhiteSpace(Email) && !Email.Contains("@"))
             return false;
 
@@ -416,20 +416,20 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ÑéÖ¤¼ÒÍ¥¹æÄ£
+    /// ï¿½ï¿½Ö¤ï¿½ï¿½Í¥ï¿½ï¿½Ä£
     /// </summary>
     private static void ValidateHouseholdSize(int? householdSize)
     {
         if (householdSize.HasValue && (householdSize.Value < 1 || householdSize.Value > 20))
-            throw new ArgumentOutOfRangeException(nameof(householdSize), "¼ÒÍ¥¹æÄ£±ØÐëÔÚ1-20Ö®¼ä");
+            throw new ArgumentOutOfRangeException(nameof(householdSize), "ï¿½ï¿½Í¥ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1-20Ö®ï¿½ï¿½");
     }
 
     /// <summary>
-    /// ÑéÖ¤ÄêÁä
+    /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private static void ValidateAge(int? age)
     {
         if (age.HasValue && (age.Value < 0 || age.Value > 150))
-            throw new ArgumentOutOfRangeException(nameof(age), "ÄêÁä±ØÐëÔÚ0-150Ö®¼ä");
+            throw new ArgumentOutOfRangeException(nameof(age), "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0-150Ö®ï¿½ï¿½");
     }
 }

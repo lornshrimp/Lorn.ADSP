@@ -4,23 +4,34 @@ namespace Lorn.ADSP.Core.Domain.Common;
 
 /// <summary>
 /// 实体基类
+/// 所有领域实体的基础类，提供标识、时间戳、软删除等通用功能
 /// </summary>
 public abstract class EntityBase
 {
     /// <summary>
-    /// 实体唯一标识
+    /// 实体唯一标识 - 使用Guid支持高并发场景
     /// </summary>
-    public string Id { get; protected set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
 
     /// <summary>
     /// 创建时间
     /// </summary>
-    public DateTime CreateTime { get; protected set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
 
     /// <summary>
     /// 最后修改时间
     /// </summary>
-    public DateTime LastModifiedTime { get; protected set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; protected set; } = DateTime.UtcNow;
+
+    /// <summary>
+    /// 创建者
+    /// </summary>
+    public string CreatedBy { get; protected set; } = string.Empty;
+
+    /// <summary>
+    /// 更新者
+    /// </summary>
+    public string UpdatedBy { get; protected set; } = string.Empty;
 
     /// <summary>
     /// 是否已删除（软删除）
@@ -28,17 +39,11 @@ public abstract class EntityBase
     public bool IsDeleted { get; protected set; } = false;
 
     /// <summary>
-    /// 版本戳（用于乐观锁）
-    /// </summary>
-    public long Version { get; protected set; } = 1;
-
-    /// <summary>
     /// 更新最后修改时间
     /// </summary>
     protected virtual void UpdateLastModifiedTime()
     {
-        LastModifiedTime = DateTime.UtcNow;
-        Version++;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -57,6 +62,15 @@ public abstract class EntityBase
     {
         IsDeleted = false;
         UpdateLastModifiedTime();
+    }
+
+    /// <summary>
+    /// 实体验证
+    /// </summary>
+    /// <returns>验证是否通过</returns>
+    public virtual bool ValidateEntity()
+    {
+        return Id != Guid.Empty;
     }
 
     /// <summary>

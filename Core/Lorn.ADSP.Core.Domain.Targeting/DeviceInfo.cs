@@ -1,4 +1,4 @@
-﻿using Lorn.ADSP.Core.Shared.Enums;
+using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
@@ -11,82 +11,82 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 设备类型
         /// </summary>
-        public DeviceType DeviceType => GetProperty("DeviceType", DeviceType.PersonalComputer);
+        public DeviceType DeviceType => GetPropertyValue("DeviceType", DeviceType.PersonalComputer);
 
         /// <summary>
         /// 操作系统
         /// </summary>
-        public string? OperatingSystem => GetProperty<string>("OperatingSystem");
+        public string? OperatingSystem => GetPropertyValue<string>("OperatingSystem");
 
         /// <summary>
         /// 操作系统版本
         /// </summary>
-        public string? OSVersion => GetProperty<string>("OSVersion");
+        public string? OSVersion => GetPropertyValue<string>("OSVersion");
 
         /// <summary>
         /// 浏览器
         /// </summary>
-        public string? Browser => GetProperty<string>("Browser");
+        public string? Browser => GetPropertyValue<string>("Browser");
 
         /// <summary>
         /// 浏览器版本
         /// </summary>
-        public string? BrowserVersion => GetProperty<string>("BrowserVersion");
+        public string? BrowserVersion => GetPropertyValue<string>("BrowserVersion");
 
         /// <summary>
         /// 设备品牌
         /// </summary>
-        public string? Brand => GetProperty<string>("Brand");
+        public string? Brand => GetPropertyValue<string>("Brand");
 
         /// <summary>
         /// 设备型号
         /// </summary>
-        public string? Model => GetProperty<string>("Model");
+        public string? Model => GetPropertyValue<string>("Model");
 
         /// <summary>
         /// 屏幕宽度
         /// </summary>
-        public int? ScreenWidth => GetProperty<int?>("ScreenWidth");
+        public int? ScreenWidth => GetPropertyValue<int?>("ScreenWidth");
 
         /// <summary>
         /// 屏幕高度
         /// </summary>
-        public int? ScreenHeight => GetProperty<int?>("ScreenHeight");
+        public int? ScreenHeight => GetPropertyValue<int?>("ScreenHeight");
 
         /// <summary>
         /// 设备像素比
         /// </summary>
-        public decimal? DevicePixelRatio => GetProperty<decimal?>("DevicePixelRatio");
+        public decimal? DevicePixelRatio => GetPropertyValue<decimal?>("DevicePixelRatio");
 
         /// <summary>
         /// 网络类型
         /// </summary>
-        public string? NetworkType => GetProperty<string>("NetworkType");
+        public string? NetworkType => GetPropertyValue<string>("NetworkType");
 
         /// <summary>
         /// 运营商
         /// </summary>
-        public string? Carrier => GetProperty<string>("Carrier");
+        public string? Carrier => GetPropertyValue<string>("Carrier");
 
         /// <summary>
         /// 设备指纹
         /// </summary>
-        public string? DeviceFingerprint => GetProperty<string>("DeviceFingerprint");
+        public string? DeviceFingerprint => GetPropertyValue<string>("DeviceFingerprint");
 
         /// <summary>
         /// 是否支持JavaScript
         /// </summary>
-        public bool? JavaScriptEnabled => GetProperty<bool?>("JavaScriptEnabled");
+        public bool? JavaScriptEnabled => GetPropertyValue<bool?>("JavaScriptEnabled");
 
         /// <summary>
         /// 是否支持Cookie
         /// </summary>
-        public bool? CookiesEnabled => GetProperty<bool?>("CookiesEnabled");
+        public bool? CookiesEnabled => GetPropertyValue<bool?>("CookiesEnabled");
 
         /// <summary>
         /// Flash版本
         /// </summary>
-        public string? FlashVersion => GetProperty<string>("FlashVersion");
+        public string? FlashVersion => GetPropertyValue<string>("FlashVersion");
 
         /// <summary>
         /// 是否移动设备

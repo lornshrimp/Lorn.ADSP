@@ -1,261 +1,223 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Shared.Constants;
+using Lorn.ADSP.Core.Domain.Aggregates;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
-/// »î¶¯ÊµÌå£¨·Ç¾ÛºÏ¸ù£©
+/// å¹¿å‘Šæ´»åŠ¨å®ä½“
+/// [éœ€è¦å­˜å‚¨] - æ•°æ®åº“å­˜å‚¨
 /// </summary>
-public class Campaign : EntityBase
+public class Campaign : AggregateRoot
 {
     /// <summary>
-    /// »î¶¯Ãû
+    /// æ´»åŠ¨åç§°
     /// </summary>
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// »î¶¯ÃèÊö
+    /// æ´»åŠ¨æè¿°
     /// </summary>
-    public string Description { get; private set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// »î¶¯×´Ì¬
+    /// æ´»åŠ¨çŠ¶æ€
     /// </summary>
-    public CampaignStatus Status { get; private set; }
+    public CampaignStatus Status { get; set; }
 
     /// <summary>
-    /// ¹ã¸æÖ÷ID
+    /// å¹¿å‘ŠID - å¤–é”®ï¼ˆä½¿ç”¨Guidï¼‰
     /// </summary>
-    public string AdvertisementId { get; private set; } = string.Empty;
+    public Guid AdvertisementId { get; set; }
 
     /// <summary>
-    /// ¶¨ÏòÅäÖÃ
+    /// å¹¿å‘Š - å¯¼èˆªå±æ€§
     /// </summary>
-    public TargetingConfig TargetingConfig { get; private set; } = null!;
+    public Advertisement Advertisement { get; set; } = null!;
 
     /// <summary>
-    /// Í¶·Å²ßÂÔ
+    /// å¹¿å‘Šä¸»ID - å¤–é”®ï¼ˆä½¿ç”¨Guidï¼‰
     /// </summary>
-    public DeliveryPolicy DeliveryPolicy { get; private set; } = null!;
+    public Guid AdvertiserId { get; set; }
 
     /// <summary>
-    /// Ô¤ËãĞÅÏ¢
+    /// å¹¿å‘Šä¸» - å¯¼èˆªå±æ€§
     /// </summary>
-    public BudgetInfo Budget { get; private set; } = null!;
+    public Advertiser Advertiser { get; set; } = null!;
 
     /// <summary>
-    /// ¿ªÊ¼Ê±¼ä
+    /// å®šå‘é…ç½® - å¯¼èˆªå±æ€§
     /// </summary>
-    public DateTime? StartDate { get; private set; }
+    public TargetingConfig TargetingConfig { get; set; } = null!;
 
     /// <summary>
-    /// ½áÊøÊ±¼ä
+    /// æŠ•æ”¾ç­–ç•¥ - å¯¼èˆªå±æ€§
     /// </summary>
-    public DateTime? EndDate { get; private set; }
+    public DeliveryPolicy DeliveryPolicy { get; set; } = null!;
 
     /// <summary>
-    /// ¾º¼Û²ßÂÔ
+    /// é¢„ç®—ä¿¡æ¯ - å¯¼èˆªå±æ€§
     /// </summary>
-    public BiddingStrategy BiddingStrategy { get; private set; }
+    public BudgetInfo BudgetInfo { get; set; } = null!;
 
     /// <summary>
-    /// Ë½ÓĞ¹¹Ôìº¯Êı£¬ÓÃÓÚORM
+    /// ç«ä»·ç­–ç•¥
+    /// </summary>
+    public BiddingStrategy BiddingStrategy { get; set; } = BiddingStrategy.FixedBid;
+
+    /// <summary>
+    /// å¼€å§‹æ—¥æœŸ
+    /// </summary>
+    public DateTime StartDate { get; set; }
+
+    /// <summary>
+    /// ç»“æŸæ—¥æœŸ
+    /// </summary>
+    public DateTime EndDate { get; set; }
+
+    /// <summary>
+    /// æŠ•æ”¾è®°å½•é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
+    /// </summary>
+    public List<DeliveryRecord> DeliveryRecords { get; set; } = new();
+
+    /// <summary>
+    /// ç§æœ‰æ„é€ å‡½æ•°ï¼Œç”¨äºEF Core
     /// </summary>
     private Campaign() { }
 
     /// <summary>
-    /// ¹¹Ôìº¯Êı
+    /// æ„é€ å‡½æ•°
     /// </summary>
-    public Campaign(
-        string advertisementId,
-        string name,
-        string description,
-        TargetingConfig targetingConfig,
-        DeliveryPolicy deliveryPolicy,
-        BudgetInfo budget,
-        BiddingStrategy biddingStrategy = BiddingStrategy.AutoBid,
-        DateTime? startDate = null,
-        DateTime? endDate = null)
+    public Campaign(string name, string description, Guid advertisementId, Guid advertiserId)
     {
-        ValidateInputs(advertisementId, name, targetingConfig, deliveryPolicy, budget);
-
-        AdvertisementId = advertisementId;
         Name = name;
         Description = description;
-        TargetingConfig = targetingConfig;
-        DeliveryPolicy = deliveryPolicy;
-        Budget = budget;
-        BiddingStrategy = biddingStrategy;
-        StartDate = startDate;
-        EndDate = endDate;
+        AdvertisementId = advertisementId;
+        AdvertiserId = advertiserId;
         Status = CampaignStatus.Draft;
     }
 
     /// <summary>
-    /// ¿ªÊ¼»î¶¯
+    /// æ£€æŸ¥æ˜¯å¦å¯ä»¥æŠ•æ”¾
+    /// </summary>
+    public bool CanDeliver
+    {
+        get
+        {
+            // æ£€æŸ¥æ´»åŠ¨çŠ¶æ€
+            if (Status != CampaignStatus.Active && Status != CampaignStatus.Running)
+                return false;
+
+            // æ£€æŸ¥æ—¶é—´èŒƒå›´
+            var now = DateTime.UtcNow;
+            if (now < StartDate || now > EndDate)
+                return false;
+
+            // æ£€æŸ¥é¢„ç®—
+            if (BudgetInfo.DailyBudget <= 0 || BudgetInfo.TotalBudget <= 0)
+                return false;
+
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// å¯åŠ¨æ´»åŠ¨
     /// </summary>
     public void Start()
     {
         if (Status != CampaignStatus.Draft && Status != CampaignStatus.Paused)
-            throw new InvalidOperationException("Ö»ÓĞ²İ¸å»òÔİÍ£×´Ì¬µÄ»î¶¯¿É¿ªÊ¼");
+            throw new InvalidOperationException("åªæœ‰è‰ç¨¿æˆ–æš‚åœçŠ¶æ€çš„æ´»åŠ¨æ‰èƒ½å¯åŠ¨");
 
-        if (!IsWithinScheduledTime())
-            throw new InvalidOperationException("²»ÔÚÔ¤¶¨µÄÊ±¼ä·¶Î§ÄÚ");
-
-        Status = CampaignStatus.Running;
+        Status = CampaignStatus.Active;
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// ÔİÍ£»î¶¯
+    /// æš‚åœæ´»åŠ¨
     /// </summary>
     public void Pause()
     {
-        if (Status != CampaignStatus.Running)
-            throw new InvalidOperationException("Ö»ÓĞÔËĞĞÖĞµÄ»î¶¯¿ÉÔİÍ£");
+        if (Status != CampaignStatus.Active)
+            throw new InvalidOperationException("åªæœ‰æ´»è·ƒçŠ¶æ€çš„æ´»åŠ¨æ‰èƒ½æš‚åœ");
 
         Status = CampaignStatus.Paused;
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// »Ö¸´»î¶¯
+    /// æ¢å¤æ´»åŠ¨
     /// </summary>
     public void Resume()
     {
         if (Status != CampaignStatus.Paused)
-            throw new InvalidOperationException("Ö»ÓĞÔİÍ£µÄ»î¶¯¿É»Ö¸´");
+            throw new InvalidOperationException("åªæœ‰æš‚åœçŠ¶æ€çš„æ´»åŠ¨æ‰èƒ½æ¢å¤");
 
-        Status = CampaignStatus.Running;
+        Status = CampaignStatus.Active;
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// Í£Ö¹»î¶¯
+    /// åœæ­¢æ´»åŠ¨
     /// </summary>
     public void Stop()
-    {
-        if (Status == CampaignStatus.Completed || Status == CampaignStatus.Cancelled)
-            throw new InvalidOperationException("ÒÑ¾­Íê³É»òÈ¡Ïû");
-
-        Status = CampaignStatus.Cancelled;
-        UpdateLastModifiedTime();
-    }
-
-    /// <summary>
-    /// Íê³É»î¶¯
-    /// </summary>
-    public void Complete()
     {
         Status = CampaignStatus.Completed;
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// ¸üĞÂÔ¤Ëã
+    /// æ›´æ–°é¢„ç®—ä¿¡æ¯
     /// </summary>
-    public void UpdateBudget(BudgetInfo budget)
+    public void UpdateBudget(BudgetInfo budgetInfo)
     {
-        ArgumentNullException.ThrowIfNull(budget);
-
-        Budget = budget;
+        BudgetInfo = budgetInfo ?? throw new ArgumentNullException(nameof(budgetInfo));
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// ¸üĞÂ¶¨ÏòÅäÖÃ
+    /// æ›´æ–°å®šå‘é…ç½®
     /// </summary>
-    public void UpdateTargeting(TargetingConfig config)
+    public void UpdateTargeting(TargetingConfig targetingConfig)
     {
-        ArgumentNullException.ThrowIfNull(config);
-
-        TargetingConfig = config;
+        TargetingConfig = targetingConfig ?? throw new ArgumentNullException(nameof(targetingConfig));
         UpdateLastModifiedTime();
     }
 
     /// <summary>
-    /// ´Ó²ßÂÔÄ£°å´´½¨¶¨ÏòÅäÖÃ
+    /// ä»ç­–ç•¥åˆ›å»ºå®šå‘é…ç½®
     /// </summary>
     public TargetingConfig CreateTargetingFromPolicy(TargetingPolicy policy)
     {
-        ArgumentNullException.ThrowIfNull(policy);
+        if (policy == null) throw new ArgumentNullException(nameof(policy));
 
-        var config = policy.CreateConfig(Id);
+        var config = TargetingConfig.CreateFromPolicy(policy, Id.ToString());
+
         TargetingConfig = config;
         UpdateLastModifiedTime();
+
         return config;
     }
 
     /// <summary>
-    /// ¼ì²éÔ¤Ëã¿ÉÓÃĞÔ
+    /// æ£€æŸ¥é¢„ç®—å¯ç”¨æ€§
     /// </summary>
     public bool CheckBudgetAvailability()
     {
-        if (Budget.IsExhausted())
-        {
-            // Ô¤ËãÓÃ¾¡×Ô¶¯ÔİÍ£»î¶¯
-            if (Status == CampaignStatus.Running)
-            {
-                Pause();
-            }
-            return false;
-        }
-        return true;
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        return BudgetInfo != null && BudgetInfo.RemainingBudget > 0;
     }
 
     /// <summary>
-    /// ÊÇ·ñ»îÔ¾
+    /// è·å–æ—¥æ¶ˆè´¹
     /// </summary>
-    public bool IsActive => Status == CampaignStatus.Running &&
-                           CheckBudgetAvailability() &&
-                           IsWithinScheduledTime() &&
-                           !IsDeleted;
-
-    public bool CanDeliver { get; internal set; }
-
-    /// <summary>
-    /// ÊÇ·ñÔÚÔ¤¶¨Ê±¼ä·¶Î§ÄÚ
-    /// </summary>
-    public bool IsWithinScheduledTime()
+    public decimal GetDailySpend()
     {
-        var now = DateTime.UtcNow;
-
-        if (StartDate.HasValue && now < StartDate.Value)
-            return false;
-
-        if (EndDate.HasValue && now > EndDate.Value)
-        {
-            // ³¬¹ı½áÊøÊ±¼ä×´Ì¬ÎªÔËĞĞÖĞ£¬×Ô¶¯Íê³É
-            if (Status == CampaignStatus.Running)
-            {
-                Complete();
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// ÑéÖ¤ÊäÈë²ÎÊı
-    /// </summary>
-    private static void ValidateInputs(string advertisementId, string name,
-        TargetingConfig targetingConfig, DeliveryPolicy deliveryPolicy, BudgetInfo budget)
-    {
-        if (string.IsNullOrWhiteSpace(advertisementId))
-            throw new ArgumentException("¹ã¸æID²»ÄÜÎª¿Õ", nameof(advertisementId));
-
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("»î¶¯Ãû²»ÄÜÎª¿Õ", nameof(name));
-
-        if (name.Length > ValidationConstants.StringLength.CampaignNameMaxLength)
-            throw new ArgumentException($"»î¶¯Ãû³¤¶È²»ÄÜ³¬¹ı{ValidationConstants.StringLength.CampaignNameMaxLength}¸ö×Ö·û", nameof(name));
-
-        ArgumentNullException.ThrowIfNull(targetingConfig, nameof(targetingConfig));
-        ArgumentNullException.ThrowIfNull(deliveryPolicy, nameof(deliveryPolicy));
-        ArgumentNullException.ThrowIfNull(budget, nameof(budget));
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        var today = DateTime.Today;
+        return DeliveryRecords
+            .Where(r => r.DeliveredAt.Date == today)
+            .Sum(r => r.Cost);
     }
 }
-

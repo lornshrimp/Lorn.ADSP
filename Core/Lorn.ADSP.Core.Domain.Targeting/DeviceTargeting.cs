@@ -43,17 +43,27 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 创建规则字典
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IList<DeviceType>? deviceTypes,
             IList<string>? operatingSystems,
             IList<string>? browsers)
         {
-            var rules = new Dictionary<string, object>
-            {
-                ["DeviceTypes"] = deviceTypes?.ToList() ?? new List<DeviceType>(),
-                ["OperatingSystems"] = operatingSystems?.ToList() ?? new List<string>(),
-                ["Browsers"] = browsers?.ToList() ?? new List<string>()
-            };
+            var rules = new List<TargetingRule>();
+
+            // 添加设备类型列表
+            var deviceTypesList = deviceTypes?.ToList() ?? new List<DeviceType>();
+            var deviceTypesRule = new TargetingRule("DeviceTypes", string.Empty, "Json").WithValue(deviceTypesList);
+            rules.Add(deviceTypesRule);
+
+            // 添加操作系统列表
+            var operatingSystemsList = operatingSystems?.ToList() ?? new List<string>();
+            var operatingSystemsRule = new TargetingRule("OperatingSystems", string.Empty, "Json").WithValue(operatingSystemsList);
+            rules.Add(operatingSystemsRule);
+
+            // 添加浏览器列表
+            var browsersList = browsers?.ToList() ?? new List<string>();
+            var browsersRule = new TargetingRule("Browsers", string.Empty, "Json").WithValue(browsersList);
+            rules.Add(browsersRule);
 
             return rules;
         }

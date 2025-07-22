@@ -8,7 +8,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     /// </summary>
     public abstract class TargetingCriteriaBase : ValueObject, ITargetingCriteria
     {
-        private readonly Dictionary<string, object> _rules;
+        private readonly List<TargetingRule> _rules;
 
         /// <summary>
         /// 条件类型标识
@@ -18,7 +18,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 定向规则集合（只读）
         /// </summary>
-        public IReadOnlyDictionary<string, object> Rules => _rules.AsReadOnly();
+        public IReadOnlyList<TargetingRule> Rules => _rules.AsReadOnly();
 
         /// <summary>
         /// 条件权重
@@ -47,11 +47,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <param name="weight">权重</param>
         /// <param name="isEnabled">是否启用</param>
         protected TargetingCriteriaBase(
-            IDictionary<string, object>? rules = null,
+            IEnumerable<TargetingRule>? rules = null,
             decimal weight = 1.0m,
             bool isEnabled = true)
         {
-            _rules = rules?.ToDictionary(kv => kv.Key, kv => kv.Value) ?? new Dictionary<string, object>();
+            _rules = rules?.ToList() ?? new List<TargetingRule>();
             Weight = weight;
             IsEnabled = isEnabled;
             CreatedAt = DateTime.UtcNow;
@@ -71,23 +71,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (string.IsNullOrEmpty(ruleKey))
                 return default;
 
-            if (_rules.TryGetValue(ruleKey, out var value))
-            {
-                if (value is T typedValue)
-                    return typedValue;
+            var rule = _rules.FirstOrDefault(r => r.RuleKey == ruleKey);
+            if (rule == null)
+                return default;
 
-                // 尝试类型转换
-                try
-                {
-                    return (T)Convert.ChangeType(value, typeof(T));
-                }
-                catch
-                {
-                    return default;
-                }
-            }
-
-            return default;
+            return rule.GetValue<T>();
         }
 
         /// <summary>
@@ -100,7 +88,20 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         public virtual T GetRule<T>(string ruleKey, T defaultValue)
         {
             var result = GetRule<T>(ruleKey);
-            return result != null ? result : defaultValue;
+            return result ?? defaultValue;
+        }
+
+        /// <summary>
+        /// 获取指定的规则对象
+        /// </summary>
+        /// <param name="ruleKey">规则键</param>
+        /// <returns>规则对象，如果不存在则返回null</returns>
+        public virtual TargetingRule? GetRuleObject(string ruleKey)
+        {
+            if (string.IsNullOrEmpty(ruleKey))
+                return null;
+
+            return _rules.FirstOrDefault(r => r.RuleKey == ruleKey);
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>是否包含该规则</returns>
         public virtual bool HasRule(string ruleKey)
         {
-            return !string.IsNullOrEmpty(ruleKey) && _rules.ContainsKey(ruleKey);
+            return !string.IsNullOrEmpty(ruleKey) && _rules.Any(r => r.RuleKey == ruleKey);
         }
 
         /// <summary>
@@ -119,7 +120,29 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>规则键集合</returns>
         public virtual IReadOnlyCollection<string> GetRuleKeys()
         {
-            return _rules.Keys.ToList().AsReadOnly();
+            return _rules.Select(r => r.RuleKey).ToList().AsReadOnly();
+        }
+
+        /// <summary>
+        /// 根据分类获取规则
+        /// </summary>
+        /// <param name="category">规则分类</param>
+        /// <returns>指定分类的规则集合</returns>
+        public virtual IReadOnlyList<TargetingRule> GetRulesByCategory(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return new List<TargetingRule>().AsReadOnly();
+
+            return _rules.Where(r => r.Category == category).ToList().AsReadOnly();
+        }
+
+        /// <summary>
+        /// 获取必需规则
+        /// </summary>
+        /// <returns>必需规则集合</returns>
+        public virtual IReadOnlyList<TargetingRule> GetRequiredRules()
+        {
+            return _rules.Where(r => r.IsRequired).ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -157,7 +180,14 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (string.IsNullOrEmpty(ruleKey))
                 throw new ArgumentException("规则键不能为空", nameof(ruleKey));
 
-            _rules[ruleKey] = ruleValue;
+            var existingRule = _rules.FirstOrDefault(r => r.RuleKey == ruleKey);
+            if (existingRule != null)
+            {
+                _rules.Remove(existingRule);
+            }
+
+            var newRule = new TargetingRule(ruleKey, ruleValue?.ToString() ?? string.Empty);
+            _rules.Add(newRule);
             UpdatedAt = DateTime.UtcNow;
         }
 
@@ -171,12 +201,14 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (string.IsNullOrEmpty(ruleKey))
                 return false;
 
-            var result = _rules.Remove(ruleKey);
-            if (result)
+            var existingRule = _rules.FirstOrDefault(r => r.RuleKey == ruleKey);
+            if (existingRule != null)
             {
+                _rules.Remove(existingRule);
                 UpdatedAt = DateTime.UtcNow;
+                return true;
             }
-            return result;
+            return false;
         }
 
         /// <summary>
@@ -217,10 +249,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             yield return IsEnabled;
 
             // 按键排序的规则集合
-            foreach (var rule in _rules.OrderBy(kv => kv.Key))
+            foreach (var rule in _rules.OrderBy(r => r.RuleKey))
             {
-                yield return rule.Key;
-                yield return rule.Value ?? string.Empty;
+                yield return rule.RuleKey;
+                yield return rule.RuleValue ?? string.Empty;
             }
         }
 

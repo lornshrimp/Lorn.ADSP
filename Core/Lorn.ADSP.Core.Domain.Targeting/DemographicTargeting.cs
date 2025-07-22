@@ -1,4 +1,4 @@
-﻿using Lorn.ADSP.Core.Shared.Enums;
+using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
@@ -49,23 +49,37 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 创建规则字典
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IList<Gender>? targetGenders,
             int? minAge,
             int? maxAge,
             IList<string>? targetKeywords)
         {
-            var rules = new Dictionary<string, object>
-            {
-                ["TargetGenders"] = targetGenders?.ToList() ?? new List<Gender>(),
-                ["TargetKeywords"] = targetKeywords?.ToList() ?? new List<string>()
-            };
+            var rules = new List<TargetingRule>();
 
+            // 添加目标性别列表
+            var targetGendersList = targetGenders?.ToList() ?? new List<Gender>();
+            var gendersRule = new TargetingRule("TargetGenders", string.Empty, "Json").WithValue(targetGendersList);
+            rules.Add(gendersRule);
+
+            // 添加目标关键词列表
+            var targetKeywordsList = targetKeywords?.ToList() ?? new List<string>();
+            var keywordsRule = new TargetingRule("TargetKeywords", string.Empty, "Json").WithValue(targetKeywordsList);
+            rules.Add(keywordsRule);
+
+            // 添加最小年龄（如果存在）
             if (minAge.HasValue)
-                rules["MinAge"] = minAge.Value;
+            {
+                var minAgeRule = new TargetingRule("MinAge", string.Empty, "Int32").WithValue(minAge.Value);
+                rules.Add(minAgeRule);
+            }
 
+            // 添加最大年龄（如果存在）
             if (maxAge.HasValue)
-                rules["MaxAge"] = maxAge.Value;
+            {
+                var maxAgeRule = new TargetingRule("MaxAge", string.Empty, "Int32").WithValue(maxAge.Value);
+                rules.Add(maxAgeRule);
+            }
 
             return rules;
         }

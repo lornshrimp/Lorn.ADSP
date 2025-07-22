@@ -1,4 +1,6 @@
-﻿namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+
+namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
     /// 行为定向条件
@@ -33,17 +35,39 @@
         }
 
         /// <summary>
-        /// 创建规则字典
+        /// 创建规则集合
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IList<string>? interestTags,
             IList<string>? behaviorTypes)
         {
-            var rules = new Dictionary<string, object>
+            var rules = new List<TargetingRule>();
+
+            if (interestTags != null && interestTags.Any())
             {
-                ["InterestTags"] = interestTags?.ToList() ?? new List<string>(),
-                ["BehaviorTypes"] = behaviorTypes?.ToList() ?? new List<string>()
-            };
+                rules.Add(new TargetingRule(
+                    "InterestTags",
+                    System.Text.Json.JsonSerializer.Serialize(interestTags),
+                    "Json",
+                    "Behavior",
+                    true,
+                    1.0m,
+                    "in",
+                    "用户兴趣标签"));
+            }
+
+            if (behaviorTypes != null && behaviorTypes.Any())
+            {
+                rules.Add(new TargetingRule(
+                    "BehaviorTypes",
+                    System.Text.Json.JsonSerializer.Serialize(behaviorTypes),
+                    "Json",
+                    "Behavior",
+                    true,
+                    1.0m,
+                    "in",
+                    "用户行为类型"));
+            }
 
             return rules;
         }

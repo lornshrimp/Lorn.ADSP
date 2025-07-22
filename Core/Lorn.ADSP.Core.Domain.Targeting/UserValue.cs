@@ -1,64 +1,64 @@
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 /// <summary>
-/// ÓÃ»§¼ÛÖµ¶¨ÏòÉÏÏÂÎÄ
-/// ¼Ì³Ð×ÔTargetingContextBase£¬Ìá¹©ÓÃ»§¼ÛÖµÆÀ¹ÀÊý¾ÝµÄ¶¨ÏòÉÏÏÂÎÄ¹¦ÄÜ
-/// ×¨×¢ÓÚ»ùÓÚÓÃ»§¼ÛÖµµÄ¹ã¸æ¶¨Ïò²ßÂÔ
+/// ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+/// ï¿½Ì³ï¿½ï¿½ï¿½TargetingContextBaseï¿½ï¿½ï¿½á¹©ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½
+/// ×¨×¢ï¿½Ú»ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½Ä¹ï¿½æ¶¨ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 public class UserValue : TargetingContextBase
 {
     /// <summary>
-    /// ²ÎÓë¶ÈÆÀ·Ö (0-100)
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int EngagementScore => GetProperty("EngagementScore", 0);
+    public int EngagementScore => GetPropertyValue("EngagementScore", 0);
 
     /// <summary>
-    /// ÖÒ³Ï¶ÈÆÀ·Ö (0-100)
+    /// ï¿½Ò³Ï¶ï¿½ï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int LoyaltyScore => GetProperty("LoyaltyScore", 0);
+    public int LoyaltyScore => GetPropertyValue("LoyaltyScore", 0);
 
     /// <summary>
-    /// »õ±Ò¼ÛÖµÆÀ·Ö (0-100)
+    /// ï¿½ï¿½ï¿½Ò¼ï¿½Öµï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int MonetaryScore => GetProperty("MonetaryScore", 0);
+    public int MonetaryScore => GetPropertyValue("MonetaryScore", 0);
 
     /// <summary>
-    /// Ç±Á¦ÆÀ·Ö (0-100)
+    /// Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int PotentialScore => GetProperty("PotentialScore", 0);
+    public int PotentialScore => GetPropertyValue("PotentialScore", 0);
 
     /// <summary>
-    /// ×ÛºÏÆÀ·Ö (0-100)
+    /// ï¿½Ûºï¿½ï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int OverallScore => GetProperty("OverallScore", 0);
+    public int OverallScore => GetPropertyValue("OverallScore", 0);
 
     /// <summary>
-    /// ÉúÃüÖÜÆÚ¼ÛÖµ¹ÀËã
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¼ï¿½Öµï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public decimal EstimatedLTV => GetProperty("EstimatedLTV", 0.0m);
+    public decimal EstimatedLTV => GetPropertyValue("EstimatedLTV", 0.0m);
 
     /// <summary>
-    /// Ïû·ÑÄÜÁ¦µÈ¼¶
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½
     /// </summary>
-    public SpendingLevel SpendingLevel => GetProperty("SpendingLevel", SpendingLevel.Medium);
+    public SpendingLevel SpendingLevel => GetPropertyValue("SpendingLevel", SpendingLevel.Medium);
 
     /// <summary>
-    /// ÓÃ»§¼ÛÖµµÈ¼¶
+    /// ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½È¼ï¿½
     /// </summary>
-    public ValueTier ValueTier => GetProperty("ValueTier", ValueTier.Standard);
+    public ValueTier ValueTier => GetPropertyValue("ValueTier", ValueTier.Standard);
 
     /// <summary>
-    /// ×ª»¯¸ÅÂÊ (0.0-1.0)
+    /// ×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (0.0-1.0)
     /// </summary>
-    public decimal ConversionProbability => GetProperty("ConversionProbability", 0.0m);
+    public decimal ConversionProbability => GetPropertyValue("ConversionProbability", 0.0m);
 
     /// <summary>
-    /// Ë½ÓÐ¹¹Ôìº¯Êý
+    /// Ë½ï¿½Ð¹ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     private UserValue() : base("UserValue") { }
 
     /// <summary>
-    /// ¹¹Ôìº¯Êý
+    /// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     public UserValue(
         int engagementScore = 50,
@@ -75,7 +75,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨ÊôÐÔ×Öµä
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
     /// </summary>
     private static Dictionary<string, object> CreateProperties(
         int engagementScore,
@@ -87,20 +87,20 @@ public class UserValue : TargetingContextBase
         ValueTier valueTier,
         decimal conversionProbability)
     {
-        // ÏÞÖÆÆÀ·Ö·¶Î§
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½Î§
         engagementScore = Math.Max(0, Math.Min(100, engagementScore));
         loyaltyScore = Math.Max(0, Math.Min(100, loyaltyScore));
         monetaryScore = Math.Max(0, Math.Min(100, monetaryScore));
         potentialScore = Math.Max(0, Math.Min(100, potentialScore));
 
-        // ¼ÆËã×ÛºÏÆÀ·Ö£¨¼ÓÈ¨Æ½¾ù£©
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ûºï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½È¨Æ½ï¿½ï¿½ï¿½ï¿½
         var overallScore = (int)Math.Round(
             engagementScore * 0.3 +
             loyaltyScore * 0.3 +
             monetaryScore * 0.25 +
             potentialScore * 0.15);
 
-        // ÏÞÖÆ×ª»¯¸ÅÂÊ·¶Î§
+        // ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½Î§
         conversionProbability = Math.Max(0.0m, Math.Min(1.0m, conversionProbability));
 
         return new Dictionary<string, object>
@@ -118,7 +118,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨Ä¬ÈÏ¼ÛÖµÉÏÏÂÎÄ
+    /// ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¼ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public static UserValue CreateDefault(string? dataSource = null)
     {
@@ -126,7 +126,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨¸ß¼ÛÖµÓÃ»§ÉÏÏÂÎÄ
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½Öµï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public static UserValue CreateHighValue(
         int engagementScore = 85,
@@ -149,7 +149,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨Ç±ÔÚ¼ÛÖµÓÃ»§ÉÏÏÂÎÄ
+    /// ï¿½ï¿½ï¿½ï¿½Ç±ï¿½Ú¼ï¿½Öµï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public static UserValue CreatePotential(
         int engagementScore = 70,
@@ -170,57 +170,57 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñÎª¸ß¼ÛÖµÓÃ»§
+    /// ï¿½Ç·ï¿½Îªï¿½ß¼ï¿½Öµï¿½Ã»ï¿½
     /// </summary>
     public bool IsHighValueUser => OverallScore >= 80 || ValueTier >= ValueTier.Premium;
 
     /// <summary>
-    /// ÊÇ·ñÎª»îÔ¾ÓÃ»§
+    /// ï¿½Ç·ï¿½Îªï¿½ï¿½Ô¾ï¿½Ã»ï¿½
     /// </summary>
     public bool IsActiveUser => EngagementScore >= 60;
 
     /// <summary>
-    /// ÊÇ·ñÎªÖÒ³ÏÓÃ»§
+    /// ï¿½Ç·ï¿½Îªï¿½Ò³ï¿½ï¿½Ã»ï¿½
     /// </summary>
     public bool IsLoyalUser => LoyaltyScore >= 70;
 
     /// <summary>
-    /// ÊÇ·ñ¾ßÓÐÏû·ÑÇ±Á¦
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç±ï¿½ï¿½
     /// </summary>
     public bool HasSpendingPotential => MonetaryScore >= 50 || PotentialScore >= 70;
 
     /// <summary>
-    /// »ñÈ¡ÓÃ»§¼ÛÖµµÈ¼¶ÃèÊö
+    /// ï¿½ï¿½È¡ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public string GetValueDescription()
     {
         return ValueTier switch
         {
-            ValueTier.Basic => "»ù´¡ÓÃ»§",
-            ValueTier.Standard => "±ê×¼ÓÃ»§",
-            ValueTier.Growth => "³É³¤ÓÃ»§",
-            ValueTier.Premium => "ÓÅÖÊÓÃ»§",
-            ValueTier.VIP => "VIPÓÃ»§",
-            _ => "Î´·ÖÀàÓÃ»§"
+            ValueTier.Basic => "ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½",
+            ValueTier.Standard => "ï¿½ï¿½×¼ï¿½Ã»ï¿½",
+            ValueTier.Growth => "ï¿½É³ï¿½ï¿½Ã»ï¿½",
+            ValueTier.Premium => "ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½",
+            ValueTier.VIP => "VIPï¿½Ã»ï¿½",
+            _ => "Î´ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½"
         };
     }
 
     /// <summary>
-    /// »ñÈ¡Ïû·ÑÄÜÁ¦ÃèÊö
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public string GetSpendingDescription()
     {
         return SpendingLevel switch
         {
-            SpendingLevel.Low => "µÍÏû·Ñ",
-            SpendingLevel.Medium => "ÖÐµÈÏû·Ñ",
-            SpendingLevel.High => "¸ßÏû·Ñ",
-            _ => "Î´ÖªÏû·ÑÄÜÁ¦"
+            SpendingLevel.Low => "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+            SpendingLevel.Medium => "ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½",
+            SpendingLevel.High => "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+            _ => "Î´Öªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
         };
     }
 
     /// <summary>
-    /// ¼ÆËã¼ÛÖµÆ¥Åä¶È
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÆ¥ï¿½ï¿½ï¿½
     /// </summary>
     public decimal CalculateValueMatchScore(ValueTier targetTier, SpendingLevel? targetSpendingLevel = null)
     {
@@ -236,7 +236,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡¹ã¸æ³ö¼Û½¨ÒéÏµÊý
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
     /// </summary>
     public decimal GetBidMultiplier()
     {
@@ -252,7 +252,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡×ª»¯ÆÚÍûÖµ
+    /// ï¿½ï¿½È¡×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
     /// </summary>
     public decimal GetExpectedConversionValue()
     {
@@ -260,7 +260,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡µ÷ÊÔÐÅÏ¢
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     /// </summary>
     public override string GetDebugInfo()
     {
@@ -270,23 +270,23 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ÑéÖ¤ÉÏÏÂÎÄµÄÓÐÐ§ÐÔ
+    /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ð§ï¿½ï¿½
     /// </summary>
     public override bool IsValid()
     {
         if (!base.IsValid())
             return false;
 
-        // ÑéÖ¤ÆÀ·Ö·¶Î§
+        // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½Ö·ï¿½Î§
         var scores = new[] { EngagementScore, LoyaltyScore, MonetaryScore, PotentialScore, OverallScore };
         if (scores.Any(score => score < 0 || score > 100))
             return false;
 
-        // ÑéÖ¤×ª»¯¸ÅÂÊ·¶Î§
+        // ï¿½ï¿½Ö¤×ªï¿½ï¿½ï¿½ï¿½ï¿½Ê·ï¿½Î§
         if (ConversionProbability < 0.0m || ConversionProbability > 1.0m)
             return false;
 
-        // ÑéÖ¤LTV²»Îª¸ºÊý
+        // ï¿½ï¿½Ö¤LTVï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
         if (EstimatedLTV < 0.0m)
             return false;
 
@@ -295,7 +295,7 @@ public class UserValue : TargetingContextBase
 }
 
 /// <summary>
-/// Ïû·ÑÄÜÁ¦µÈ¼¶Ã¶¾Ù
+/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½Ã¶ï¿½ï¿½
 /// </summary>
 public enum SpendingLevel
 {
@@ -305,7 +305,7 @@ public enum SpendingLevel
 }
 
 /// <summary>
-/// ÓÃ»§¼ÛÖµµÈ¼¶Ã¶¾Ù
+/// ï¿½Ã»ï¿½ï¿½ï¿½Öµï¿½È¼ï¿½Ã¶ï¿½ï¿½
 /// </summary>
 public enum ValueTier
 {

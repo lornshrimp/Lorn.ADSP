@@ -1,415 +1,184 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.Entities;
-using Lorn.ADSP.Core.Domain.Events;
 using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Shared.Constants;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Aggregates;
 
 /// <summary>
-/// ¹ã¸æÊµÌå£¨¾ÛºÏ¸ù£©
+/// å¹¿å‘Šå®ä½“ï¼ˆèšåˆæ ¹ï¼‰
+/// [éœ€è¦å­˜å‚¨] - æ•°æ®åº“å­˜å‚¨
 /// </summary>
 public class Advertisement : AggregateRoot
 {
     /// <summary>
-    /// ¹ã¸æÖ÷ID
+    /// å¹¿å‘Šä¸»ID - å¤–é”®ï¼ˆä½¿ç”¨Guidï¼‰
     /// </summary>
-    public string AdvertiserId { get; private set; } = string.Empty;
+    public Guid AdvertiserId { get; set; }
 
     /// <summary>
-    /// ¹ã¸æÃû³Æ
+    /// å¹¿å‘Šä¸» - å¯¼èˆªå±æ€§
     /// </summary>
-    public string Name { get; private set; } = string.Empty;
+    public Advertiser Advertiser { get; set; } = null!;
 
     /// <summary>
-    /// ¹ã¸æÃèÊö
+    /// å¹¿å‘Šæ ‡é¢˜
     /// </summary>
-    public string Description { get; private set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// ¹ã¸æ×´Ì¬
+    /// å¹¿å‘Šæè¿°
     /// </summary>
-    public AdStatus Status { get; private set; } = AdStatus.Draft;
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// Ã½ÌåÀàĞÍ
+    /// å¹¿å‘Šç±»å‹
     /// </summary>
-    public MediaType MediaType { get; private set; }
+    public AdType Type { get; set; }
 
     /// <summary>
-    /// ¹ã¸æ·ÖÀàÁĞ±í
+    /// å¹¿å‘ŠçŠ¶æ€
     /// </summary>
-    public IReadOnlyList<string> Categories { get; private set; } = new List<string>();
+    public AdStatus Status { get; set; } = AdStatus.Draft;
 
     /// <summary>
-    /// ¹ã¸æÊôĞÔÁĞ±í
+    /// å®¡æ ¸ä¿¡æ¯ - å¯¼èˆªå±æ€§
     /// </summary>
-    public IReadOnlyList<int> Attributes { get; private set; } = new List<int>();
+    public AuditInfo AuditInfo { get; set; } = null!;
 
     /// <summary>
-    /// ¹ã¸æÖ÷ÓòÃûÁĞ±í
+    /// å¹¿å‘Šæ´»åŠ¨é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
     /// </summary>
-    public IReadOnlyList<string> AdvertiserDomains { get; private set; } = new List<string>();
+    public List<Campaign> Campaigns { get; set; } = new();
 
     /// <summary>
-    /// ÉóºËĞÅÏ¢
+    /// åˆ›æ„é›†åˆ - é›†åˆå¯¼èˆªå±æ€§  
     /// </summary>
-    public AuditInfo AuditInfo { get; private set; } = AuditInfo.CreatePending();
+    public List<Creative> Creatives { get; set; } = new();
 
     /// <summary>
-    /// ´´ÒâÄÚÈİĞÅÏ¢
+    /// æ˜¯å¦æ´»è·ƒï¼ˆè¿è¡Œæ—¶è®¡ç®—å±æ€§ï¼‰
     /// </summary>
-    public CreativeInfo CreativeInfo { get; private set; } = null!;
+    public bool IsActive => Status == AdStatus.Active || Status == AdStatus.Approved;
 
     /// <summary>
-    /// ¹ã¸æ±êÇ©
+    /// æ€»èŠ±è´¹ï¼ˆè¿è¡Œæ—¶è®¡ç®—å±æ€§ï¼‰
     /// </summary>
-    public IReadOnlyList<string> Tags { get; private set; } = new List<string>();
+    public decimal TotalSpent => Campaigns.Sum(c => c.DeliveryRecords.Sum(r => r.Cost));
 
     /// <summary>
-    /// ÖÊÁ¿µÃ·Ö
+    /// æ€»å±•ç¤ºæ¬¡æ•°ï¼ˆè¿è¡Œæ—¶è®¡ç®—å±æ€§ï¼‰
     /// </summary>
-    public decimal QualityScore { get; private set; } = DefaultValues.Advertisement.DefaultQualityScore;
+    public long TotalImpressions => Campaigns.Sum(c => c.DeliveryRecords.Count(r => r.Status == DeliveryStatus.Delivered));
 
     /// <summary>
-    /// ÊÇ·ñ¼¤»î
+    /// æ€»ç‚¹å‡»æ¬¡æ•°ï¼ˆè¿è¡Œæ—¶è®¡ç®—å±æ€§ï¼‰
+    /// æ³¨ï¼šç‚¹å‡»æ•°æ®åº”è¯¥é€šè¿‡å•ç‹¬çš„ç‚¹å‡»äº‹ä»¶æˆ–ç»Ÿè®¡è¡¨æ¥è®°å½•ï¼Œè¿™é‡Œä½œä¸ºå ä½ç¬¦è¿”å›0
     /// </summary>
-    public bool IsActive { get; private set; } = false;
+    public long TotalClicks => 0; // TODO: å®ç°çœŸå®çš„ç‚¹å‡»ç»Ÿè®¡é€»è¾‘
 
     /// <summary>
-    /// ÀÛ¼ÆÕ¹Ê¾´ÎÊı
-    /// </summary>
-    public long TotalImpressions { get; private set; } = 0;
-
-    /// <summary>
-    /// ÀÛ¼Æµã»÷´ÎÊı
-    /// </summary>
-    public long TotalClicks { get; private set; } = 0;
-
-    /// <summary>
-    /// ÀÛ¼Æ»¨·Ñ£¨·Ö£©
-    /// </summary>
-    public decimal TotalSpent { get; private set; } = 0;
-
-    /// <summary>
-    /// ¹ã¸æ»î¶¯¼¯ºÏ
-    /// </summary>
-    private readonly List<Campaign> _campaigns = new();
-    public IReadOnlyList<Campaign> Campaigns => _campaigns.AsReadOnly();
-
-    /// <summary>
-    /// Ë½ÓĞ¹¹Ôìº¯Êı£¬ÓÃÓÚORM
+    /// ç§æœ‰æ„é€ å‡½æ•°ï¼Œç”¨äºEF Core
     /// </summary>
     private Advertisement() { }
 
     /// <summary>
-    /// ¹¹Ôìº¯Êı
+    /// æ„é€ å‡½æ•°
     /// </summary>
-    public Advertisement(
-        string advertiserId,
-        string name,
-        string description,
-        MediaType mediaType,
-        CreativeInfo creativeInfo,
-        IList<string>? categories = null,
-        IList<int>? attributes = null,
-        IList<string>? advertiserDomains = null,
-        IList<string>? tags = null)
+    public Advertisement(Guid advertiserId, string title, string description, AdType type)
     {
-        ValidateInputs(name, advertiserId);
-
         AdvertiserId = advertiserId;
-        Name = name;
+        Title = title;
         Description = description;
-        MediaType = mediaType;
-        CreativeInfo = creativeInfo;
-        Categories = categories?.ToList() ?? new List<string>();
-        Attributes = attributes?.ToList() ?? new List<int>();
-        AdvertiserDomains = advertiserDomains?.ToList() ?? new List<string>();
-        Tags = tags?.ToList() ?? new List<string>();
-
-        // ´¥·¢¹ã¸æ´´½¨ÊÂ¼ş
-        AddDomainEvent(new AdvertisementCreatedEvent(Id, advertiserId, string.Empty, name));
+        Type = type;
     }
 
     /// <summary>
-    /// ¸üĞÂ¹ã¸æ»ù±¾ĞÅÏ¢
+    /// æäº¤å®¡æ ¸
     /// </summary>
-    public void UpdateBasicInfo(string name, string description, IList<string>? tags = null)
+    public void SubmitForReview()
     {
-        ValidateName(name);
+        if (Status != AdStatus.Draft)
+            throw new InvalidOperationException("åªæœ‰è‰ç¨¿çŠ¶æ€çš„å¹¿å‘Šæ‰èƒ½æäº¤å®¡æ ¸");
 
-        Name = name;
-        Description = description;
-        Tags = tags?.ToList() ?? new List<string>();
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "»ù±¾ĞÅÏ¢"));
-    }
-
-    /// <summary>
-    /// ¸üĞÂ´´ÒâĞÅÏ¢
-    /// </summary>
-    public void UpdateCreativeInfo(CreativeInfo creativeInfo)
-    {
-        ArgumentNullException.ThrowIfNull(creativeInfo);
-
-        CreativeInfo = creativeInfo;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "´´ÒâĞÅÏ¢"));
-
-        // ¸üĞÂ´´ÒâºóĞèÒªÖØĞÂÉóºË
-        if (AuditInfo.IsApproved)
-        {
-            SubmitForAudit();
-        }
-    }
-
-    /// <summary>
-    /// Ìí¼Ó»î¶¯
-    /// </summary>
-    public void AddCampaign(Campaign campaign)
-    {
-        ArgumentNullException.ThrowIfNull(campaign);
-
-        if (campaign.AdvertisementId != Id)
-            throw new ArgumentException("»î¶¯ËùÊô¹ã¸æID²»Æ¥Åä");
-
-        _campaigns.Add(campaign);
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementUpdatedEvent(Id, "Ìí¼Ó»î¶¯"));
-    }
-
-    /// <summary>
-    /// »ñÈ¡»îÔ¾µÄ»î¶¯
-    /// </summary>
-    public IReadOnlyList<Campaign> GetActiveCampaigns()
-    {
-        return _campaigns.Where(c => c.IsActive).ToList().AsReadOnly();
-    }
-
-    /// <summary>
-    /// Ìá½»ÉóºË
-    /// </summary>
-    public void SubmitForAudit()
-    {
-        if (AuditInfo.Status == AuditStatus.InProgress)
-            throw new InvalidOperationException("¹ã¸æÕıÔÚÉóºËÖĞ£¬ÎŞ·¨ÖØ¸´Ìá½»");
-
-        AuditInfo = AuditInfo.CreatePending();
-        Status = AdStatus.PendingReview;
-        IsActive = false; // Ìá½»ÉóºËÊ±ÔİÍ£Í¶·Å
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementSubmittedForAuditEvent(Id, AdvertiserId));
-    }
-
-    /// <summary>
-    /// ¿ªÊ¼ÉóºË
-    /// </summary>
-    public void StartAudit(string auditorId, string auditorName)
-    {
-        if (AuditInfo.Status != AuditStatus.Pending)
-            throw new InvalidOperationException("Ö»ÓĞ´ıÉóºË×´Ì¬µÄ¹ã¸æÄÜ¿ªÊ¼ÉóºË");
-
-        AuditInfo = AuditInfo.CreateInProgress(auditorId, auditorName);
         Status = AdStatus.UnderReview;
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementAuditStartedEvent(Id, auditorId));
     }
 
     /// <summary>
-    /// ÉóºËÍ¨¹ı
+    /// å®¡æ ¸é€šè¿‡
     /// </summary>
-    public void ApproveAudit(string auditorId, string auditorName, string? feedback = null)
+    public void Approve(string reviewerComment)
     {
-        if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("Ö»ÓĞÉóºËÖĞ×´Ì¬µÄ¹ã¸æÄÜÉóºËÍ¨¹ı");
+        if (Status != AdStatus.UnderReview)
+            throw new InvalidOperationException("åªæœ‰å®¡æ ¸ä¸­çš„å¹¿å‘Šæ‰èƒ½è¢«æ‰¹å‡†");
 
-        AuditInfo = AuditInfo.CreateApproved(auditorId, auditorName, feedback);
         Status = AdStatus.Approved;
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementAuditApprovedEvent(Id, auditorId));
     }
 
     /// <summary>
-    /// ÉóºË¾Ü¾ø
+    /// å®¡æ ¸æ‹’ç»
     /// </summary>
-    public void RejectAudit(string auditorId, string auditorName, string feedback)
+    public void Reject(string reason)
     {
-        if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("Ö»ÓĞÉóºËÖĞ×´Ì¬µÄ¹ã¸æÄÜÉóºË¾Ü¾ø");
+        if (Status != AdStatus.UnderReview)
+            throw new InvalidOperationException("åªæœ‰å®¡æ ¸ä¸­çš„å¹¿å‘Šæ‰èƒ½è¢«æ‹’ç»");
 
-        if (string.IsNullOrWhiteSpace(feedback))
-            throw new ArgumentException("ÉóºË¾Ü¾ø±ØĞëÌá¹©·´À¡ĞÅÏ¢");
-
-        AuditInfo = AuditInfo.CreateRejected(feedback, auditorId, auditorName);
         Status = AdStatus.Rejected;
-        IsActive = false; // ÉóºË¾Ü¾øÊ±Í£Ö¹Í¶·Å
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementAuditRejectedEvent(Id, auditorId, feedback));
     }
 
     /// <summary>
-    /// ĞèÒªĞŞ¸Ä
-    /// </summary>
-    public void RequireChanges(string auditorId, string auditorName, string correctionSuggestion)
-    {
-        if (AuditInfo.Status != AuditStatus.InProgress)
-            throw new InvalidOperationException("Ö»ÓĞÉóºËÖĞ×´Ì¬µÄ¹ã¸æĞèÒªĞŞ¸Ä");
-
-        if (string.IsNullOrWhiteSpace(correctionSuggestion))
-            throw new ArgumentException("ÒªÇóĞŞ¸Ä±ØĞëÌá¹©½¨ÒéĞÅÏ¢");
-
-        AuditInfo = AuditInfo.CreateRequiresChanges(correctionSuggestion, auditorId, auditorName);
-        Status = AdStatus.Draft; // »Øµ½²İ¸å×´Ì¬
-        IsActive = false; // ĞèÒªĞŞ¸ÄÊ±Í£Ö¹Í¶·Å
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementRequiresChangesEvent(Id, auditorId, correctionSuggestion));
-    }
-
-    /// <summary>
-    /// ¼¤»î¹ã¸æ
+    /// æ¿€æ´»å¹¿å‘Š
     /// </summary>
     public void Activate()
     {
-        if (!AuditInfo.CanDeliver)
-            throw new InvalidOperationException("Ö»ÓĞÉóºËÍ¨¹ıµÄ¹ã¸æÄÜ¼¤»î");
+        if (Status != AdStatus.Approved)
+            throw new InvalidOperationException("åªæœ‰å·²æ‰¹å‡†çš„å¹¿å‘Šæ‰èƒ½è¢«æ¿€æ´»");
 
-        IsActive = true;
         Status = AdStatus.Active;
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementActivatedEvent(Id));
     }
 
     /// <summary>
-    /// ÔİÍ£¹ã¸æ
+    /// æš‚åœå¹¿å‘Š
     /// </summary>
     public void Pause()
     {
-        IsActive = false;
+        if (Status != AdStatus.Active)
+            throw new InvalidOperationException("åªæœ‰æ´»è·ƒçš„å¹¿å‘Šæ‰èƒ½è¢«æš‚åœ");
+
         Status = AdStatus.Paused;
-
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementPausedEvent(Id));
     }
 
     /// <summary>
-    /// Í£Ö¹¹ã¸æ
+    /// å½’æ¡£å¹¿å‘Š
     /// </summary>
-    public void Stop()
+    public void Archive()
     {
-        IsActive = false;
-        Status = AdStatus.Stopped;
-
+        Status = AdStatus.Archived;
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementStoppedEvent(Id));
     }
 
     /// <summary>
-    /// ¼ÇÂ¼Õ¹Ê¾
+    /// æ·»åŠ å¹¿å‘Šæ´»åŠ¨
     /// </summary>
-    public void RecordImpression(decimal cost)
+    public void AddCampaign(Campaign campaign)
     {
-        if (!CanDeliver)
-            throw new InvalidOperationException("µ±Ç°×´Ì¬²»ÔÊĞíÍ¶·Å");
+        if (campaign.AdvertisementId != Id)
+            throw new InvalidOperationException("æ´»åŠ¨å¿…é¡»å±äºå½“å‰å¹¿å‘Š");
 
-        TotalImpressions++;
-        TotalSpent += cost;
-
+        Campaigns.Add(campaign);
         UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementImpressionRecordedEvent(Id, cost));
     }
 
     /// <summary>
-    /// ¼ÇÂ¼µã»÷
+    /// è·å–æ´»è·ƒçš„å¹¿å‘Šæ´»åŠ¨
     /// </summary>
-    public void RecordClick(decimal cost)
+    public List<Campaign> GetActiveCampaigns()
     {
-        TotalClicks++;
-        if (cost > 0)
-        {
-            TotalSpent += cost;
-        }
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementClickRecordedEvent(Id, cost));
-    }
-
-    /// <summary>
-    /// ¸üĞÂÖÊÁ¿µÃ·Ö
-    /// </summary>
-    public void UpdateQualityScore(decimal newScore)
-    {
-        if (newScore < 0 || newScore > 10)
-            throw new ArgumentOutOfRangeException(nameof(newScore), "ÖÊÁ¿µÃ·Ö±ØĞëÔÚ0-10Ö®¼ä");
-
-        var oldScore = QualityScore;
-        QualityScore = newScore;
-
-        UpdateLastModifiedTime();
-        AddDomainEvent(new AdvertisementQualityScoreUpdatedEvent(Id, oldScore, newScore));
-    }
-
-    /// <summary>
-    /// ÊÇ·ñ¿ÉÒÔÍ¶·Å
-    /// </summary>
-    public bool CanDeliver => IsActive &&
-                             AuditInfo.CanDeliver &&
-                             Status == AdStatus.Active &&
-                             !IsDeleted;
-
-    /// <summary>
-    /// »ñÈ¡µã»÷ÂÊ
-    /// </summary>
-    public decimal GetClickThroughRate()
-    {
-        return TotalImpressions > 0 ? (decimal)TotalClicks / TotalImpressions : 0m;
-    }
-
-    /// <summary>
-    /// »ñÈ¡Æ½¾ùÃ¿´ÎÕ¹Ê¾³É±¾
-    /// </summary>
-    public decimal GetAverageCostPerImpression()
-    {
-        return TotalImpressions > 0 ? TotalSpent / TotalImpressions : 0m;
-    }
-
-    /// <summary>
-    /// »ñÈ¡Æ½¾ùÃ¿´Îµã»÷³É±¾
-    /// </summary>
-    public decimal GetAverageCostPerClick()
-    {
-        return TotalClicks > 0 ? TotalSpent / TotalClicks : 0m;
-    }
-
-    /// <summary>
-    /// ÑéÖ¤ÊäÈë²ÎÊı
-    /// </summary>
-    private static void ValidateInputs(string name, string advertiserId)
-    {
-        ValidateName(name);
-
-        if (string.IsNullOrWhiteSpace(advertiserId))
-            throw new ArgumentException("¹ã¸æÖ÷ID²»ÄÜÎª¿Õ", nameof(advertiserId));
-    }
-
-    /// <summary>
-    /// ÑéÖ¤¹ã¸æÃû³Æ
-    /// </summary>
-    private static void ValidateName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("¹ã¸æÃû³Æ²»ÄÜÎª¿Õ", nameof(name));
-
-        if (name.Length > ValidationConstants.StringLength.AdTitleMaxLength)
-            throw new ArgumentException($"¹ã¸æÃû³Æ³¤¶È²»ÄÜ³¬¹ı{ValidationConstants.StringLength.AdTitleMaxLength}¸ö×Ö·û", nameof(name));
+        return Campaigns.Where(c => c.Status == CampaignStatus.Active).ToList();
     }
 }

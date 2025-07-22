@@ -14,22 +14,22 @@ public class DeliveryRecord : AggregateRoot
     /// <summary>
     /// 广告ID
     /// </summary>
-    public string AdId { get; private set; } = string.Empty;
+    public Guid AdId { get; private set; }
 
     /// <summary>
     /// 活动ID
     /// </summary>
-    public string CampaignId { get; private set; } = string.Empty;
+    public Guid CampaignId { get; private set; }
 
     /// <summary>
     /// 媒体资源ID
     /// </summary>
-    public string MediaResourceId { get; private set; } = string.Empty;
+    public Guid MediaResourceId { get; private set; }
 
     /// <summary>
     /// 广告位ID
     /// </summary>
-    public string PlacementId { get; private set; } = string.Empty;
+    public Guid PlacementId { get; private set; }
 
     /// <summary>
     /// 展示唯一ID
@@ -110,7 +110,7 @@ public class DeliveryRecord : AggregateRoot
     /// <summary>
     /// 私有构造函数，用于ORM
     /// </summary>
-    private DeliveryRecord() 
+    private DeliveryRecord()
     {
         DeliveryContexts = new Dictionary<string, ITargetingContext>();
         Metrics = PerformanceMetrics.Create();
@@ -120,10 +120,10 @@ public class DeliveryRecord : AggregateRoot
     /// 构造函数
     /// </summary>
     public DeliveryRecord(
-        string adId,
-        string campaignId,
-        string mediaResourceId,
-        string placementId,
+        Guid adId,
+        Guid campaignId,
+        Guid mediaResourceId,
+        Guid placementId,
         string impressionId,
         string requestId,
         decimal price,
@@ -153,7 +153,7 @@ public class DeliveryRecord : AggregateRoot
         Metrics = PerformanceMetrics.Create();
 
         // 触发投放记录创建事件
-        AddDomainEvent(new DeliveryRecordCreatedEvent(Id, adId, impressionId, price));
+        AddDomainEvent(new DeliveryRecordCreatedEvent(Id, Guid.Parse(RequestId), CampaignId, cost));
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ public class DeliveryRecord : AggregateRoot
 
         Metrics = Metrics.RecordImpression();
         UpdateLastModifiedTime();
-        AddDomainEvent(new ImpressionRecordedEvent(Id, RequestId, CampaignId));
+        AddDomainEvent(new ImpressionRecordedEvent(Id, Guid.Parse(RequestId), CampaignId));
     }
 
     /// <summary>
@@ -373,7 +373,7 @@ public class DeliveryRecord : AggregateRoot
     public string? GetUserId()
     {
         var userContext = GetContext<ITargetingContext>("User");
-        return userContext?.GetProperty<string>("UserId");
+        return userContext?.GetPropertyValue<string>("UserId");
     }
 
     /// <summary>
@@ -383,7 +383,7 @@ public class DeliveryRecord : AggregateRoot
     public string? GetDeviceType()
     {
         var deviceContext = GetContext<ITargetingContext>("Device");
-        return deviceContext?.GetProperty<string>("DeviceType");
+        return deviceContext?.GetPropertyValue<string>("DeviceType");
     }
 
     /// <summary>
@@ -393,26 +393,26 @@ public class DeliveryRecord : AggregateRoot
     public string? GetGeoLocation()
     {
         var geoContext = GetContext<ITargetingContext>("Geo");
-        return geoContext?.GetProperty<string>("Country") ?? geoContext?.GetProperty<string>("Region");
+        return geoContext?.GetPropertyValue<string>("Country") ?? geoContext?.GetPropertyValue<string>("Region");
     }
 
     /// <summary>
     /// 验证输入参数
     /// </summary>
-    private static void ValidateInputs(string adId, string campaignId, string mediaResourceId, string placementId, 
-        string impressionId, string requestId, decimal price, decimal cost, decimal bidPrice, 
+    private static void ValidateInputs(Guid adId, Guid campaignId, Guid mediaResourceId, Guid placementId,
+        string impressionId, string requestId, decimal price, decimal cost, decimal bidPrice,
         IReadOnlyDictionary<string, ITargetingContext> deliveryContexts, BillingDetails billingDetails)
     {
-        if (string.IsNullOrWhiteSpace(adId))
+        if (adId == Guid.Empty)
             throw new ArgumentException("广告ID不能为空", nameof(adId));
 
-        if (string.IsNullOrWhiteSpace(campaignId))
+        if (campaignId == Guid.Empty)
             throw new ArgumentException("活动ID不能为空", nameof(campaignId));
 
-        if (string.IsNullOrWhiteSpace(mediaResourceId))
+        if (mediaResourceId == Guid.Empty)
             throw new ArgumentException("媒体资源ID不能为空", nameof(mediaResourceId));
 
-        if (string.IsNullOrWhiteSpace(placementId))
+        if (placementId == Guid.Empty)
             throw new ArgumentException("广告位ID不能为空", nameof(placementId));
 
         if (string.IsNullOrWhiteSpace(impressionId))

@@ -1,573 +1,216 @@
 using Lorn.ADSP.Core.Domain.Common;
-using Lorn.ADSP.Core.Domain.Events;
 using Lorn.ADSP.Core.Domain.ValueObjects;
 using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 
 /// <summary>
-/// ÓÃ»§»­ÏñÊµÌå
-/// ×÷ÎªÓÃ»§Ïà¹Ø¶¨ÏòÉÏÏÂÎÄµÄ¾ÛºÏ¸ù£¬ÊµÏÖITargetingContext½Ó¿Ú
-/// Í¨¹ı¶¨ÏòÉÏÏÂÎÄ×Öµä¹ÜÀí¸÷ÖÖÓÃ»§¶¨ÏòĞÅÏ¢£¬¶ø²»ÊÇÓ²±àÂëÒıÓÃ
+/// ç”¨æˆ·ç”»åƒå®ä½“
+/// [éœ€è¦å­˜å‚¨] - æ•°æ®åº“å­˜å‚¨
+/// ä½œä¸ºç”¨æˆ·ç›¸å…³å®šå‘ä¸Šä¸‹æ–‡çš„èšåˆæ ¹
 /// </summary>
-public class UserProfile : AggregateRoot, ITargetingContext
+public class UserProfile : AggregateRoot
 {
-    private readonly Dictionary<string, ITargetingContext> _targetingContexts;
+    /// <summary>
+    /// ç”¨æˆ·IDï¼ˆå¤–éƒ¨ç³»ç»Ÿç”¨æˆ·æ ‡è¯†ï¼‰
+    /// </summary>
+    public string UserId { get; set; } = string.Empty;
 
     /// <summary>
-    /// ÓÃ»§ID£¨Íâ²¿ÏµÍ³ÓÃ»§±êÊ¶£©
+    /// ç”¨æˆ·çŠ¶æ€
     /// </summary>
-    public string UserId { get; private set; }
+    public UserStatus Status { get; set; }
 
     /// <summary>
-    /// ÓÃ»§×´Ì¬
+    /// ç»†åˆ†ID
     /// </summary>
-    public UserStatus Status { get; private set; }
+    public string SegmentId { get; set; } = string.Empty;
 
     /// <summary>
-    /// ×îºó»îÔ¾Ê±¼ä
+    /// æœ€åæ´»è·ƒæ—¶é—´
     /// </summary>
-    public DateTime LastActiveTime { get; private set; }
+    public DateTime LastActiveTime { get; set; }
 
     /// <summary>
-    /// »­ÏñÊı¾İÖÊÁ¿ÆÀ·Ö
+    /// æ•°æ®æ¥æº
     /// </summary>
-    public ProfileQualityScore QualityScore { get; private set; }
+    public string DataSource { get; set; } = string.Empty;
 
     /// <summary>
-    /// ×Ô¶¨ÒåÊôĞÔ
+    /// ç”»åƒçŠ¶æ€
     /// </summary>
-    public IReadOnlyDictionary<string, object> CustomAttributes { get; private set; } = new Dictionary<string, object>();
-
-    #region ITargetingContext Implementation
+    public ProfileStatus ProfileStatus { get; set; } = ProfileStatus.Active;
 
     /// <summary>
-    /// ¶¨ÏòÉÏÏÂÎÄÀàĞÍ±êÊ¶
+    /// äººå£ç»Ÿè®¡å­¦ä¿¡æ¯é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
+    /// æ›¿ä»£åŸæœ‰çš„Demographicså­—å…¸
     /// </summary>
-    public string ContextType => "UserProfile";
+    public List<UserDemographic> Demographics { get; set; } = new();
 
     /// <summary>
-    /// ¶¨ÏòÉÏÏÂÎÄÊôĞÔ¼¯ºÏ
+    /// å…´è¶£ä¿¡æ¯é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
+    /// æ›¿ä»£åŸæœ‰çš„Interestså­—å…¸
     /// </summary>
-    public IReadOnlyDictionary<string, object> Properties => GetProfileProperties();
+    public List<UserInterest> Interests { get; set; } = new();
 
     /// <summary>
-    /// ÉÏÏÂÎÄµÄ´´½¨Ê±¼ä´Á
+    /// è¡Œä¸ºæ•°æ®é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
+    /// æ›¿ä»£åŸæœ‰çš„Behaviorså­—å…¸
     /// </summary>
-    public DateTime Timestamp => CreateTime;
+    public List<UserBehavior> Behaviors { get; set; } = new();
 
     /// <summary>
-    /// ÉÏÏÂÎÄµÄÎ¨Ò»±êÊ¶
+    /// æ ‡ç­¾é›†åˆ - é›†åˆå¯¼èˆªå±æ€§
+    /// æ›¿ä»£åŸæœ‰çš„Tagsåˆ—è¡¨
     /// </summary>
-    public string ContextId => $"UserProfile_{UserId}";
+    public List<UserTag> Tags { get; set; } = new();
 
     /// <summary>
-    /// ÉÏÏÂÎÄÊı¾İÀ´Ô´
+    /// ç§æœ‰æ„é€ å‡½æ•°ï¼Œç”¨äºEF Core
     /// </summary>
-    public string DataSource => "UserProfileAggregate";
-
-    #endregion
+    private UserProfile() { }
 
     /// <summary>
-    /// ¶¨ÏòÉÏÏÂÎÄ¼¯ºÏ£¨Ö»¶Á£©
+    /// æ„é€ å‡½æ•°
     /// </summary>
-    public IReadOnlyDictionary<string, ITargetingContext> TargetingContexts => _targetingContexts.AsReadOnly();
-
-    /// <summary>
-    /// Ë½ÓĞ¹¹Ôìº¯Êı£¨ÓÃÓÚEF Core£©
-    /// </summary>
-    private UserProfile()
+    public UserProfile(string userId, string segmentId = "")
     {
-        UserId = string.Empty;
-        Status = UserStatus.Active;
+        UserId = userId;
+        SegmentId = segmentId;
         LastActiveTime = DateTime.UtcNow;
-        QualityScore = ProfileQualityScore.CreateDefault();
-        _targetingContexts = new Dictionary<string, ITargetingContext>();
+        Status = UserStatus.Active;
     }
 
-
-
-
+    /// <summary>
+    /// è·å–ç”¨æˆ·åˆ†ç¾¤
+    /// </summary>
+    public List<string> GetUserSegments()
+    {
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        return Tags.Where(t => t.TagType == "Segment")
+                  .Select(t => t.TagName)
+                  .ToList();
+    }
 
     /// <summary>
-    /// ÉèÖÃ¶¨ÏòÉÏÏÂÎÄ
+    /// æ£€æŸ¥æ˜¯å¦æœ‰æŒ‡å®šæ ‡ç­¾
     /// </summary>
-    public void SetTargetingContext(ITargetingContext targetingContext)
+    public bool HasTag(string tag)
     {
-        if (targetingContext == null)
-            throw new ArgumentNullException(nameof(targetingContext));
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        return Tags.Any(t => t.TagName == tag);
+    }
 
-        _targetingContexts[targetingContext.ContextType] = targetingContext;
+    /// <summary>
+    /// è·å–å…´è¶£åˆ†æ•°
+    /// </summary>
+    public decimal GetInterestScore(string category)
+    {
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        var interest = Interests.FirstOrDefault(i => i.Category == category);
+        return interest?.Score ?? 0m;
+    }
+
+    /// <summary>
+    /// è·å–è¡Œä¸ºæ¨¡å¼
+    /// </summary>
+    public object GetBehaviorPattern(string pattern)
+    {
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        var behaviors = Behaviors.Where(b => b.BehaviorType == pattern).ToList();
+        return new { Frequency = behaviors.Sum(b => b.Frequency), LatestOccurrence = behaviors.Max(b => b.Timestamp) };
+    }
+
+    /// <summary>
+    /// æ˜¯å¦ç›®æ ‡å—ä¼—
+    /// </summary>
+    public bool IsTargetAudience(TargetingConfig config)
+    {
+        // ä¸´æ—¶è®¡ç®—æ–¹æ³• - è¿è¡Œæ—¶ä½¿ç”¨ï¼Œä¸å­˜å‚¨
+        // è¿™é‡Œéœ€è¦æ ¹æ®å…·ä½“çš„å®šå‘é…ç½®æ¥åˆ¤æ–­
+        return true; // ç®€åŒ–å®ç°
+    }
+
+    /// <summary>
+    /// æ›´æ–°ç”¨æˆ·ç”»åƒ
+    /// </summary>
+    public void UpdateProfile(List<UserDemographic> newDemographics)
+    {
+        foreach (var newDemo in newDemographics)
+        {
+            // æ›´æ–°æˆ–æ·»åŠ äººå£ç»Ÿè®¡å­¦ä¿¡æ¯
+            var existingDemo = Demographics.FirstOrDefault(d => d.PropertyName == newDemo.PropertyName);
+            if (existingDemo != null)
+            {
+                existingDemo.PropertyValue = newDemo.PropertyValue;
+                existingDemo.DataType = newDemo.DataType;
+            }
+            else
+            {
+                Demographics.Add(new UserDemographic(Id, newDemo.PropertyName, newDemo.PropertyValue, newDemo.DataType));
+            }
+        }
+
+        LastActiveTime = DateTime.UtcNow;
         UpdateLastModifiedTime();
-        RecalculateQualityScore();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, targetingContext.ContextType));
     }
 
     /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÀàĞÍµÄ¶¨ÏòÉÏÏÂÎÄ
+    /// æ·»åŠ å•ä¸ªäººå£ç»Ÿè®¡å­¦ä¿¡æ¯
     /// </summary>
-    public T? GetTargetingContext<T>() where T : class, ITargetingContext
+    public void AddDemographic(string propertyName, string propertyValue, string dataType = "String")
     {
-        var contextType = typeof(T).Name;
-        // Ö§³Ö¼ò»¯µÄÀàĞÍÃû²éÕÒ
-        if (contextType.EndsWith("Info") || contextType.EndsWith("Context"))
+        if (string.IsNullOrEmpty(propertyName))
+            throw new ArgumentException("å±æ€§åç§°ä¸èƒ½ä¸ºç©º", nameof(propertyName));
+
+        var existingDemo = Demographics.FirstOrDefault(d => d.PropertyName == propertyName);
+        if (existingDemo != null)
         {
-            var simpleName = contextType.Replace("Info", "").Replace("Context", "");
-            if (_targetingContexts.TryGetValue(simpleName, out var context))
-                return context as T;
+            existingDemo.PropertyValue = propertyValue ?? string.Empty;
+            existingDemo.DataType = dataType;
+        }
+        else
+        {
+            Demographics.Add(new UserDemographic(Id, propertyName, propertyValue ?? string.Empty, dataType));
         }
 
-        return _targetingContexts.Values.OfType<T>().FirstOrDefault();
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÀàĞÍÃûµÄ¶¨ÏòÉÏÏÂÎÄ
-    /// </summary>
-    public ITargetingContext? GetTargetingContext(string contextType)
-    {
-        return _targetingContexts.TryGetValue(contextType, out var context) ? context : null;
-    }
-
-    /// <summary>
-    /// ÒÆ³ıÖ¸¶¨ÀàĞÍµÄ¶¨ÏòÉÏÏÂÎÄ
-    /// </summary>
-    public bool RemoveTargetingContext(string contextType)
-    {
-        if (_targetingContexts.Remove(contextType))
-        {
-            UpdateLastModifiedTime();
-            RecalculateQualityScore();
-            AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, $"Removed_{contextType}"));
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// ¼ì²éÊÇ·ñ°üº¬Ö¸¶¨ÀàĞÍµÄ¶¨ÏòÉÏÏÂÎÄ
-    /// </summary>
-    public bool HasTargetingContext(string contextType)
-    {
-        return _targetingContexts.ContainsKey(contextType);
-    }
-
-
-
-    /// <summary>
-    /// ¼¤»îÓÃ»§
-    /// </summary>
-    public void Activate()
-    {
-        if (Status != UserStatus.Active)
-        {
-            Status = UserStatus.Active;
-            UpdateLastModifiedTime();
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
-        }
-    }
-
-    /// <summary>
-    /// Í£ÓÃÓÃ»§
-    /// </summary>
-    public void Deactivate()
-    {
-        if (Status == UserStatus.Active)
-        {
-            Status = UserStatus.Inactive;
-            UpdateLastModifiedTime();
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
-        }
-    }
-
-    /// <summary>
-    /// ÔİÍ£ÓÃ»§
-    /// </summary>
-    public void Suspend()
-    {
-        if (Status != UserStatus.Suspended)
-        {
-            Status = UserStatus.Suspended;
-            UpdateLastModifiedTime();
-            AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
-        }
-    }
-
-    /// <summary>
-    /// ÈíÉ¾³ıÓÃ»§
-    /// </summary>
-    public void SoftDelete()
-    {
-        Status = UserStatus.Deleted;
-        Delete(); // µ÷ÓÃ»ùÀàµÄÈíÉ¾³ı·½·¨
-        AddDomainEvent(new UserProfileStatusChangedEvent(Id, UserId, Status));
-    }
-
-    /// <summary>
-    /// ÉèÖÃ×Ô¶¨ÒåÊôĞÔ
-    /// </summary>
-    public void SetCustomAttribute(string key, object value)
-    {
-        if (string.IsNullOrWhiteSpace(key))
-            throw new ArgumentException("×Ô¶¨ÒåÊôĞÔ¼ü²»ÄÜÎª¿Õ", nameof(key));
-
-        var attributes = CustomAttributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        attributes[key] = value;
-        CustomAttributes = attributes;
+        LastActiveTime = DateTime.UtcNow;
         UpdateLastModifiedTime();
-
-        AddDomainEvent(new UserProfileUpdatedEvent(Id, UserId, "CustomAttributes"));
-    }
-
-    /// <summary>
-    /// »ñÈ¡×Ô¶¨ÒåÊôĞÔ
-    /// </summary>
-    public T? GetCustomAttribute<T>(string key)
+    }    /// <summary>
+         /// åˆå¹¶ç”¨æˆ·ç”»åƒ
+         /// </summary>
+    public void MergeProfile(UserProfile other)
     {
-        if (CustomAttributes.TryGetValue(key, out var value) && value is T typedValue)
-            return typedValue;
+        if (other == null) throw new ArgumentNullException(nameof(other));
 
-        return default;
-    }
-
-    #region ITargetingContext Methods
-
-    /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÀàĞÍµÄÊôĞÔÖµ
-    /// </summary>
-    public T? GetProperty<T>(string propertyKey)
-    {
-        if (string.IsNullOrEmpty(propertyKey))
-            return default;
-
-        // Ê×ÏÈ´Ó×Ô¶¨ÒåÊôĞÔÖĞ²éÕÒ
-        if (CustomAttributes.TryGetValue(propertyKey, out var customValue) && customValue is T typedCustomValue)
-            return typedCustomValue;
-
-        // È»ºó´Ó¸÷¸ö¶¨ÏòÉÏÏÂÎÄÖĞ²éÕÒ
-        foreach (var context in _targetingContexts.Values)
+        // åˆå¹¶äººå£ç»Ÿè®¡å­¦ä¿¡æ¯
+        foreach (var otherDemo in other.Demographics)
         {
-            var value = context.GetProperty<T>(propertyKey);
-            if (value != null)
-                return value;
-        }
-
-        return default;
-    }
-
-    /// <summary>
-    /// »ñÈ¡Ö¸¶¨ÀàĞÍµÄÊôĞÔÖµ£¬Èç¹û²»´æÔÚÔò·µ»ØÄ¬ÈÏÖµ
-    /// </summary>
-    public T GetProperty<T>(string propertyKey, T defaultValue)
-    {
-        var result = GetProperty<T>(propertyKey);
-        return result != null ? result : defaultValue;
-    }
-
-    /// <summary>
-    /// »ñÈ¡ÊôĞÔÖµµÄ×Ö·û´®±íÊ¾
-    /// </summary>
-    public string GetPropertyAsString(string propertyKey)
-    {
-        var value = GetProperty<object>(propertyKey);
-        return value?.ToString() ?? string.Empty;
-    }
-
-    /// <summary>
-    /// ¼ì²éÊÇ·ñ°üº¬Ö¸¶¨ÊôĞÔ
-    /// </summary>
-    public bool HasProperty(string propertyKey)
-    {
-        if (CustomAttributes.ContainsKey(propertyKey))
-            return true;
-
-        return _targetingContexts.Values.Any(context => context.HasProperty(propertyKey));
-    }
-
-    /// <summary>
-    /// »ñÈ¡ËùÓĞÊôĞÔ¼ü
-    /// </summary>
-    public IReadOnlyCollection<string> GetPropertyKeys()
-    {
-        var keys = new HashSet<string>(CustomAttributes.Keys);
-
-        foreach (var context in _targetingContexts.Values)
-        {
-            foreach (var key in context.GetPropertyKeys())
+            var existing = Demographics.FirstOrDefault(d => d.PropertyName == otherDemo.PropertyName);
+            if (existing == null)
             {
-                keys.Add(key);
+                Demographics.Add(new UserDemographic(Id, otherDemo.PropertyName, otherDemo.PropertyValue, otherDemo.DataType));
             }
         }
 
-        return keys.ToList().AsReadOnly();
-    }
-
-    /// <summary>
-    /// ÑéÖ¤ÉÏÏÂÎÄµÄÓĞĞ§ĞÔ
-    /// </summary>
-    public bool IsValid()
-    {
-        if (string.IsNullOrEmpty(UserId))
-            return false;
-
-        if (Timestamp == default)
-            return false;
-
-        // ÑéÖ¤ËùÓĞ¶¨ÏòÉÏÏÂÎÄµÄÓĞĞ§ĞÔ
-        return _targetingContexts.Values.All(context => context.IsValid());
-    }
-
-    /// <summary>
-    /// ¼ì²éÉÏÏÂÎÄÊÇ·ñÒÑ¹ıÆÚ
-    /// </summary>
-    public bool IsExpired(TimeSpan maxAge)
-    {
-        return DateTime.UtcNow - Timestamp > maxAge;
-    }
-
-    /// <summary>
-    /// »ñÈ¡ÉÏÏÂÎÄµÄÔªÊı¾İĞÅÏ¢
-    /// </summary>
-    public IReadOnlyDictionary<string, object> GetMetadata()
-    {
-        return new Dictionary<string, object>
+        // åˆå¹¶å…´è¶£ä¿¡æ¯
+        foreach (var otherInterest in other.Interests)
         {
-            ["ContextType"] = ContextType,
-            ["ContextId"] = ContextId,
-            ["DataSource"] = DataSource,
-            ["Timestamp"] = Timestamp,
-            ["UserId"] = UserId,
-            ["Status"] = Status.ToString(),
-            ["LastActiveTime"] = LastActiveTime,
-            ["TargetingContextCount"] = _targetingContexts.Count,
-            ["TargetingContextTypes"] = string.Join(",", _targetingContexts.Keys),
-            ["QualityScore"] = QualityScore.OverallScore,
-            ["Age"] = DateTime.UtcNow - Timestamp
-        }.AsReadOnly();
-    }
-
-    /// <summary>
-    /// »ñÈ¡ÉÏÏÂÎÄµÄµ÷ÊÔĞÅÏ¢
-    /// </summary>
-    public string GetDebugInfo()
-    {
-        var contextTypes = string.Join(", ", _targetingContexts.Keys);
-        return $"UserProfile[{UserId}] Status:{Status} Contexts:[{contextTypes}] " +
-               $"Quality:{QualityScore.OverallScore} LastActive:{LastActiveTime:yyyy-MM-dd HH:mm:ss} " +
-               $"Age:{DateTime.UtcNow - Timestamp:hh\\:mm\\:ss}";
-    }
-
-    /// <summary>
-    /// ´´½¨ÉÏÏÂÎÄµÄÇáÁ¿¼¶¸±±¾
-    /// </summary>
-    public ITargetingContext CreateLightweightCopy(IEnumerable<string> includeKeys)
-    {
-        // ´´½¨¼ò»¯µÄÓÃ»§»­Ïñ¸±±¾£¬Ö»°üº¬Ö¸¶¨µÄÊôĞÔ
-        var filteredProperties = new Dictionary<string, object>();
-
-        foreach (var key in includeKeys)
-        {
-            var value = GetProperty<object>(key);
-            if (value != null)
+            var existing = Interests.FirstOrDefault(i => i.Category == otherInterest.Category);
+            if (existing == null)
             {
-                filteredProperties[key] = value;
+                Interests.Add(new UserInterest(Id, otherInterest.Category, otherInterest.Score));
+            }
+            else
+            {
+                // å–å¹³å‡å€¼æˆ–æœ€å¤§å€¼
+                existing.Score = Math.Max(existing.Score, otherInterest.Score);
             }
         }
 
-        return new TargetingContextBase(
-            ContextType + "_Lightweight",
-            filteredProperties,
-            DataSource,
-            ContextId + "_Copy");
+        LastActiveTime = DateTime.UtcNow;
+        UpdateLastModifiedTime();
     }
-
-    /// <summary>
-    /// ºÏ²¢ÁíÒ»¸öÉÏÏÂÎÄµÄÊôĞÔ
-    /// </summary>
-    public ITargetingContext Merge(ITargetingContext other, bool overwriteExisting = false)
-    {
-        if (other == null)
-            throw new ArgumentNullException(nameof(other));
-
-        // ÕâÀï·µ»ØÒ»¸öºÏ²¢ºóµÄĞÂÉÏÏÂÎÄ£¬¶ø²»ÊÇĞŞ¸Äµ±Ç°ÊµÌå
-        var mergedProperties = new Dictionary<string, object>();
-
-        // Ìí¼Óµ±Ç°ÉÏÏÂÎÄµÄÊôĞÔ
-        foreach (var property in Properties)
-        {
-            mergedProperties[property.Key] = property.Value;
-        }
-
-        // Ìí¼Ó»ò¸²¸ÇÆäËûÉÏÏÂÎÄµÄÊôĞÔ
-        foreach (var property in other.Properties)
-        {
-            if (overwriteExisting || !mergedProperties.ContainsKey(property.Key))
-            {
-                mergedProperties[property.Key] = property.Value;
-            }
-        }
-
-        return new TargetingContextBase(
-            $"{ContextType}_Merged_{other.ContextType}",
-            mergedProperties,
-            $"{DataSource},{other.DataSource}",
-            $"{ContextId}_Merged_{other.ContextId}");
-    }
-
-    #endregion
-
-    #region Business Logic Helpers
-
-    /// <summary>
-    /// ÊÇ·ñ»îÔ¾ÓÃ»§
-    /// </summary>
-    public bool IsActive => Status == UserStatus.Active && !IsDeleted;
-
-
-
-    /// <summary>
-    /// ÊÇ·ñÍêÕû»­Ïñ
-    /// </summary>
-    public bool IsCompleteProfile => QualityScore.CompletenessScore >= 80;
-
-
-
-
-
-    #endregion
-
-    #region Private Methods
-
-    /// <summary>
-    /// »ñÈ¡»­ÏñÊôĞÔ×Öµä
-    /// </summary>
-    private IReadOnlyDictionary<string, object> GetProfileProperties()
-    {
-        var properties = new Dictionary<string, object>
-        {
-            ["UserId"] = UserId,
-            ["Status"] = Status.ToString(),
-            ["LastActiveTime"] = LastActiveTime,
-            ["QualityScore"] = QualityScore.OverallScore
-        };
-
-        // Ìí¼Ó×Ô¶¨ÒåÊôĞÔ
-        foreach (var attr in CustomAttributes)
-        {
-            properties[attr.Key] = attr.Value;
-        }
-
-        // Ìí¼Ó¸÷¸ö¶¨ÏòÉÏÏÂÎÄµÄÊôĞÔ
-        foreach (var context in _targetingContexts.Values)
-        {
-            foreach (var prop in context.Properties)
-            {
-                properties[$"{context.ContextType}_{prop.Key}"] = prop.Value;
-            }
-        }
-
-        return properties.AsReadOnly();
-    }
-
-    /// <summary>
-    /// ÖØĞÂ¼ÆËãÖÊÁ¿ÆÀ·Ö
-    /// </summary>
-    private void RecalculateQualityScore()
-    {
-        QualityScore = CalculateQualityScore();
-        AddDomainEvent(new UserProfileScoreUpdatedEvent(Id, UserId, "QualityScore", QualityScore.OverallScore));
-    }
-
-    /// <summary>
-    /// ¼ÆËãÖÊÁ¿ÆÀ·Ö
-    /// </summary>
-    private ProfileQualityScore CalculateQualityScore()
-    {
-        var completenessScore = CalculateCompletenessScore();
-        var accuracyScore = CalculateAccuracyScore();
-        var freshnessScore = CalculateFreshnessScore();
-
-        return new ProfileQualityScore(completenessScore, accuracyScore, freshnessScore);
-    }
-
-    /// <summary>
-    /// ¼ÆËãÍêÕûĞÔÆÀ·Ö
-    /// </summary>
-    private int CalculateCompletenessScore()
-    {
-        var totalContextTypes = 6; // Ô¤ÆÚµÄ¶¨ÏòÉÏÏÂÎÄÀàĞÍÊıÁ¿
-        var filledContexts = _targetingContexts.Count;
-
-        // »ùÓÚ¶¨ÏòÉÏÏÂÎÄÊıÁ¿ºÍÖÊÁ¿¼ÆËãÍêÕûĞÔ
-        var contextScore = (decimal)filledContexts / totalContextTypes * 100;
-
-        // »ùÓÚ¸÷¸öÉÏÏÂÎÄµÄÍêÕûĞÔ½øÒ»²½µ÷Õû
-        var contextQualitySum = 0m;
-        var validContexts = 0;
-
-        foreach (var context in _targetingContexts.Values)
-        {
-            if (context.Properties.Count > 0)
-            {
-                contextQualitySum += context.Properties.Count;
-                validContexts++;
-            }
-        }
-
-        var qualityBonus = validContexts > 0 ? (contextQualitySum / validContexts) * 2 : 0;
-
-        return (int)Math.Min(100, contextScore + qualityBonus);
-    }
-
-    /// <summary>
-    /// ¼ÆËã×¼È·ĞÔÆÀ·Ö
-    /// </summary>
-    private int CalculateAccuracyScore()
-    {
-        var score = 100;
-
-        // ÑéÖ¤¸÷¸ö¶¨ÏòÉÏÏÂÎÄµÄÓĞĞ§ĞÔ
-        foreach (var context in _targetingContexts.Values)
-        {
-            if (!context.IsValid())
-                score -= 10;
-        }
-
-        return Math.Max(0, score);
-    }
-
-    /// <summary>
-    /// ¼ÆËãÊ±Ğ§ĞÔÆÀ·Ö
-    /// </summary>
-    private int CalculateFreshnessScore()
-    {
-        var now = DateTime.UtcNow;
-        var daysSinceUpdate = (now - LastModifiedTime).TotalDays;
-
-        return daysSinceUpdate switch
-        {
-            <= 1 => 100,
-            <= 7 => 90,
-            <= 30 => 80,
-            <= 90 => 70,
-            <= 180 => 60,
-            <= 365 => 50,
-            _ => 30
-        };
-    }
-
-    /// <summary>
-    /// ÑéÖ¤ÓÃ»§ID
-    /// </summary>
-    private static void ValidateUserId(string userId)
-    {
-        if (string.IsNullOrWhiteSpace(userId))
-            throw new ArgumentException("ÓÃ»§ID²»ÄÜÎª¿Õ", nameof(userId));
-
-        if (userId.Length > 255)
-            throw new ArgumentException("ÓÃ»§ID³¤¶È²»ÄÜ³¬¹ı255¸ö×Ö·û", nameof(userId));
-    }
-
-    #endregion
 }

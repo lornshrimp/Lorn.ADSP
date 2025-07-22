@@ -14,9 +14,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 
         /// <summary>
         /// 定向规则集合
-        /// 存储该条件类型的具体规则配置，键为规则名称，值为规则值
+        /// 存储该条件类型的具体规则配置
         /// </summary>
-        IReadOnlyDictionary<string, object> Rules { get; }
+        IReadOnlyList<TargetingRule> Rules { get; }
 
         /// <summary>
         /// 条件权重
@@ -60,6 +60,13 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         T GetRule<T>(string ruleKey, T defaultValue);
 
         /// <summary>
+        /// 获取指定的规则对象
+        /// </summary>
+        /// <param name="ruleKey">规则键</param>
+        /// <returns>规则对象，如果不存在则返回null</returns>
+        TargetingRule? GetRuleObject(string ruleKey);
+
+        /// <summary>
         /// 检查是否包含指定的规则
         /// </summary>
         /// <param name="ruleKey">规则键</param>
@@ -71,6 +78,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// </summary>
         /// <returns>规则键集合</returns>
         IReadOnlyCollection<string> GetRuleKeys();
+
+        /// <summary>
+        /// 根据分类获取规则
+        /// </summary>
+        /// <param name="category">规则分类</param>
+        /// <returns>指定分类的规则集合</returns>
+        IReadOnlyList<TargetingRule> GetRulesByCategory(string category);
+
+        /// <summary>
+        /// 获取必需规则
+        /// </summary>
+        /// <returns>必需规则集合</returns>
+        IReadOnlyList<TargetingRule> GetRequiredRules();
 
         /// <summary>
         /// 验证条件配置的有效性

@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
+using Lorn.ADSP.Core.Domain.ValueObjects;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
@@ -8,7 +9,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     /// </summary>
     public class TargetingContextBase : ValueObject, ITargetingContext
     {
-        private readonly Dictionary<string, object> _properties;
+        private readonly List<ContextProperty> _properties;
 
         /// <summary>
         /// 上下文类型标识
@@ -18,7 +19,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 上下文属性集合（只读）
         /// </summary>
-        public IReadOnlyDictionary<string, object> Properties => _properties.AsReadOnly();
+        public IReadOnlyList<ContextProperty> Properties => _properties.AsReadOnly();
 
         /// <summary>
         /// 上下文创建时间戳
@@ -44,7 +45,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <param name="contextId">上下文标识</param>
         public TargetingContextBase(
             string contextType,
-            IDictionary<string, object>? properties = null,
+            IEnumerable<ContextProperty>? properties = null,
             string? dataSource = null,
             string? contextId = null)
         {
@@ -52,10 +53,55 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
                 throw new ArgumentException("上下文类型不能为空", nameof(contextType));
 
             ContextType = contextType;
-            _properties = properties?.ToDictionary(kv => kv.Key, kv => kv.Value) ?? new Dictionary<string, object>();
+            _properties = properties?.ToList() ?? new List<ContextProperty>();
             DataSource = dataSource ?? "Unknown";
             ContextId = contextId ?? Guid.NewGuid().ToString();
             Timestamp = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// 从字典创建的构造函数（兼容性）
+        /// </summary>
+        /// <param name="contextType">上下文类型</param>
+        /// <param name="properties">属性字典</param>
+        /// <param name="dataSource">数据来源</param>
+        /// <param name="contextId">上下文标识</param>
+        public TargetingContextBase(
+            string contextType,
+            IDictionary<string, object>? properties,
+            string? dataSource = null,
+            string? contextId = null)
+        {
+            if (string.IsNullOrEmpty(contextType))
+                throw new ArgumentException("上下文类型不能为空", nameof(contextType));
+
+            ContextType = contextType;
+            DataSource = dataSource ?? "Unknown";
+            ContextId = contextId ?? Guid.NewGuid().ToString();
+            Timestamp = DateTime.UtcNow;
+
+            _properties = new List<ContextProperty>();
+            if (properties != null)
+            {
+                foreach (var kvp in properties)
+                {
+                    var property = new ContextProperty(kvp.Key, kvp.Value?.ToString() ?? string.Empty);
+                    _properties.Add(property);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取指定键的属性实体
+        /// </summary>
+        /// <param name="propertyKey">属性键</param>
+        /// <returns>属性实体，如果不存在则返回null</returns>
+        public virtual ContextProperty? GetProperty(string propertyKey)
+        {
+            if (string.IsNullOrEmpty(propertyKey))
+                return null;
+
+            return _properties.FirstOrDefault(p => p.PropertyKey == propertyKey);
         }
 
         /// <summary>
@@ -64,31 +110,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <typeparam name="T">属性值类型</typeparam>
         /// <param name="propertyKey">属性键</param>
         /// <returns>属性值，如果不存在则返回默认值</returns>
-        public virtual T? GetProperty<T>(string propertyKey)
+        public virtual T? GetPropertyValue<T>(string propertyKey)
         {
-            if (string.IsNullOrEmpty(propertyKey))
-                return default;
-
-            if (_properties.TryGetValue(propertyKey, out var value))
-            {
-                if (value is T typedValue)
-                    return typedValue;
-
-                // 尝试类型转换
-                try
-                {
-                    if (typeof(T) == typeof(string))
-                        return (T)(object)value.ToString()!;
-
-                    return (T)Convert.ChangeType(value, typeof(T));
-                }
-                catch
-                {
-                    return default;
-                }
-            }
-
-            return default;
+            var property = GetProperty(propertyKey);
+            return property == null ? default(T) : property.GetValue<T>();
         }
 
         /// <summary>
@@ -98,9 +123,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <param name="propertyKey">属性键</param>
         /// <param name="defaultValue">默认值</param>
         /// <returns>属性值或默认值</returns>
-        public virtual T GetProperty<T>(string propertyKey, T defaultValue)
+        public virtual T GetPropertyValue<T>(string propertyKey, T defaultValue)
         {
-            var result = GetProperty<T>(propertyKey);
+            var result = GetPropertyValue<T>(propertyKey);
             return result != null ? result : defaultValue;
         }
 
@@ -111,15 +136,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>属性值的字符串表示，如果不存在则返回空字符串</returns>
         public virtual string GetPropertyAsString(string propertyKey)
         {
-            if (string.IsNullOrEmpty(propertyKey))
-                return string.Empty;
-
-            if (_properties.TryGetValue(propertyKey, out var value))
-            {
-                return value?.ToString() ?? string.Empty;
-            }
-
-            return string.Empty;
+            var property = GetProperty(propertyKey);
+            return property?.PropertyValue ?? string.Empty;
         }
 
         /// <summary>
@@ -129,7 +147,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>是否包含该属性</returns>
         public virtual bool HasProperty(string propertyKey)
         {
-            return !string.IsNullOrEmpty(propertyKey) && _properties.ContainsKey(propertyKey);
+            return GetProperty(propertyKey) != null;
         }
 
         /// <summary>
@@ -138,7 +156,26 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>属性键集合</returns>
         public virtual IReadOnlyCollection<string> GetPropertyKeys()
         {
-            return _properties.Keys.ToList().AsReadOnly();
+            return _properties.Select(p => p.PropertyKey).ToList().AsReadOnly();
+        }
+
+        /// <summary>
+        /// 获取指定分类的属性
+        /// </summary>
+        /// <param name="category">属性分类</param>
+        /// <returns>属性集合</returns>
+        public virtual IReadOnlyList<ContextProperty> GetPropertiesByCategory(string category)
+        {
+            return _properties.Where(p => p.Category == category).ToList().AsReadOnly();
+        }
+
+        /// <summary>
+        /// 获取未过期的属性
+        /// </summary>
+        /// <returns>未过期的属性集合</returns>
+        public virtual IReadOnlyList<ContextProperty> GetActiveProperties()
+        {
+            return _properties.Where(p => !p.IsExpired()).ToList().AsReadOnly();
         }
 
         /// <summary>
@@ -170,18 +207,20 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 获取上下文的元数据信息
         /// </summary>
-        /// <returns>元数据字典</returns>
-        public virtual IReadOnlyDictionary<string, object> GetMetadata()
+        /// <returns>元数据属性集合</returns>
+        public virtual IReadOnlyList<ContextProperty> GetMetadata()
         {
-            return new Dictionary<string, object>
+            var metadataProperties = new List<ContextProperty>
             {
-                ["ContextType"] = ContextType,
-                ["ContextId"] = ContextId,
-                ["DataSource"] = DataSource,
-                ["Timestamp"] = Timestamp,
-                ["PropertyCount"] = _properties.Count,
-                ["Age"] = DateTime.UtcNow - Timestamp
-            }.AsReadOnly();
+                new ContextProperty("ContextType", ContextType),
+                new ContextProperty("ContextId", ContextId),
+                new ContextProperty("DataSource", DataSource),
+                new ContextProperty("Timestamp", Timestamp.ToString("O")),
+                new ContextProperty("PropertyCount", _properties.Count.ToString()),
+                new ContextProperty("Age", (DateTime.UtcNow - Timestamp).ToString())
+            };
+
+            return metadataProperties.AsReadOnly();
         }
 
         /// <summary>
@@ -190,7 +229,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>调试信息字符串</returns>
         public virtual string GetDebugInfo()
         {
-            var propertyInfo = string.Join(", ", _properties.Keys.Take(5));
+            var propertyInfo = string.Join(", ", _properties.Take(5).Select(p => p.PropertyKey));
             if (_properties.Count > 5)
                 propertyInfo += $" (and {_properties.Count - 5} more)";
 
@@ -205,21 +244,33 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <returns>轻量级上下文副本</returns>
         public virtual ITargetingContext CreateLightweightCopy(IEnumerable<string> includeKeys)
         {
-            var filteredProperties = new Dictionary<string, object>();
-            
-            foreach (var key in includeKeys)
-            {
-                if (_properties.TryGetValue(key, out var value))
-                {
-                    filteredProperties[key] = value;
-                }
-            }
+            var filteredProperties = _properties.Where(p => includeKeys.Contains(p.PropertyKey))
+                                               .Select(p => p.Clone())
+                                               .ToList();
 
             return new TargetingContextBase(
                 ContextType + "_Lightweight",
                 filteredProperties,
                 DataSource,
                 ContextId + "_Copy");
+        }
+
+        /// <summary>
+        /// 创建上下文的分类副本
+        /// </summary>
+        /// <param name="categories">要包含的属性分类</param>
+        /// <returns>分类上下文副本</returns>
+        public virtual ITargetingContext CreateCategorizedCopy(IEnumerable<string> categories)
+        {
+            var filteredProperties = _properties.Where(p => categories.Contains(p.Category))
+                                               .Select(p => p.Clone())
+                                               .ToList();
+
+            return new TargetingContextBase(
+                ContextType + "_Categorized",
+                filteredProperties,
+                DataSource,
+                ContextId + "_Cat");
         }
 
         /// <summary>
@@ -233,19 +284,27 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (other == null)
                 throw new ArgumentNullException(nameof(other));
 
-            var mergedProperties = new Dictionary<string, object>(_properties);
+            var mergedProperties = new List<ContextProperty>(_properties);
+            var mergedContextId = $"{ContextId}_Merged_{other.ContextId}";
+            var mergedGuid = Guid.NewGuid();
 
             foreach (var property in other.Properties)
             {
-                if (overwriteExisting || !mergedProperties.ContainsKey(property.Key))
+                var existingProperty = mergedProperties.FirstOrDefault(p => p.PropertyKey == property.PropertyKey);
+
+                if (existingProperty != null && overwriteExisting)
                 {
-                    mergedProperties[property.Key] = property.Value;
+                    mergedProperties.Remove(existingProperty);
+                    mergedProperties.Add(property.Clone());
+                }
+                else if (existingProperty == null)
+                {
+                    mergedProperties.Add(property.Clone());
                 }
             }
 
             var mergedContextType = $"{ContextType}_Merged_{other.ContextType}";
             var mergedDataSource = $"{DataSource},{other.DataSource}";
-            var mergedContextId = $"{ContextId}_Merged_{other.ContextId}";
 
             return new TargetingContextBase(
                 mergedContextType,
@@ -264,7 +323,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (string.IsNullOrEmpty(propertyKey))
                 throw new ArgumentException("属性键不能为空", nameof(propertyKey));
 
-            _properties[propertyKey] = propertyValue;
+            var existingProperty = GetProperty(propertyKey);
+            if (existingProperty != null)
+            {
+                _properties.Remove(existingProperty);
+                var updatedProperty = existingProperty.WithValue(propertyValue ?? string.Empty);
+                _properties.Add(updatedProperty);
+            }
+            else
+            {
+                var newProperty = new ContextProperty(propertyKey, propertyValue?.ToString() ?? string.Empty);
+                _properties.Add(newProperty);
+            }
         }
 
         /// <summary>
@@ -277,24 +347,29 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             if (string.IsNullOrEmpty(propertyKey))
                 return false;
 
-            return _properties.Remove(propertyKey);
+            var property = GetProperty(propertyKey);
+            if (property != null)
+            {
+                return _properties.Remove(property);
+            }
+            return false;
         }
 
         /// <summary>
         /// 批量设置属性
         /// </summary>
-        /// <param name="properties">属性集合</param>
+        /// <param name="properties">属性字典</param>
         /// <param name="overwriteExisting">是否覆盖已存在的属性</param>
         public virtual void SetProperties(IDictionary<string, object> properties, bool overwriteExisting = true)
         {
             if (properties == null)
                 return;
 
-            foreach (var property in properties)
+            foreach (var kvp in properties)
             {
-                if (overwriteExisting || !_properties.ContainsKey(property.Key))
+                if (overwriteExisting || !HasProperty(kvp.Key))
                 {
-                    _properties[property.Key] = property.Value;
+                    SetProperty(kvp.Key, kvp.Value);
                 }
             }
         }
@@ -309,10 +384,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             yield return DataSource;
 
             // 按键排序的属性集合
-            foreach (var property in _properties.OrderBy(kv => kv.Key))
+            foreach (var property in _properties.OrderBy(p => p.PropertyKey))
             {
-                yield return property.Key;
-                yield return property.Value ?? string.Empty;
+                yield return property.PropertyKey;
+                yield return property.PropertyValue ?? string.Empty;
             }
         }
     }

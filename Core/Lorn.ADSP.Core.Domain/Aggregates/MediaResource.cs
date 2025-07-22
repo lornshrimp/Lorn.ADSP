@@ -36,7 +36,7 @@ public class MediaResource : AggregateRoot
     /// <summary>
     /// 发布商ID
     /// </summary>
-    public string PublisherId { get; private set; } = string.Empty;
+    public Guid PublisherId { get; private set; }
 
     /// <summary>
     /// 广告位配置
@@ -72,7 +72,7 @@ public class MediaResource : AggregateRoot
         string name,
         MediaType type,
         string url,
-        string publisherId,
+        Guid publisherId,
         AdSlotConfiguration slotConfig,
         TrafficProfile trafficProfile)
     {
@@ -187,9 +187,9 @@ public class MediaResource : AggregateRoot
     /// <summary>
     /// 移除广告位
     /// </summary>
-    public void RemovePlacement(string placementId)
+    public void RemovePlacement(Guid placementId)
     {
-        if (string.IsNullOrWhiteSpace(placementId))
+        if (placementId == Guid.Empty)
             throw new ArgumentException("广告位ID不能为空", nameof(placementId));
 
         var placement = _placements.FirstOrDefault(p => p.Id == placementId);
@@ -271,7 +271,7 @@ public class MediaResource : AggregateRoot
     /// <summary>
     /// 验证输入参数
     /// </summary>
-    private static void ValidateInputs(string name, string url, string publisherId)
+    private static void ValidateInputs(string name, string url, Guid publisherId)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("媒体资源名称不能为空", nameof(name));
@@ -285,7 +285,7 @@ public class MediaResource : AggregateRoot
         if (!Uri.TryCreate(url, UriKind.Absolute, out _))
             throw new ArgumentException("媒体URL格式不正确", nameof(url));
 
-        if (string.IsNullOrWhiteSpace(publisherId))
+        if (publisherId == Guid.Empty)
             throw new ArgumentException("发布商ID不能为空", nameof(publisherId));
     }
 }

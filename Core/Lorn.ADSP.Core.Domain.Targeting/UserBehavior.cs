@@ -1,69 +1,69 @@
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 /// <summary>
-/// ÓÃ»§ÐÐÎª¶¨ÏòÉÏÏÂÎÄ
-/// ¼Ì³Ð×ÔTargetingContextBase£¬Ìá¹©ÓÃ»§ÐÐÎªÊý¾ÝµÄ¶¨ÏòÉÏÏÂÎÄ¹¦ÄÜ
-/// ºÏ²¢ÁËÔ­UserBehaviorºÍUserBehaviorAnalysisµÄ¹¦ÄÜ£¬×¨×¢ÓÚ¹ã¸æ¶¨ÏòÖÐµÄÐÐÎª·ÖÎö
+/// ï¿½Ã»ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+/// ï¿½Ì³ï¿½ï¿½ï¿½TargetingContextBaseï¿½ï¿½ï¿½á¹©ï¿½Ã»ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ÝµÄ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½
+/// ï¿½Ï²ï¿½ï¿½ï¿½Ô­UserBehaviorï¿½ï¿½UserBehaviorAnalysisï¿½Ä¹ï¿½ï¿½Ü£ï¿½×¨×¢ï¿½Ú¹ï¿½æ¶¨ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
 /// </summary>
 public class UserBehavior : TargetingContextBase
 {
     /// <summary>
-    /// ÐËÈ¤±êÇ©
+    /// ï¿½ï¿½È¤ï¿½ï¿½Ç©
     /// </summary>
-    public IReadOnlyList<string> InterestTags => GetProperty<List<string>>("InterestTags") ?? new List<string>();
+    public IReadOnlyList<string> InterestTags => GetPropertyValue<List<string>>("InterestTags") ?? new List<string>();
 
     /// <summary>
-    /// ÐÐÎªÀàÐÍ±êÇ©
+    /// ï¿½ï¿½Îªï¿½ï¿½ï¿½Í±ï¿½Ç©
     /// </summary>
-    public IReadOnlyList<string> BehaviorTags => GetProperty<List<string>>("BehaviorTags") ?? new List<string>();
+    public IReadOnlyList<string> BehaviorTags => GetPropertyValue<List<string>>("BehaviorTags") ?? new List<string>();
 
     /// <summary>
-    /// »îÔ¾ÌìÊý
+    /// ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public int ActiveDays => GetProperty("ActiveDays", 0);
+    public int ActiveDays => GetPropertyValue("ActiveDays", 0);
 
     /// <summary>
-    /// ×Ü·ÃÎÊ´ÎÊý
+    /// ï¿½Ü·ï¿½ï¿½Ê´ï¿½ï¿½ï¿½
     /// </summary>
-    public int TotalSessions => GetProperty("TotalSessions", 0);
+    public int TotalSessions => GetPropertyValue("TotalSessions", 0);
 
     /// <summary>
-    /// Æ½¾ù»á»°Ê±³¤£¨·ÖÖÓ£©
+    /// Æ½ï¿½ï¿½ï¿½á»°Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½
     /// </summary>
-    public double AverageSessionDuration => GetProperty("AverageSessionDuration", 0.0);
+    public double AverageSessionDuration => GetPropertyValue("AverageSessionDuration", 0.0);
 
     /// <summary>
-    /// ×îºó»îÔ¾Ê±¼ä
+    /// ï¿½ï¿½ï¿½ï¿½Ô¾Ê±ï¿½ï¿½
     /// </summary>
-    public DateTime LastActiveTime => GetProperty("LastActiveTime", DateTime.UtcNow);
+    public DateTime LastActiveTime => GetPropertyValue("LastActiveTime", DateTime.UtcNow);
 
     /// <summary>
-    /// »îÔ¾Ê±¶ÎÆ«ºÃ£¨24Ð¡Ê±ÖÆ£©
+    /// ï¿½ï¿½Ô¾Ê±ï¿½ï¿½Æ«ï¿½Ã£ï¿½24Ð¡Ê±ï¿½Æ£ï¿½
     /// </summary>
-    public IReadOnlyList<int> ActiveHours => GetProperty<List<int>>("ActiveHours") ?? new List<int>();
+    public IReadOnlyList<int> ActiveHours => GetPropertyValue<List<int>>("ActiveHours") ?? new List<int>();
 
     /// <summary>
-    /// »îÔ¾¶ÈÆÀ·Ö (0-100)
+    /// ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (0-100)
     /// </summary>
-    public int ActivityScore => GetProperty("ActivityScore", 0);
+    public int ActivityScore => GetPropertyValue("ActivityScore", 0);
 
     /// <summary>
-    /// ×î½üä¯ÀÀµÄÄÚÈÝÀà±ð
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
-    public IReadOnlyList<string> RecentContentCategories => GetProperty<List<string>>("RecentContentCategories") ?? new List<string>();
+    public IReadOnlyList<string> RecentContentCategories => GetPropertyValue<List<string>>("RecentContentCategories") ?? new List<string>();
 
     /// <summary>
-    /// ¹ºÂò×ª»¯ÐÐÎª¼ÇÂ¼
+    /// ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Â¼
     /// </summary>
-    public IReadOnlyList<string> ConversionActions => GetProperty<List<string>>("ConversionActions") ?? new List<string>();
+    public IReadOnlyList<string> ConversionActions => GetPropertyValue<List<string>>("ConversionActions") ?? new List<string>();
 
     /// <summary>
-    /// Ë½ÓÐ¹¹Ôìº¯Êý
+    /// Ë½ï¿½Ð¹ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     private UserBehavior() : base("UserBehavior") { }
 
     /// <summary>
-    /// ¹¹Ôìº¯Êý
+    /// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
     /// </summary>
     public UserBehavior(
         IList<string>? interestTags = null,
@@ -82,7 +82,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨ÊôÐÔ×Öµä
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
     /// </summary>
     private static Dictionary<string, object> CreateProperties(
         IList<string>? interestTags,
@@ -124,7 +124,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨Ä¬ÈÏÐÐÎªÉÏÏÂÎÄ
+    /// ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public static UserBehavior CreateDefault(string? dataSource = null)
     {
@@ -132,7 +132,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ´´½¨»îÔ¾ÓÃ»§ÐÐÎªÉÏÏÂÎÄ
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½Ã»ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public static UserBehavior CreateActiveUser(
         IList<string>? interestTags = null,
@@ -152,17 +152,17 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñÎª»îÔ¾ÓÃ»§
+    /// ï¿½Ç·ï¿½Îªï¿½ï¿½Ô¾ï¿½Ã»ï¿½
     /// </summary>
     public bool IsActiveUser => ActivityScore >= 50;
 
     /// <summary>
-    /// ÊÇ·ñÎª¸ß¶È»îÔ¾ÓÃ»§
+    /// ï¿½Ç·ï¿½Îªï¿½ß¶È»ï¿½Ô¾ï¿½Ã»ï¿½
     /// </summary>
     public bool IsHighlyActiveUser => ActivityScore >= 80;
 
     /// <summary>
-    /// ÊÇ·ñ°üº¬Ö¸¶¨ÐËÈ¤±êÇ©
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ç©
     /// </summary>
     public bool HasInterestTag(string tag)
     {
@@ -170,7 +170,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñ°üº¬Ö¸¶¨ÐÐÎª±êÇ©
+    /// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ç©
     /// </summary>
     public bool HasBehaviorTag(string tag)
     {
@@ -178,7 +178,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ÊÇ·ñÔÚÖ¸¶¨Ê±¶Î»îÔ¾
+    /// ï¿½Ç·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ê±ï¿½Î»ï¿½Ô¾
     /// </summary>
     public bool IsActiveInHour(int hour)
     {
@@ -186,7 +186,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡ÓëÖ¸¶¨ÐËÈ¤±êÇ©µÄÆ¥Åä¶È
+    /// ï¿½ï¿½È¡ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ç©ï¿½ï¿½Æ¥ï¿½ï¿½ï¿½
     /// </summary>
     public decimal GetInterestMatchScore(IEnumerable<string> targetInterests)
     {
@@ -200,42 +200,42 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡ÐÐÎª»îÔ¾¶ÈµÈ¼¶
+    /// ï¿½ï¿½È¡ï¿½ï¿½Îªï¿½ï¿½Ô¾ï¿½ÈµÈ¼ï¿½
     /// </summary>
     public string GetActivityLevel()
     {
         return ActivityScore switch
         {
-            >= 80 => "¸ß¶È»îÔ¾",
-            >= 50 => "»îÔ¾",
-            >= 20 => "Ò»°ã",
-            _ => "²»»îÔ¾"
+            >= 80 => "ï¿½ß¶È»ï¿½Ô¾",
+            >= 50 => "ï¿½ï¿½Ô¾",
+            >= 20 => "Ò»ï¿½ï¿½",
+            _ => "ï¿½ï¿½ï¿½ï¿½Ô¾"
         };
     }
 
     /// <summary>
-    /// ¼ÆËã»îÔ¾¶ÈÆÀ·Ö
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private static int CalculateActivityScore(int activeDays, int totalSessions, double averageSessionDuration, DateTime lastActiveTime)
     {
         var score = 0;
 
-        // »ùÓÚ»îÔ¾ÌìÊý
+        // ï¿½ï¿½ï¿½Ú»ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½
         if (activeDays >= 30) score += 30;
         else if (activeDays >= 7) score += 20;
         else if (activeDays >= 3) score += 10;
 
-        // »ùÓÚ×Ü»á»°Êý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ü»á»°ï¿½ï¿½
         if (totalSessions >= 100) score += 30;
         else if (totalSessions >= 50) score += 20;
         else if (totalSessions >= 10) score += 10;
 
-        // »ùÓÚÆ½¾ù»á»°Ê±³¤
+        // ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½ï¿½á»°Ê±ï¿½ï¿½
         if (averageSessionDuration >= 30) score += 20;
         else if (averageSessionDuration >= 10) score += 15;
         else if (averageSessionDuration >= 5) score += 10;
 
-        // »ùÓÚ×î½ü»îÔ¾¶È
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½
         var daysSinceLastActive = (DateTime.UtcNow - lastActiveTime).TotalDays;
         if (daysSinceLastActive <= 1) score += 20;
         else if (daysSinceLastActive <= 7) score += 10;
@@ -245,7 +245,7 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// »ñÈ¡µ÷ÊÔÐÅÏ¢
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     /// </summary>
     public override string GetDebugInfo()
     {
@@ -255,18 +255,18 @@ public class UserBehavior : TargetingContextBase
     }
 
     /// <summary>
-    /// ÑéÖ¤ÉÏÏÂÎÄµÄÓÐÐ§ÐÔ
+    /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½Ð§ï¿½ï¿½
     /// </summary>
     public override bool IsValid()
     {
         if (!base.IsValid())
             return false;
 
-        // ÑéÖ¤ÆÀ·Ö·¶Î§
+        // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½Ö·ï¿½Î§
         if (ActivityScore < 0 || ActivityScore > 100)
             return false;
 
-        // ÑéÖ¤Ê±¶Î·¶Î§
+        // ï¿½ï¿½Ö¤Ê±ï¿½Î·ï¿½Î§
         if (ActiveHours.Any(hour => hour < 0 || hour > 23))
             return false;
 

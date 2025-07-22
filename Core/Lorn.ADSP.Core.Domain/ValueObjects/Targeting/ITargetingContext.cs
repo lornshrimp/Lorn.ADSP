@@ -1,3 +1,5 @@
+using Lorn.ADSP.Core.Domain.ValueObjects;
+
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
@@ -13,10 +15,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         string ContextType { get; }
 
         /// <summary>
-        /// 上下文属性集合
-        /// 存储各种定向相关的属性信息，键为属性名称，值为属性值
+        /// 上下文属性集合 - 集合导航属性
+        /// 存储各种定向相关的属性信息，替代原有的Properties字典
         /// </summary>
-        IReadOnlyDictionary<string, object> Properties { get; }
+        IReadOnlyList<ContextProperty> Properties { get; }
 
         /// <summary>
         /// 上下文创建时间戳
@@ -37,12 +39,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         string DataSource { get; }
 
         /// <summary>
+        /// 获取指定键的属性实体
+        /// </summary>
+        /// <param name="propertyKey">属性键</param>
+        /// <returns>属性实体，如果不存在则返回null</returns>
+        ContextProperty? GetProperty(string propertyKey);
+
+        /// <summary>
         /// 获取指定类型的属性值
         /// </summary>
         /// <typeparam name="T">属性值类型</typeparam>
         /// <param name="propertyKey">属性键</param>
         /// <returns>属性值，如果不存在则返回默认值</returns>
-        T? GetProperty<T>(string propertyKey);
+        T? GetPropertyValue<T>(string propertyKey);
 
         /// <summary>
         /// 获取指定类型的属性值，如果不存在则返回默认值
@@ -51,7 +60,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <param name="propertyKey">属性键</param>
         /// <param name="defaultValue">默认值</param>
         /// <returns>属性值或默认值</returns>
-        T GetProperty<T>(string propertyKey, T defaultValue);
+        T GetPropertyValue<T>(string propertyKey, T defaultValue);
 
         /// <summary>
         /// 获取属性值的字符串表示
@@ -74,6 +83,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         IReadOnlyCollection<string> GetPropertyKeys();
 
         /// <summary>
+        /// 获取指定分类的属性
+        /// </summary>
+        /// <param name="category">属性分类</param>
+        /// <returns>属性集合</returns>
+        IReadOnlyList<ContextProperty> GetPropertiesByCategory(string category);
+
+        /// <summary>
+        /// 获取未过期的属性
+        /// </summary>
+        /// <returns>未过期的属性集合</returns>
+        IReadOnlyList<ContextProperty> GetActiveProperties();
+
+        /// <summary>
         /// 检查上下文数据是否有效
         /// 根据时间戳和数据完整性进行验证
         /// </summary>
@@ -91,8 +113,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// 获取上下文的元数据信息
         /// 包括数据来源、创建时间、属性数量等信息
         /// </summary>
-        /// <returns>元数据字典</returns>
-        IReadOnlyDictionary<string, object> GetMetadata();
+        /// <returns>元数据属性集合</returns>
+        IReadOnlyList<ContextProperty> GetMetadata();
 
         /// <summary>
         /// 获取上下文的调试信息
@@ -108,6 +130,14 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <param name="includeKeys">要包含的属性键</param>
         /// <returns>轻量级上下文副本</returns>
         ITargetingContext CreateLightweightCopy(IEnumerable<string> includeKeys);
+
+        /// <summary>
+        /// 创建上下文的分类副本
+        /// 只包含指定分类的属性，用于定向策略优化
+        /// </summary>
+        /// <param name="categories">要包含的属性分类</param>
+        /// <returns>分类上下文副本</returns>
+        ITargetingContext CreateCategorizedCopy(IEnumerable<string> categories);
 
         /// <summary>
         /// 合并另一个上下文的属性

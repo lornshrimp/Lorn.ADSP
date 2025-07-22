@@ -53,6 +53,11 @@
         /// <summary>
         /// 已删除
         /// </summary>
-        Deleted = 10
+        Deleted = 10,
+
+        /// <summary>
+        /// 已归档
+        /// </summary>
+        Archived = 11
     }
 }

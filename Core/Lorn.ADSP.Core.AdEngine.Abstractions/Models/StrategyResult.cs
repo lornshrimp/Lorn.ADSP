@@ -1,4 +1,5 @@
 using Lorn.ADSP.Core.Domain.Entities;
+using Lorn.ADSP.Core.Domain.ValueObjects;
 
 namespace Lorn.ADSP.Core.AdEngine.Abstractions.Models;
 

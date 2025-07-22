@@ -21,6 +21,11 @@ public enum CampaignStatus
     Running = 3,
 
     /// <summary>
+    /// ªÓ‘æ
+    /// </summary>
+    Active = 9,
+
+    /// <summary>
     /// ‘›Õ£
     /// </summary>
     Paused = 4,

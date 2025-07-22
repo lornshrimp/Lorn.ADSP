@@ -1,4 +1,4 @@
-﻿namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
     /// 多边形地理围栏定向条件
@@ -65,7 +65,7 @@
         /// <summary>
         /// 创建规则字典
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IReadOnlyList<GeoPoint> points,
             string? name,
             GeoFenceCategory category,
@@ -73,21 +73,34 @@
         {
             ValidateInput(points, bufferMeters);
 
-            var rules = new Dictionary<string, object>
-            {
-                ["Points"] = points.ToList(),
-                ["Category"] = category,
-                ["Complexity"] = DetermineComplexity(points)
-            };
+            var rules = new List<TargetingRule>();
 
+            // 添加点列表
+            var pointsList = points.ToList();
+            var pointsRule = new TargetingRule("Points", string.Empty, "Json").WithValue(pointsList);
+            rules.Add(pointsRule);
+
+            // 添加分类
+            var categoryRule = new TargetingRule("Category", string.Empty, "Enum").WithValue(category);
+            rules.Add(categoryRule);
+
+            // 添加复杂性
+            var complexity = DetermineComplexity(points);
+            var complexityRule = new TargetingRule("Complexity", string.Empty, "Enum").WithValue(complexity);
+            rules.Add(complexityRule);
+
+            // 添加名称（如果存在）
             if (!string.IsNullOrEmpty(name))
             {
-                rules["Name"] = name;
+                var nameRule = new TargetingRule("Name", string.Empty, "String").WithValue(name);
+                rules.Add(nameRule);
             }
 
+            // 添加缓冲区（如果存在）
             if (bufferMeters.HasValue)
             {
-                rules["BufferMeters"] = bufferMeters.Value;
+                var bufferRule = new TargetingRule("BufferMeters", string.Empty, "Int32").WithValue(bufferMeters.Value);
+                rules.Add(bufferRule);
             }
 
             return rules;
@@ -152,16 +165,16 @@
 
             var points = new List<GeoPoint>();
             var earthRadius = 6371000.0; // 地球半径（米）
-            
+
             for (int i = 0; i < segments; i++)
             {
                 var angle = 2 * Math.PI * i / segments;
                 var deltaLat = radiusMeters * Math.Cos(angle) / earthRadius * (180 / Math.PI);
                 var deltaLon = radiusMeters * Math.Sin(angle) / (earthRadius * Math.Cos((double)center.Latitude * Math.PI / 180)) * (180 / Math.PI);
-                
+
                 var lat = center.Latitude + (decimal)deltaLat;
                 var lon = center.Longitude + (decimal)deltaLon;
-                
+
                 points.Add(GeoPoint.Create(lat, lon));
             }
 
@@ -334,7 +347,7 @@
             if (!BufferMeters.HasValue || BufferMeters.Value <= 0)
                 return false;
 
-            return !IsPointInPolygon(latitude, longitude) && 
+            return !IsPointInPolygon(latitude, longitude) &&
                    IsWithinPolygonBuffer(latitude, longitude, BufferMeters.Value);
         }
 
@@ -528,7 +541,7 @@
             var perimeter = CalculatePerimeter();
 
             var details = $"Type: Polygon, Points: {Points.Count}, Centroid: ({centroid.Latitude:F6}, {centroid.Longitude:F6}), " +
-                         $"Area: ~{area/1000000:F2}km², Perimeter: ~{perimeter/1000:F2}km, Complexity: {Complexity}";
+                         $"Area: ~{area / 1000000:F2}km², Perimeter: ~{perimeter / 1000:F2}km, Complexity: {Complexity}";
 
             if (BufferMeters.HasValue)
                 details += $", Buffer: {BufferMeters}m";
@@ -694,16 +707,16 @@
 
             // 实现Douglas-Peucker算法的简化版本
             var simplified = new List<GeoPoint> { points[0] };
-            
+
             for (int i = 1; i < points.Count - 1; i++)
             {
-                var distance = GetDistanceToLineSegment(points[i].Latitude, points[i].Longitude, points[i-1], points[i+1]);
+                var distance = GetDistanceToLineSegment(points[i].Latitude, points[i].Longitude, points[i - 1], points[i + 1]);
                 if (distance > tolerance)
                 {
                     simplified.Add(points[i]);
                 }
             }
-            
+
             simplified.Add(points[^1]);
             return simplified;
         }

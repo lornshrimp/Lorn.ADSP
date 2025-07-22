@@ -1,4 +1,4 @@
-﻿namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
     /// 圆形地理围栏定向条件
@@ -75,7 +75,7 @@
         /// <summary>
         /// 创建规则字典
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             decimal latitude,
             decimal longitude,
             int radiusMeters,
@@ -85,22 +85,36 @@
         {
             ValidateInput(latitude, longitude, radiusMeters, bufferMeters);
 
-            var rules = new Dictionary<string, object>
-            {
-                ["Latitude"] = latitude,
-                ["Longitude"] = longitude,
-                ["RadiusMeters"] = radiusMeters,
-                ["Category"] = category
-            };
+            var rules = new List<TargetingRule>();
 
+            // 添加纬度
+            var latitudeRule = new TargetingRule("Latitude", string.Empty, "Decimal").WithValue(latitude);
+            rules.Add(latitudeRule);
+
+            // 添加经度
+            var longitudeRule = new TargetingRule("Longitude", string.Empty, "Decimal").WithValue(longitude);
+            rules.Add(longitudeRule);
+
+            // 添加半径
+            var radiusRule = new TargetingRule("RadiusMeters", string.Empty, "Int32").WithValue(radiusMeters);
+            rules.Add(radiusRule);
+
+            // 添加分类
+            var categoryRule = new TargetingRule("Category", string.Empty, "Enum").WithValue(category);
+            rules.Add(categoryRule);
+
+            // 添加名称（如果存在）
             if (!string.IsNullOrEmpty(name))
             {
-                rules["Name"] = name;
+                var nameRule = new TargetingRule("Name", string.Empty, "String").WithValue(name);
+                rules.Add(nameRule);
             }
 
+            // 添加缓冲区（如果存在）
             if (bufferMeters.HasValue)
             {
-                rules["BufferMeters"] = bufferMeters.Value;
+                var bufferRule = new TargetingRule("BufferMeters", string.Empty, "Int32").WithValue(bufferMeters.Value);
+                rules.Add(bufferRule);
             }
 
             return rules;

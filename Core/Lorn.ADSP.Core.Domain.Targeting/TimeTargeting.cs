@@ -47,19 +47,32 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 创建规则字典
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IList<DayOfWeek>? days,
             TimeOnly? startTime,
             TimeOnly? endTime,
             string timeZoneId)
         {
-            var rules = new Dictionary<string, object>
-            {
-                ["Days"] = days?.ToList() ?? Enum.GetValues<DayOfWeek>().ToList(),
-                ["StartTime"] = startTime ?? TimeOnly.MinValue,
-                ["EndTime"] = endTime ?? TimeOnly.MaxValue,
-                ["TimeZoneId"] = timeZoneId ?? "UTC"
-            };
+            var rules = new List<TargetingRule>();
+
+            // 添加天数列表
+            var daysList = days?.ToList() ?? Enum.GetValues<DayOfWeek>().ToList();
+            var daysRule = new TargetingRule("Days", string.Empty, "Json").WithValue(daysList);
+            rules.Add(daysRule);
+
+            // 添加开始时间
+            var startTimeValue = startTime ?? TimeOnly.MinValue;
+            var startTimeRule = new TargetingRule("StartTime", string.Empty, "TimeOnly").WithValue(startTimeValue);
+            rules.Add(startTimeRule);
+
+            // 添加结束时间
+            var endTimeValue = endTime ?? TimeOnly.MaxValue;
+            var endTimeRule = new TargetingRule("EndTime", string.Empty, "TimeOnly").WithValue(endTimeValue);
+            rules.Add(endTimeRule);
+
+            // 添加时区ID
+            var timeZoneRule = new TargetingRule("TimeZoneId", string.Empty, "String").WithValue(timeZoneId ?? "UTC");
+            rules.Add(timeZoneRule);
 
             return rules;
         }

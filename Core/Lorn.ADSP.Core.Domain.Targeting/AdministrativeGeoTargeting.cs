@@ -3,62 +3,62 @@ using Lorn.ADSP.Core.Domain.Enums;
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
 {
     /// <summary>
-    /// ĞĞÕşÇø»®µØÀí¶¨ÏòÌõ¼ş
-    /// ÊµÏÖ»ùÓÚ¹ú¼Ò¡¢Ê¡·İ¡¢³ÇÊĞµÈĞĞÕşÇøÓòµÄµØÀí¶¨Ïò¹æÔòÅäÖÃ
-    /// ÊÊÓÃ³¡¾°£º»ùÓÚÕşÖÎ±ß½çµÄ¹ã¸æÍ¶·Å£¬ÈçÕë¶ÔÌØ¶¨³ÇÊĞ¡¢Ê¡·İ»ò¹ú¼ÒµÄÓªÏú»î¶¯
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// Êµï¿½Ö»ï¿½ï¿½Ú¹ï¿½ï¿½Ò¡ï¿½Ê¡ï¿½İ¡ï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î±ß½ï¿½Ä¹ï¿½ï¿½Í¶ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½Ê¡ï¿½İ»ï¿½ï¿½ï¿½Òµï¿½Óªï¿½ï¿½ï¿½î¶¯
     /// </summary>
     public class AdministrativeGeoTargeting : TargetingCriteriaBase
     {
         /// <summary>
-        /// Ìõ¼şÀàĞÍ±êÊ¶
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í±ï¿½Ê¶
         /// </summary>
         public override string CriteriaType => "AdministrativeGeo";
 
         /// <summary>
-        /// °üº¬µÄĞĞÕşÇøÓòÁĞ±í
-        /// Ö§³Ö¹ú¼Ò¡¢Ê¡·İ¡¢³ÇÊĞµÈ²»Í¬²ã¼¶µÄĞĞÕşÇøÓò¶¨Ïò
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½
+        /// Ö§ï¿½Ö¹ï¿½ï¿½Ò¡ï¿½Ê¡ï¿½İ¡ï¿½ï¿½ï¿½ï¿½ĞµÈ²ï¿½Í¬ï¿½ã¼¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public IReadOnlyList<GeoInfo> IncludedLocations => GetRule<List<GeoInfo>>("IncludedLocations") ?? new List<GeoInfo>();
 
         /// <summary>
-        /// ÅÅ³ıµÄĞĞÕşÇøÓòÁĞ±í
-        /// ÓÃÓÚÔÚ´ó·¶Î§¶¨ÏòÖĞÅÅ³ıÌØ¶¨ÇøÓò
+        /// ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public IReadOnlyList<GeoInfo> ExcludedLocations => GetRule<List<GeoInfo>>("ExcludedLocations") ?? new List<GeoInfo>();
 
         /// <summary>
-        /// µØÀí¶¨ÏòÄ£Ê½
-        /// Include: ½ö¶¨Ïòµ½Ö¸¶¨ÇøÓò
-        /// Exclude: ÅÅ³ıÖ¸¶¨ÇøÓò£¬¶¨Ïòµ½ÆäËûËùÓĞÇøÓò
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+        /// Include: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// Exclude: ï¿½Å³ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ò£¬¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public GeoTargetingMode Mode => GetRule<GeoTargetingMode>("Mode", GeoTargetingMode.Include);
 
         /// <summary>
-        /// ×î´óÀ©Õ¹¾àÀë£¨¹«Àï£©
-        /// ÓÃÓÚÔÚĞĞÕşÇøÓò±ß½ç»ù´¡ÉÏÀ©Õ¹¶¨Ïò·¶Î§
-        /// ÀıÈç£º¶¨Ïò±±¾©ÊĞ£¬µ«À©Õ¹µ½ÖÜ±ß50¹«Àï·¶Î§
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ë£¨ï¿½ï¿½ï¿½ï£©
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½Î§
+        /// ï¿½ï¿½ï¿½ç£ºï¿½ï¿½ï¿½ò±±¾ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½Ü±ï¿½50ï¿½ï¿½ï¿½ï·¶Î§
         /// </summary>
         public double? MaxDistance => GetRule<double?>("MaxDistance");
 
         /// <summary>
-        /// ÇøÓò²ã¼¶ÓÅÏÈ¼¶
-        /// µ±ÓÃ»§Î»ÖÃÆ¥Åä¶à¸öĞĞÕşÇøÓòÊ±µÄÓÅÏÈ¼¶ÉèÖÃ
-        /// Higher: ÓÅÏÈÊ¹ÓÃ¸ü¸ß²ã¼¶£¨ÈçÊ¡·İÓÅÏÈÓÚ³ÇÊĞ£©
-        /// Lower: ÓÅÏÈÊ¹ÓÃ¸üµÍ²ã¼¶£¨Èç³ÇÊĞÓÅÏÈÓÚÊ¡·İ£©
-        /// Exact: ¾«È·Æ¥ÅäÖ¸¶¨²ã¼¶
+        /// ï¿½ï¿½ï¿½ï¿½ã¼¶ï¿½ï¿½ï¿½È¼ï¿½
+        /// ï¿½ï¿½ï¿½Ã»ï¿½Î»ï¿½ï¿½Æ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½
+        /// Higher: ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸ï¿½ï¿½ß²ã¼¶ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½Ğ£ï¿½
+        /// Lower: ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¸ï¿½ï¿½Í²ã¼¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½İ£ï¿½
+        /// Exact: ï¿½ï¿½È·Æ¥ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ã¼¶
         /// </summary>
         public AdministrativeLevel? LevelPriority => GetRule<AdministrativeLevel?>("LevelPriority");
 
         /// <summary>
-        /// ¹¹Ôìº¯Êı
+        /// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
         /// </summary>
-        /// <param name="includedLocations">°üº¬µÄĞĞÕşÇøÓò</param>
-        /// <param name="excludedLocations">ÅÅ³ıµÄĞĞÕşÇøÓò</param>
-        /// <param name="mode">¶¨ÏòÄ£Ê½</param>
-        /// <param name="maxDistance">×î´óÀ©Õ¹¾àÀë£¨¹«Àï£©</param>
-        /// <param name="levelPriority">ÇøÓò²ã¼¶ÓÅÏÈ¼¶</param>
-        /// <param name="weight">È¨ÖØ</param>
-        /// <param name="isEnabled">ÊÇ·ñÆôÓÃ</param>
+        /// <param name="includedLocations">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+        /// <param name="excludedLocations">ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+        /// <param name="mode">ï¿½ï¿½ï¿½ï¿½Ä£Ê½</param>
+        /// <param name="maxDistance">ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ë£¨ï¿½ï¿½ï¿½ï£©</param>
+        /// <param name="levelPriority">ï¿½ï¿½ï¿½ï¿½ã¼¶ï¿½ï¿½ï¿½È¼ï¿½</param>
+        /// <param name="weight">È¨ï¿½ï¿½</param>
+        /// <param name="isEnabled">ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½</param>
         public AdministrativeGeoTargeting(
             IList<GeoInfo>? includedLocations = null,
             IList<GeoInfo>? excludedLocations = null,
@@ -71,37 +71,50 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ´´½¨¹æÔò×Öµä
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½
         /// </summary>
-        private static Dictionary<string, object> CreateRules(
+        private static IEnumerable<TargetingRule> CreateRules(
             IList<GeoInfo>? includedLocations,
             IList<GeoInfo>? excludedLocations,
             GeoTargetingMode mode,
             double? maxDistance,
             AdministrativeLevel? levelPriority)
         {
-            var rules = new Dictionary<string, object>
-            {
-                ["IncludedLocations"] = includedLocations?.ToList() ?? new List<GeoInfo>(),
-                ["ExcludedLocations"] = excludedLocations?.ToList() ?? new List<GeoInfo>(),
-                ["Mode"] = mode
-            };
+            var rules = new List<TargetingRule>();
 
+            // æ·»åŠ åŒ…å«çš„ä½ç½®åˆ—è¡¨
+            var includedLocationsList = includedLocations?.ToList() ?? new List<GeoInfo>();
+            var includedLocationsRule = new TargetingRule("IncludedLocations", string.Empty, "Json").WithValue(includedLocationsList);
+            rules.Add(includedLocationsRule);
+
+            // æ·»åŠ æ’é™¤çš„ä½ç½®åˆ—è¡¨
+            var excludedLocationsList = excludedLocations?.ToList() ?? new List<GeoInfo>();
+            var excludedLocationsRule = new TargetingRule("ExcludedLocations", string.Empty, "Json").WithValue(excludedLocationsList);
+            rules.Add(excludedLocationsRule);
+
+            // æ·»åŠ æ¨¡å¼
+            var modeRule = new TargetingRule("Mode", string.Empty, "Enum").WithValue(mode);
+            rules.Add(modeRule);
+
+            // æ·»åŠ æœ€å¤§è·ç¦»ï¼ˆå¦‚æœå­˜åœ¨ï¼‰
             if (maxDistance.HasValue)
             {
-                rules["MaxDistance"] = maxDistance.Value;
+                var maxDistanceRule = new TargetingRule("MaxDistance", string.Empty, "Double").WithValue(maxDistance.Value);
+                rules.Add(maxDistanceRule);
             }
 
+            // æ·»åŠ çº§åˆ«ä¼˜å…ˆçº§ï¼ˆå¦‚æœå­˜åœ¨ï¼‰
             if (levelPriority.HasValue)
             {
-                rules["LevelPriority"] = levelPriority.Value;
+                var levelPriorityRule = new TargetingRule("LevelPriority", string.Empty, "Enum").WithValue(levelPriority.Value);
+                rules.Add(levelPriorityRule);
             }
 
             return rules;
         }
 
         /// <summary>
-        /// ´´½¨ĞĞÕşÇø»®µØÀí¶¨ÏòÌõ¼ş
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public static AdministrativeGeoTargeting Create(
             IList<GeoInfo>? includedLocations = null,
@@ -116,9 +129,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// Ìí¼Ó°üº¬µÄĞĞÕşÇøÓò
+        /// ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="geoInfo">ĞĞÕşÇøÓòĞÅÏ¢</param>
+        /// <param name="geoInfo">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢</param>
         public void AddIncludedLocation(GeoInfo geoInfo)
         {
             if (geoInfo == null)
@@ -132,9 +145,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// Ìí¼ÓÅÅ³ıµÄĞĞÕşÇøÓò
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="geoInfo">ĞĞÕşÇøÓòĞÅÏ¢</param>
+        /// <param name="geoInfo">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢</param>
         public void AddExcludedLocation(GeoInfo geoInfo)
         {
             if (geoInfo == null)
@@ -148,10 +161,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÅúÁ¿Ìí¼ÓĞĞÕşÇøÓò£¨°´¹ú¼Ò£©
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò£¨°ï¿½ï¿½ï¿½ï¿½Ò£ï¿½
         /// </summary>
-        /// <param name="countryCodes">¹ú¼Ò´úÂëÁĞ±í</param>
-        /// <param name="include">ÊÇ·ñÎª°üº¬Ä£Ê½</param>
+        /// <param name="countryCodes">ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½</param>
+        /// <param name="include">ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½Ä£Ê½</param>
         public void AddCountries(IEnumerable<string> countryCodes, bool include = true)
         {
             foreach (var countryCode in countryCodes)
@@ -165,11 +178,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÅúÁ¿Ìí¼ÓĞĞÕşÇøÓò£¨°´³ÇÊĞ£©
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò£¨°ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½
         /// </summary>
-        /// <param name="cityNames">³ÇÊĞÃû³ÆÁĞ±í</param>
-        /// <param name="countryCode">ËùÊô¹ú¼Ò´úÂë</param>
-        /// <param name="include">ÊÇ·ñÎª°üº¬Ä£Ê½</param>
+        /// <param name="cityNames">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½</param>
+        /// <param name="countryCode">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½</param>
+        /// <param name="include">ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½Ä£Ê½</param>
         public void AddCities(IEnumerable<string> cityNames, string countryCode, bool include = true)
         {
             foreach (var cityName in cityNames)
@@ -183,18 +196,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÉèÖÃ×î´óÀ©Õ¹¾àÀë
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="maxDistance">×î´óÀ©Õ¹¾àÀë£¨¹«Àï£©</param>
+        /// <param name="maxDistance">ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ë£¨ï¿½ï¿½ï¿½ï£©</param>
         public void SetMaxDistance(double? maxDistance)
         {
             if (maxDistance.HasValue)
             {
                 if (maxDistance.Value <= 0)
-                    throw new ArgumentException("×î´óÀ©Õ¹¾àÀë±ØĞë´óÓÚ0", nameof(maxDistance));
+                    throw new ArgumentException("ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0", nameof(maxDistance));
 
                 if (maxDistance.Value > 1000)
-                    throw new ArgumentException("ĞĞÕşÇø»®¶¨ÏòµÄ×î´óÀ©Õ¹¾àÀë²»Ó¦³¬¹ı1000¹«Àï", nameof(maxDistance));
+                    throw new ArgumentException("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ë²»Ó¦ï¿½ï¿½ï¿½ï¿½1000ï¿½ï¿½ï¿½ï¿½", nameof(maxDistance));
 
                 SetRule("MaxDistance", maxDistance.Value);
             }
@@ -205,18 +218,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÉèÖÃ¶¨ÏòÄ£Ê½
+        /// ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½Ä£Ê½
         /// </summary>
-        /// <param name="mode">¶¨ÏòÄ£Ê½</param>
+        /// <param name="mode">ï¿½ï¿½ï¿½ï¿½Ä£Ê½</param>
         public void SetMode(GeoTargetingMode mode)
         {
             SetRule("Mode", mode);
         }
 
         /// <summary>
-        /// ÉèÖÃÇøÓò²ã¼¶ÓÅÏÈ¼¶
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¼¶ï¿½ï¿½ï¿½È¼ï¿½
         /// </summary>
-        /// <param name="levelPriority">ÇøÓò²ã¼¶ÓÅÏÈ¼¶</param>
+        /// <param name="levelPriority">ï¿½ï¿½ï¿½ï¿½ã¼¶ï¿½ï¿½ï¿½È¼ï¿½</param>
         public void SetLevelPriority(AdministrativeLevel? levelPriority)
         {
             if (levelPriority.HasValue)
@@ -230,10 +243,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²éÓÃ»§Î»ÖÃÊÇ·ñÆ¥Åä¶¨ÏòÌõ¼ş
+        /// ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ä¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="userLocation">ÓÃ»§µØÀíÎ»ÖÃĞÅÏ¢</param>
-        /// <returns>ÊÇ·ñÆ¥Åä</returns>
+        /// <param name="userLocation">ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢</param>
+        /// <returns>ï¿½Ç·ï¿½Æ¥ï¿½ï¿½</returns>
         public bool IsLocationMatched(GeoInfo userLocation)
         {
             if (userLocation == null)
@@ -251,19 +264,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÑéÖ¤ĞĞÕşÇø»®µØÀí¶¨ÏòÌØ¶¨¹æÔòµÄÓĞĞ§ĞÔ
+        /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ§ï¿½ï¿½
         /// </summary>
         protected override bool ValidateSpecificRules()
         {
-            // ÑéÖ¤×î´óÀ©Õ¹¾àÀë
+            // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½
             if (MaxDistance.HasValue && (MaxDistance.Value <= 0 || MaxDistance.Value > 1000))
                 return false;
 
-            // ÑéÖ¤°üº¬ºÍÅÅ³ıÁĞ±í²»ÄÜ¶¼Îª¿Õ£¨ÔÚIncludeÄ£Ê½ÏÂ£©
+            // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½Ü¶ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½IncludeÄ£Ê½ï¿½Â£ï¿½
             if (Mode == GeoTargetingMode.Include && !IncludedLocations.Any() && !ExcludedLocations.Any())
                 return false;
 
-            // ÑéÖ¤ĞĞÕşÇøÓòĞÅÏ¢µÄÓĞĞ§ĞÔ
+            // ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½Ğ§ï¿½ï¿½
             foreach (var location in IncludedLocations.Concat(ExcludedLocations))
             {
                 if (!IsValidAdministrativeLocation(location))
@@ -274,7 +287,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// »ñÈ¡ÅäÖÃÕªÒªĞÅÏ¢
+        /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ÕªÒªï¿½ï¿½Ï¢
         /// </summary>
         public override string GetConfigurationSummary()
         {
@@ -291,23 +304,23 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ÑéÖ¤ĞĞÕşÇøÓòÎ»ÖÃĞÅÏ¢
+        /// ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢
         /// </summary>
         private static void ValidateAdministrativeLocation(GeoInfo geoInfo)
         {
             if (!IsValidAdministrativeLocation(geoInfo))
-                throw new ArgumentException("ĞĞÕşÇø»®¶¨ÏòÒªÇóµØÀíÎ»ÖÃĞÅÏ¢°üº¬ÓĞĞ§µÄĞĞÕşÇøÓò±êÊ¶£¨¹ú¼Ò´úÂë¡¢Ê¡·İ´úÂë»ò³ÇÊĞÃû³Æ£©", nameof(geoInfo));
+                throw new ArgumentException("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½Ò´ï¿½ï¿½ë¡¢Ê¡ï¿½İ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½", nameof(geoInfo));
         }
 
         /// <summary>
-        /// ¼ì²éÊÇ·ñÎªÓĞĞ§µÄĞĞÕşÇøÓòÎ»ÖÃĞÅÏ¢
+        /// ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½Ğ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½Ï¢
         /// </summary>
         private static bool IsValidAdministrativeLocation(GeoInfo geoInfo)
         {
             if (geoInfo == null)
                 return false;
 
-            // ĞĞÕşÇø»®¶¨ÏòÒªÇóÖÁÉÙÓĞÒ»¸öĞĞÕşÇøÓò±êÊ¶
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶
             return !string.IsNullOrEmpty(geoInfo.CountryCode) ||
                    !string.IsNullOrEmpty(geoInfo.ProvinceCode) ||
                    !string.IsNullOrEmpty(geoInfo.CityName) ||
@@ -315,7 +328,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²éÓÃ»§Î»ÖÃÊÇ·ñÔÚÖ¸¶¨µÄĞĞÕşÇøÓòÁĞ±íÖĞ
+        /// ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½ï¿½ï¿½
         /// </summary>
         private bool IsLocationInList(GeoInfo userLocation, IReadOnlyList<GeoInfo> locationList)
         {
@@ -329,24 +342,24 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²éÁ½¸öĞĞÕşÇøÓòÎ»ÖÃÊÇ·ñÆ¥Åä
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ï¿½
         /// </summary>
         private bool IsAdministrativeLocationMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
-            // °´²ã¼¶ÓÅÏÈ¼¶½øĞĞÆ¥Åä
+            // ï¿½ï¿½ï¿½ã¼¶ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½
             switch (LevelPriority)
             {
                 case AdministrativeLevel.Country:
                     return IsCountryMatched(userLocation, targetLocation);
-                
+
                 case AdministrativeLevel.Province:
                     return IsProvinceMatched(userLocation, targetLocation);
-                
+
                 case AdministrativeLevel.City:
                     return IsCityMatched(userLocation, targetLocation);
-                
+
                 default:
-                    // Ä¬ÈÏ°´´ÓÏ¸µ½´ÖµÄË³ĞòÆ¥Åä
+                    // Ä¬ï¿½Ï°ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½Öµï¿½Ë³ï¿½ï¿½Æ¥ï¿½ï¿½
                     return IsCityMatched(userLocation, targetLocation) ||
                            IsProvinceMatched(userLocation, targetLocation) ||
                            IsCountryMatched(userLocation, targetLocation);
@@ -354,7 +367,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²é¹ú¼ÒÊÇ·ñÆ¥Åä
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ï¿½
         /// </summary>
         private static bool IsCountryMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -364,7 +377,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²éÊ¡·İÊÇ·ñÆ¥Åä
+        /// ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ï¿½
         /// </summary>
         private static bool IsProvinceMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -374,7 +387,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ¼ì²é³ÇÊĞÊÇ·ñÆ¥Åä
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Æ¥ï¿½ï¿½
         /// </summary>
         private static bool IsCityMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -385,22 +398,22 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     }
 
     /// <summary>
-    /// ĞĞÕşÇøÓò²ã¼¶Ã¶¾Ù
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¼¶Ã¶ï¿½ï¿½
     /// </summary>
     public enum AdministrativeLevel
     {
         /// <summary>
-        /// ¹ú¼Ò¼¶±ğ
+        /// ï¿½ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½
         /// </summary>
         Country = 1,
 
         /// <summary>
-        /// Ê¡·İ/Öİ¼¶±ğ
+        /// Ê¡ï¿½ï¿½/ï¿½İ¼ï¿½ï¿½ï¿½
         /// </summary>
         Province = 2,
 
         /// <summary>
-        /// ³ÇÊĞ¼¶±ğ
+        /// ï¿½ï¿½ï¿½Ğ¼ï¿½ï¿½ï¿½
         /// </summary>
         City = 3
     }

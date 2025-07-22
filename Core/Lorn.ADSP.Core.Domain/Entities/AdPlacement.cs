@@ -16,7 +16,7 @@ namespace Lorn.ADSP.Core.Domain.Entities
         /// <summary>
         /// 所属媒体资源ID
         /// </summary>
-        public string MediaResourceId { get; private set; } = string.Empty;
+        public Guid MediaResourceId { get; private set; }
 
         /// <summary>
         /// 广告位尺寸
@@ -46,7 +46,7 @@ namespace Lorn.ADSP.Core.Domain.Entities
         /// <summary>
         /// 构造函数
         /// </summary>
-        public AdPlacement(string mediaResourceId, string name, AdSize size, string position, decimal floorPrice)
+        public AdPlacement(Guid mediaResourceId, string name, AdSize size, string position, decimal floorPrice)
         {
             MediaResourceId = mediaResourceId;
             Name = name;
