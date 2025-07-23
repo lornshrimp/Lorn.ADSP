@@ -11,12 +11,12 @@ public class FrequencyStatus : ValueObject
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string UserId { get; private set; }
+    public Guid UserId { get; private set; }
 
     /// <summary>
     /// 广告ID
     /// </summary>
-    public string AdId { get; private set; }
+    public Guid AdId { get; private set; }
 
     /// <summary>
     /// 今日展示次数
@@ -67,8 +67,8 @@ public class FrequencyStatus : ValueObject
     /// </summary>
     private FrequencyStatus()
     {
-        UserId = string.Empty;
-        AdId = string.Empty;
+        UserId = Guid.Empty;
+        AdId = Guid.Empty;
         TodayImpressions = 0;
         HourlyImpressions = 0;
         DailyFrequencyCap = 0;
@@ -80,8 +80,8 @@ public class FrequencyStatus : ValueObject
     /// 构造函数
     /// </summary>
     public FrequencyStatus(
-        string userId,
-        string adId,
+        Guid userId,
+        Guid adId,
         int dailyFrequencyCap,
         int hourlyFrequencyCap,
         int todayImpressions = 0,
@@ -105,8 +105,8 @@ public class FrequencyStatus : ValueObject
     /// 创建频次状态
     /// </summary>
     public static FrequencyStatus Create(
-        string userId,
-        string adId,
+        Guid userId,
+        Guid adId,
         int dailyFrequencyCap,
         int hourlyFrequencyCap)
     {
@@ -230,18 +230,18 @@ public class FrequencyStatus : ValueObject
     /// 验证输入参数
     /// </summary>
     private static void ValidateInput(
-        string userId,
-        string adId,
+        Guid userId,
+        Guid adId,
         int dailyFrequencyCap,
         int hourlyFrequencyCap,
         int todayImpressions,
         int hourlyImpressions,
         int totalImpressions)
     {
-        if (string.IsNullOrWhiteSpace(userId))
+        if (userId == Guid.Empty)
             throw new ArgumentException("用户ID不能为空", nameof(userId));
 
-        if (string.IsNullOrWhiteSpace(adId))
+        if (adId == Guid.Empty)
             throw new ArgumentException("广告ID不能为空", nameof(adId));
 
         if (dailyFrequencyCap < 0)

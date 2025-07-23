@@ -12,9 +12,14 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         private readonly List<ContextProperty> _properties;
 
         /// <summary>
+        /// 上下文名称
+        /// </summary>
+        public virtual string ContextName { get; protected set; }
+
+        /// <summary>
         /// 上下文类型标识
         /// </summary>
-        public string ContextType { get; private set; }
+        public string ContextType { get; protected set; }
 
         /// <summary>
         /// 上下文属性集合（只读）
@@ -24,12 +29,12 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 上下文创建时间戳
         /// </summary>
-        public DateTime Timestamp { get; private set; }
+        public DateTime Timestamp { get; protected set; }
 
         /// <summary>
         /// 上下文的唯一标识
         /// </summary>
-        public string ContextId { get; private set; }
+        public Guid ContextId { get; protected set; }
 
         /// <summary>
         /// 上下文数据来源
@@ -47,15 +52,16 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             string contextType,
             IEnumerable<ContextProperty>? properties = null,
             string? dataSource = null,
-            string? contextId = null)
+            Guid? contextId = null)
         {
             if (string.IsNullOrEmpty(contextType))
                 throw new ArgumentException("上下文类型不能为空", nameof(contextType));
 
             ContextType = contextType;
+            ContextName = contextType; // 默认使用类型作为名称
             _properties = properties?.ToList() ?? new List<ContextProperty>();
             DataSource = dataSource ?? "Unknown";
-            ContextId = contextId ?? Guid.NewGuid().ToString();
+            ContextId = contextId ?? Guid.CreateVersion7();
             Timestamp = DateTime.UtcNow;
         }
 
@@ -70,14 +76,15 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             string contextType,
             IDictionary<string, object>? properties,
             string? dataSource = null,
-            string? contextId = null)
+            Guid? contextId = null)
         {
             if (string.IsNullOrEmpty(contextType))
                 throw new ArgumentException("上下文类型不能为空", nameof(contextType));
 
             ContextType = contextType;
+            ContextName = contextType; // 默认使用类型作为名称
             DataSource = dataSource ?? "Unknown";
-            ContextId = contextId ?? Guid.NewGuid().ToString();
+            ContextId = contextId ?? Guid.CreateVersion7();
             Timestamp = DateTime.UtcNow;
 
             _properties = new List<ContextProperty>();
@@ -213,7 +220,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             var metadataProperties = new List<ContextProperty>
             {
                 new ContextProperty("ContextType", ContextType),
-                new ContextProperty("ContextId", ContextId),
+                new ContextProperty("ContextId", ContextId.ToString()),
                 new ContextProperty("DataSource", DataSource),
                 new ContextProperty("Timestamp", Timestamp.ToString("O")),
                 new ContextProperty("PropertyCount", _properties.Count.ToString()),
@@ -252,7 +259,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
                 ContextType + "_Lightweight",
                 filteredProperties,
                 DataSource,
-                ContextId + "_Copy");
+                new Guid(ContextId.ToByteArray()));
         }
 
         /// <summary>
@@ -270,7 +277,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
                 ContextType + "_Categorized",
                 filteredProperties,
                 DataSource,
-                ContextId + "_Cat");
+                ContextId);
         }
 
         /// <summary>
@@ -310,7 +317,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
                 mergedContextType,
                 mergedProperties,
                 mergedDataSource,
-                mergedContextId);
+                new Guid(mergedGuid.ToByteArray()));
         }
 
         /// <summary>

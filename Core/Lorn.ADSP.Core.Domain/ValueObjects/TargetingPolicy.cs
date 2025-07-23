@@ -15,11 +15,6 @@ public class TargetingPolicy : ValueObject
     private readonly List<string> _tags;
 
     /// <summary>
-    /// 策略标识
-    /// </summary>
-    public string PolicyId { get; private set; }
-
-    /// <summary>
     /// 策略名称
     /// </summary>
     public string Name { get; private set; }
@@ -87,7 +82,6 @@ public class TargetingPolicy : ValueObject
     /// <summary>
     /// 构造函数
     /// </summary>
-    /// <param name="policyId">策略ID</param>
     /// <param name="name">策略名称</param>
     /// <param name="createdBy">创建者</param>
     /// <param name="description">策略描述</param>
@@ -100,7 +94,6 @@ public class TargetingPolicy : ValueObject
     /// <param name="isEnabled">是否启用</param>
     /// <param name="status">策略状态</param>
     public TargetingPolicy(
-        string policyId,
         string name,
         string createdBy,
         string? description = null,
@@ -113,14 +106,11 @@ public class TargetingPolicy : ValueObject
         bool isEnabled = true,
         PolicyStatus status = PolicyStatus.Draft)
     {
-        if (string.IsNullOrEmpty(policyId))
-            throw new ArgumentException("策略ID不能为空", nameof(policyId));
         if (string.IsNullOrEmpty(name))
             throw new ArgumentException("策略名称不能为空", nameof(name));
         if (string.IsNullOrEmpty(createdBy))
             throw new ArgumentException("创建者不能为空", nameof(createdBy));
 
-        PolicyId = policyId;
         Name = name;
         Description = description;
         Version = version;
@@ -147,8 +137,7 @@ public class TargetingPolicy : ValueObject
     /// <returns>空策略实例</returns>
     public static TargetingPolicy CreateEmpty(string name, string createdBy, string category = "General")
     {
-        var policyId = Guid.NewGuid().ToString();
-        return new TargetingPolicy(policyId, name, createdBy, category: category);
+        return new TargetingPolicy(name, createdBy, category: category);
     }
 
     /// <summary>
@@ -159,9 +148,7 @@ public class TargetingPolicy : ValueObject
     /// <returns>无限制策略实例</returns>
     public static TargetingPolicy CreateUnrestricted(string name, string createdBy)
     {
-        var policyId = Guid.NewGuid().ToString();
         return new TargetingPolicy(
-            policyId: policyId,
             name: name,
             createdBy: createdBy,
             description: "无定向限制策略",
@@ -175,9 +162,9 @@ public class TargetingPolicy : ValueObject
     /// <param name="advertisementId">广告ID</param>
     /// <param name="runtimeParameters">运行时参数（可选）</param>
     /// <returns>配置实例</returns>
-    public TargetingConfig CreateConfig(string advertisementId, IDictionary<string, object>? runtimeParameters = null)
+    public TargetingConfig CreateConfig(Guid advertisementId, IDictionary<string, object>? runtimeParameters = null)
     {
-        if (string.IsNullOrEmpty(advertisementId))
+        if (advertisementId == Guid.Empty)
             throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
 
         return TargetingConfig.CreateFromPolicy(this, advertisementId, runtimeParameters);
@@ -215,7 +202,7 @@ public class TargetingPolicy : ValueObject
         var criteriaDict = criteriaList.ToDictionary(c => c.CriteriaType, c => c);
 
         return new TargetingPolicy(
-            PolicyId, Name, CreatedBy, Description, Version,
+            Name, CreatedBy, Description, Version,
             criteriaDict, Category, IsPublic, _tags,
             Weight, IsEnabled, Status);
     }
@@ -240,7 +227,7 @@ public class TargetingPolicy : ValueObject
         var criteriaDict = criteriaList.ToDictionary(c => c.CriteriaType, c => c);
 
         return new TargetingPolicy(
-            PolicyId, Name, CreatedBy, Description, Version,
+            Name, CreatedBy, Description, Version,
             criteriaDict, Category, IsPublic, _tags,
             Weight, IsEnabled, Status);
     }
@@ -331,7 +318,7 @@ public class TargetingPolicy : ValueObject
         var validationResult = new ValidationResult(string.Empty);
 
         // 验证基本属性
-        if (string.IsNullOrEmpty(PolicyId))
+        if (Id == Guid.Empty)
             validationResult.AddError("策略ID不能为空");
 
         if (string.IsNullOrEmpty(Name))
@@ -417,7 +404,6 @@ public class TargetingPolicy : ValueObject
         }
 
         return new TargetingPolicy(
-            policyId: newPolicyId,
             name: newName,
             createdBy: createdBy,
             description: $"克隆自：{Name}",
@@ -440,7 +426,7 @@ public class TargetingPolicy : ValueObject
         // 这里应该通过仓储或服务获取实际使用统计
         // 为演示目的，返回模拟数据
         return PolicyUsageStats.Create(
-            PolicyId,
+            Id,
             0, // 需要从数据库查询
             0, // 需要从数据库查询
             null, // 需要从数据库查询
@@ -454,16 +440,16 @@ public class TargetingPolicy : ValueObject
     public string GetConfigurationSummary()
     {
         if (!IsEnabled)
-            return $"TargetingPolicy[{PolicyId}]: {Name} - Disabled (Unrestricted)";
+            return $"TargetingPolicy[{Id}]: {Name} - Disabled (Unrestricted)";
 
         var enabledTemplates = GetEnabledCriteriaTemplates().ToList();
         if (!enabledTemplates.Any())
-            return $"TargetingPolicy[{PolicyId}]: {Name} - No criteria templates defined";
+            return $"TargetingPolicy[{Id}]: {Name} - No criteria templates defined";
 
         var criteriaTypes = enabledTemplates.Select(c => c.CriteriaType);
         var tagInfo = _tags.Any() ? $", Tags: [{string.Join(", ", _tags)}]" : "";
 
-        return $"TargetingPolicy[{PolicyId}]: {Name} - {string.Join(", ", criteriaTypes)} (Weight: {Weight:F2}, Version: {Version}, Status: {Status}){tagInfo}";
+        return $"TargetingPolicy[{Id}]: {Name} - {string.Join(", ", criteriaTypes)} (Weight: {Weight:F2}, Version: {Version}, Status: {Status}){tagInfo}";
     }
 
     /// <summary>
@@ -524,7 +510,7 @@ public class TargetingPolicy : ValueObject
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return PolicyId;
+        yield return Id;
         yield return Name;
         yield return Version;
         yield return Weight;

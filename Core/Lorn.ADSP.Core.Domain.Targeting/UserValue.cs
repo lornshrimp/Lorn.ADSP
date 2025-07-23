@@ -8,6 +8,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 public class UserValue : TargetingContextBase
 {
     /// <summary>
+    /// ������������
+    /// </summary>
+    public override string ContextName => "�û���ֵ������";
+
+    /// <summary>
     /// ��������� (0-100)
     /// </summary>
     public int EngagementScore => GetPropertyValue("EngagementScore", 0);

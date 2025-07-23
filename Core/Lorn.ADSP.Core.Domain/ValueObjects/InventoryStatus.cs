@@ -11,7 +11,7 @@ public class InventoryStatus : ValueObject
     /// <summary>
     /// 广告位ID
     /// </summary>
-    public string PlacementId { get; private set; }
+    public Guid PlacementId { get; private set; }
 
     /// <summary>
     /// 可用库存数量
@@ -59,7 +59,7 @@ public class InventoryStatus : ValueObject
     /// </summary>
     private InventoryStatus()
     {
-        PlacementId = string.Empty;
+        PlacementId = Guid.Empty;
         AvailableInventory = 0;
         ReservedInventory = 0;
         TotalInventory = 0;
@@ -71,7 +71,7 @@ public class InventoryStatus : ValueObject
     /// 构造函数
     /// </summary>
     public InventoryStatus(
-        string placementId,
+        Guid placementId,
         int availableInventory,
         int reservedInventory,
         int totalInventory,
@@ -94,7 +94,7 @@ public class InventoryStatus : ValueObject
     /// 创建库存状态
     /// </summary>
     public static InventoryStatus Create(
-        string placementId,
+        Guid placementId,
         int totalInventory,
         int reservedInventory = 0)
     {
@@ -218,12 +218,12 @@ public class InventoryStatus : ValueObject
     /// 验证输入参数
     /// </summary>
     private static void ValidateInput(
-        string placementId,
+        Guid placementId,
         int availableInventory,
         int reservedInventory,
         int totalInventory)
     {
-        if (string.IsNullOrWhiteSpace(placementId))
+        if (placementId == Guid.Empty)
             throw new ArgumentException("广告位ID不能为空", nameof(placementId));
 
         if (availableInventory < 0)

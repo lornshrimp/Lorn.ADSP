@@ -4,29 +4,34 @@ using Lorn.ADSP.Core.Shared.Enums;
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 /// <summary>
-/// �˿�ͳ��ѧ��Ϣ����������
-/// �̳���TargetingContextBase���ṩ�˿�ͳ��ѧ���ݵĶ��������Ĺ���
-/// �����˻����û���Ϣ���˿�ͳ��ѧ���ݣ�רע�ڹ�涨������
+/// 人口统计学信息上下文
+/// 继承自TargetingContextBase，提供人口统计学数据的定向上下文功能
+/// 合并了原UserDemographic实体和原DemographicInfo的功能，专注于广告定向中的人口统计数据
 /// </summary>
 public class DemographicInfo : TargetingContextBase
 {
     /// <summary>
-    /// ��ʾ����
+    /// 上下文名称
+    /// </summary>
+    public override string ContextName => "人口统计学上下文";
+
+    /// <summary>
+    /// 显示名称
     /// </summary>
     public string? DisplayName => GetPropertyValue<string>("DisplayName");
 
     /// <summary>
-    /// �Ա�
+    /// 性别
     /// </summary>
     public Gender Gender => GetPropertyValue<Gender>("Gender", Gender.Unknown);
 
     /// <summary>
-    /// ��������
+    /// 出生日期
     /// </summary>
     public DateTime? DateOfBirth => GetPropertyValue<DateTime?>("DateOfBirth");
 
     /// <summary>
-    /// ���䣨���ݳ������ڼ��㣩
+    /// 年龄（根据出生日期计算）
     /// </summary>
     public int? Age
     {
@@ -41,77 +46,119 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// �����ʼ�
+    /// 电子邮件
     /// </summary>
     public string? Email => GetPropertyValue<string>("Email");
 
     /// <summary>
-    /// �ֻ�����
+    /// 手机号码
     /// </summary>
     public string? PhoneNumber => GetPropertyValue<string>("PhoneNumber");
 
     /// <summary>
-    /// ʱ��
+    /// 时区
     /// </summary>
     public string? TimeZone => GetPropertyValue<string>("TimeZone");
 
     /// <summary>
-    /// ��ѡ����
+    /// 首选语言
     /// </summary>
     public string? PreferredLanguage => GetPropertyValue<string>("PreferredLanguage");
 
     /// <summary>
-    /// �����̶�
+    /// 教育程度
     /// </summary>
     public string? Education => GetPropertyValue<string>("Education");
 
     /// <summary>
-    /// ����ˮƽ
+    /// 收入水平
     /// </summary>
     public string? IncomeLevel => GetPropertyValue<string>("IncomeLevel");
 
     /// <summary>
-    /// ����״��
+    /// 婚姻状态
     /// </summary>
     public string? MaritalStatus => GetPropertyValue<string>("MaritalStatus");
 
     /// <summary>
-    /// ְҵ
+    /// 职业
     /// </summary>
     public string? Occupation => GetPropertyValue<string>("Occupation");
 
     /// <summary>
-    /// ��ҵ
+    /// 行业
     /// </summary>
     public string? Industry => GetPropertyValue<string>("Industry");
 
     /// <summary>
-    /// ����ƫ�ã�������֧�֣�
+    /// 语言偏好（多语言支持）
     /// </summary>
     public IReadOnlyList<string> Languages => GetPropertyValue<List<string>>("Languages") ?? new List<string>();
 
     /// <summary>
-    /// ��ͥ��ģ
+    /// 家庭规模
     /// </summary>
     public int? HouseholdSize => GetPropertyValue<int?>("HouseholdSize");
 
     /// <summary>
-    /// �Ƿ��к���
+    /// 是否有孩子
     /// </summary>
     public bool? HasChildren => GetPropertyValue<bool?>("HasChildren");
 
     /// <summary>
-    /// ���ʽ��ǩ
+    /// 生活方式标签
     /// </summary>
     public IReadOnlyList<string> LifestyleTags => GetPropertyValue<List<string>>("LifestyleTags") ?? new List<string>();
 
     /// <summary>
-    /// ˽�й��캯��
+    /// 置信度（从原UserDemographic合并）- 0-1之间的值
+    /// </summary>
+    public decimal Confidence => GetPropertyValue("Confidence", 1.0m);
+
+    /// <summary>
+    /// 自定义属性集合（从原UserDemographic合并）
+    /// 用于存储不在预定义字段中的人口统计学信息
+    /// </summary>
+    public IReadOnlyDictionary<string, object> CustomProperties
+    {
+        get
+        {
+            var customProps = new Dictionary<string, object>();
+            var predefinedKeys = new HashSet<string>
+            {
+                "DisplayName", "Gender", "DateOfBirth", "Age", "Email", "PhoneNumber",
+                "TimeZone", "PreferredLanguage", "Education", "IncomeLevel", "MaritalStatus",
+                "Occupation", "Industry", "Languages", "HouseholdSize", "HasChildren",
+                "LifestyleTags", "Confidence"
+            };
+
+            foreach (var property in Properties)
+            {
+                if (!predefinedKeys.Contains(property.PropertyKey))
+                {
+                    try
+                    {
+                        var value = System.Text.Json.JsonSerializer.Deserialize<object>(property.PropertyValue);
+                        customProps[property.PropertyKey] = value ?? property.PropertyValue;
+                    }
+                    catch
+                    {
+                        customProps[property.PropertyKey] = property.PropertyValue;
+                    }
+                }
+            }
+
+            return customProps.AsReadOnly();
+        }
+    }
+
+    /// <summary>
+    /// 私有构造函数
     /// </summary>
     private DemographicInfo() : base("Demographic") { }
 
     /// <summary>
-    /// ���캯��
+    /// 构造函数
     /// </summary>
     public DemographicInfo(
         string? displayName = null,
@@ -131,15 +178,16 @@ public class DemographicInfo : TargetingContextBase
         int? householdSize = null,
         bool? hasChildren = null,
         IList<string>? lifestyleTags = null,
+        decimal confidence = 1.0m,
+        IDictionary<string, object>? customProperties = null,
         string? dataSource = null)
-        : base("Demographic", CreateProperties(displayName, gender, dateOfBirth, age, email, phoneNumber, timeZone, preferredLanguage, education, incomeLevel, maritalStatus, occupation, industry, languages, householdSize, hasChildren, lifestyleTags), dataSource)
+        : base("Demographic", CreateProperties(displayName, gender, dateOfBirth, age, email, phoneNumber, timeZone, preferredLanguage, education, incomeLevel, maritalStatus, occupation, industry, languages, householdSize, hasChildren, lifestyleTags, confidence, customProperties), dataSource)
     {
-        ValidateHouseholdSize(householdSize);
-        ValidateAge(age);
+        ValidateInput(confidence, age, householdSize);
     }
 
     /// <summary>
-    /// ���������ֵ�
+    /// 创建属性字典
     /// </summary>
     private static Dictionary<string, object> CreateProperties(
         string? displayName,
@@ -158,11 +206,14 @@ public class DemographicInfo : TargetingContextBase
         IList<string>? languages,
         int? householdSize,
         bool? hasChildren,
-        IList<string>? lifestyleTags)
+        IList<string>? lifestyleTags,
+        decimal confidence,
+        IDictionary<string, object>? customProperties)
     {
         var properties = new Dictionary<string, object>
         {
-            ["Gender"] = gender
+            ["Gender"] = gender,
+            ["Confidence"] = Math.Max(0, Math.Min(1, confidence))
         };
 
         if (!string.IsNullOrWhiteSpace(displayName))
@@ -213,11 +264,21 @@ public class DemographicInfo : TargetingContextBase
         if (lifestyleTags != null && lifestyleTags.Any())
             properties["LifestyleTags"] = lifestyleTags.ToList();
 
+        // 添加自定义属性
+        if (customProperties != null)
+        {
+            foreach (var kvp in customProperties)
+            {
+                if (!properties.ContainsKey(kvp.Key))
+                    properties[kvp.Key] = kvp.Value;
+            }
+        }
+
         return properties;
     }
 
     /// <summary>
-    /// ���������˿�ͳ����Ϣ��ԭUserBasicInfo���ܣ�
+    /// 创建基础人口统计信息（原UserBasicInfo功能）
     /// </summary>
     public static DemographicInfo CreateBasic(
         string? displayName = null,
@@ -241,7 +302,7 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ������ϸ�˿�ͳ����Ϣ
+    /// 创建详细人口统计信息
     /// </summary>
     public static DemographicInfo CreateDetailed(
         string? displayName,
@@ -263,27 +324,14 @@ public class DemographicInfo : TargetingContextBase
         string? dataSource = null)
     {
         return new DemographicInfo(
-            displayName: displayName,
-            gender: gender,
-            dateOfBirth: dateOfBirth,
-            email: email,
-            phoneNumber: phoneNumber,
-            timeZone: timeZone,
-            preferredLanguage: preferredLanguage,
-            education: education,
-            incomeLevel: incomeLevel,
-            maritalStatus: maritalStatus,
-            occupation: occupation,
-            industry: industry,
-            languages: languages,
-            householdSize: householdSize,
-            hasChildren: hasChildren,
-            lifestyleTags: lifestyleTags,
+            displayName, gender, dateOfBirth, null, email, phoneNumber, timeZone,
+            preferredLanguage, education, incomeLevel, maritalStatus, occupation,
+            industry, languages, householdSize, hasChildren, lifestyleTags,
             dataSource: dataSource);
     }
 
     /// <summary>
-    /// ����Ĭ���˿�ͳ����Ϣ
+    /// 创建默认人口统计信息
     /// </summary>
     public static DemographicInfo CreateDefault(string? dataSource = null)
     {
@@ -291,11 +339,32 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// ��ȡ��������������
+    /// 从原UserDemographic数据创建（兼容方法）
     /// </summary>
-    public decimal GetCompletenessScore()
+    public static DemographicInfo FromUserDemographic(
+        string propertyName,
+        string propertyValue,
+        string dataType = "String",
+        decimal confidence = 1.0m,
+        string? dataSource = null)
     {
-        var totalFields = 16; // �����ֶ�����
+        var customProperties = new Dictionary<string, object>
+        {
+            [propertyName] = propertyValue
+        };
+
+        return new DemographicInfo(
+            confidence: confidence,
+            customProperties: customProperties,
+            dataSource: dataSource);
+    }
+
+    /// <summary>
+    /// 获取信息完整度（0-1之间的值）
+    /// </summary>
+    public decimal GetCompleteness()
+    {
+        var totalFields = 16; // 预定义字段数量
         var filledFields = 0;
 
         if (!string.IsNullOrWhiteSpace(DisplayName)) filledFields++;
@@ -315,45 +384,54 @@ public class DemographicInfo : TargetingContextBase
         if (HasChildren.HasValue) filledFields++;
         if (LifestyleTags.Count > 0) filledFields++;
 
-        return (decimal)filledFields / totalFields * 100;
+        return (decimal)filledFields / totalFields;
     }
 
     /// <summary>
-    /// �Ƿ�������䷶Χ����
+    /// 获取年龄组
     /// </summary>
-    public bool MatchesAgeRange(int? minAge, int? maxAge)
+    public string GetAgeGroup()
     {
-        if (!Age.HasValue) return true; // δ֪����Ĭ��ƥ��
+        if (!Age.HasValue) return "Unknown";
 
-        if (minAge.HasValue && Age.Value < minAge.Value) return false;
-        if (maxAge.HasValue && Age.Value > maxAge.Value) return false;
+        return Age.Value switch
+        {
+            < 18 => "Minor",
+            >= 18 and < 25 => "Young Adult",
+            >= 25 and < 35 => "Adult",
+            >= 35 and < 50 => "Middle-aged",
+            >= 50 and < 65 => "Mature",
+            >= 65 => "Senior"
+        };
+    }
+
+    /// <summary>
+    /// 是否为目标人群
+    /// </summary>
+    public bool IsTargetDemographic(Gender? targetGender = null, int? minAge = null, int? maxAge = null, string? targetEducation = null, string? targetIncomeLevel = null)
+    {
+        if (targetGender.HasValue && Gender != targetGender.Value)
+            return false;
+
+        if (Age.HasValue)
+        {
+            if (minAge.HasValue && Age.Value < minAge.Value)
+                return false;
+            if (maxAge.HasValue && Age.Value > maxAge.Value)
+                return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(targetEducation) && !string.Equals(Education, targetEducation, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (!string.IsNullOrWhiteSpace(targetIncomeLevel) && !string.Equals(IncomeLevel, targetIncomeLevel, StringComparison.OrdinalIgnoreCase))
+            return false;
 
         return true;
     }
 
     /// <summary>
-    /// �Ƿ�����Ա���
-    /// </summary>
-    public bool MatchesGender(IEnumerable<Gender> targetGenders)
-    {
-        if (!targetGenders.Any()) return true; // ���Ա�����ʱĬ��ƥ��
-        return targetGenders.Contains(Gender);
-    }
-
-    /// <summary>
-    /// �Ƿ����ָ������
-    /// </summary>
-    public bool HasLanguage(string language)
-    {
-        if (!string.IsNullOrWhiteSpace(PreferredLanguage) &&
-            string.Equals(PreferredLanguage, language, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return Languages.Contains(language, StringComparer.OrdinalIgnoreCase);
-    }
-
-    /// <summary>
-    /// �Ƿ����ָ�����ʽ��ǩ
+    /// 是否包含生活方式标签
     /// </summary>
     public bool HasLifestyleTag(string tag)
     {
@@ -361,75 +439,85 @@ public class DemographicInfo : TargetingContextBase
     }
 
     /// <summary>
-    /// �Ƿ���Ͻ����̶ȶ���
+    /// 是否支持指定语言
     /// </summary>
-    public bool MatchesEducation(IEnumerable<string> targetEducations)
+    public bool SupportsLanguage(string language)
     {
-        if (!targetEducations.Any()) return true;
-        if (string.IsNullOrWhiteSpace(Education)) return false;
-
-        return targetEducations.Contains(Education, StringComparer.OrdinalIgnoreCase);
+        return Languages.Contains(language, StringComparer.OrdinalIgnoreCase) ||
+               string.Equals(PreferredLanguage, language, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
-    /// �Ƿ��������ˮƽ����
+    /// 获取自定义属性值
     /// </summary>
-    public bool MatchesIncomeLevel(IEnumerable<string> targetIncomeLevels)
+    public T? GetCustomProperty<T>(string propertyName)
     {
-        if (!targetIncomeLevels.Any()) return true;
-        if (string.IsNullOrWhiteSpace(IncomeLevel)) return false;
+        if (CustomProperties.TryGetValue(propertyName, out var value))
+        {
+            try
+            {
+                if (value is T directValue)
+                    return directValue;
 
-        return targetIncomeLevels.Contains(IncomeLevel, StringComparer.OrdinalIgnoreCase);
+                if (value is string stringValue)
+                    return System.Text.Json.JsonSerializer.Deserialize<T>(stringValue);
+
+                return (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                return default;
+            }
+        }
+        return default;
     }
 
     /// <summary>
-    /// ��ȡ������Ϣ
+    /// 验证输入参数
+    /// </summary>
+    private static void ValidateInput(decimal confidence, int? age, int? householdSize)
+    {
+        if (confidence < 0 || confidence > 1)
+            throw new ArgumentException("置信度必须在0-1之间", nameof(confidence));
+
+        if (age.HasValue && (age.Value < 0 || age.Value > 150))
+            throw new ArgumentException("年龄必须在0-150之间", nameof(age));
+
+        if (householdSize.HasValue && (householdSize.Value < 1 || householdSize.Value > 20))
+            throw new ArgumentException("家庭规模必须在1-20之间", nameof(householdSize));
+    }
+
+    /// <summary>
+    /// 获取调试信息
     /// </summary>
     public override string GetDebugInfo()
     {
-        var baseInfo = base.GetDebugInfo();
-        var demographicInfo = $"Gender:{Gender} Age:{Age?.ToString() ?? "Unknown"} Education:{Education} Income:{IncomeLevel} Occupation:{Occupation} Languages:{Languages.Count}";
-        return $"{baseInfo} | {demographicInfo}";
+        var ageInfo = Age.HasValue ? $"Age={Age}" : "Age=Unknown";
+        var completeness = GetCompleteness();
+        return $"DemographicInfo: Gender={Gender}, {ageInfo}, Completeness={completeness:P1}, Confidence={Confidence:F2}, CustomProps={CustomProperties.Count}";
     }
 
     /// <summary>
-    /// ��֤�����ĵ���Ч��
+    /// 验证上下文的有效性
     /// </summary>
     public override bool IsValid()
     {
         if (!base.IsValid())
             return false;
 
-        // ��֤���������
+        if (Confidence < 0 || Confidence > 1)
+            return false;
+
         if (Age.HasValue && (Age.Value < 0 || Age.Value > 150))
             return false;
 
-        // ��֤��ͥ��ģ��Χ
         if (HouseholdSize.HasValue && (HouseholdSize.Value < 1 || HouseholdSize.Value > 20))
             return false;
 
-        // ��֤�����ʽ������֤��
+        // 验证邮箱格式（如果提供）
         if (!string.IsNullOrWhiteSpace(Email) && !Email.Contains("@"))
             return false;
 
         return true;
-    }
-
-    /// <summary>
-    /// ��֤��ͥ��ģ
-    /// </summary>
-    private static void ValidateHouseholdSize(int? householdSize)
-    {
-        if (householdSize.HasValue && (householdSize.Value < 1 || householdSize.Value > 20))
-            throw new ArgumentOutOfRangeException(nameof(householdSize), "��ͥ��ģ������1-20֮��");
-    }
-
-    /// <summary>
-    /// ��֤����
-    /// </summary>
-    private static void ValidateAge(int? age)
-    {
-        if (age.HasValue && (age.Value < 0 || age.Value > 150))
-            throw new ArgumentOutOfRangeException(nameof(age), "���������0-150֮��");
     }
 }

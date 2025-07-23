@@ -11,6 +11,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         private readonly List<TargetingRule> _rules;
 
         /// <summary>
+        /// 条件名称
+        /// </summary>
+        public abstract string CriteriaName { get; }
+
+        /// <summary>
         /// 条件类型标识
         /// </summary>
         public abstract string CriteriaType { get; }
@@ -39,6 +44,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// 条件最后更新时间
         /// </summary>
         public DateTime UpdatedAt { get; protected set; }
+
+        public Guid CriteriaId { get; protected set; }
 
         /// <summary>
         /// 构造函数

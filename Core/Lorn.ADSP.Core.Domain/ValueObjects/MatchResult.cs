@@ -16,7 +16,7 @@ public class MatchResult : ValueObject
     /// <summary>
     /// 具体条件实例标识
     /// </summary>
-    public string CriteriaId { get; private set; }
+    public Guid CriteriaId { get; private set; }
 
     /// <summary>
     /// 是否匹配
@@ -73,7 +73,7 @@ public class MatchResult : ValueObject
     /// </summary>
     private MatchResult(
         string criteriaType,
-        string criteriaId,
+        Guid criteriaId,
         bool isMatch,
         decimal matchScore,
         string matchReason,
@@ -104,7 +104,7 @@ public class MatchResult : ValueObject
     /// </summary>
     public static MatchResult CreateMatch(
         string criteriaType,
-        string criteriaId,
+        Guid criteriaId,
         decimal matchScore,
         string matchReason,
         TimeSpan executionTime,
@@ -137,7 +137,7 @@ public class MatchResult : ValueObject
     /// </summary>
     public static MatchResult CreateNoMatch(
         string criteriaType,
-        string criteriaId,
+        Guid criteriaId,
         string notMatchReason,
         TimeSpan executionTime,
         int priority = 0,
@@ -169,7 +169,7 @@ public class MatchResult : ValueObject
     /// </summary>
     public static MatchResult CreateMatchFromDictionary(
         string criteriaType,
-        string criteriaId,
+        Guid criteriaId,
         decimal matchScore,
         string matchReason,
         TimeSpan executionTime,
@@ -187,7 +187,7 @@ public class MatchResult : ValueObject
     /// </summary>
     public static MatchResult CreateNoMatchFromDictionary(
         string criteriaType,
-        string criteriaId,
+        Guid criteriaId,
         string notMatchReason,
         TimeSpan executionTime,
         int priority = 0,
@@ -324,7 +324,7 @@ public class MatchResult : ValueObject
     public bool IsValidResult()
     {
         return !string.IsNullOrEmpty(CriteriaType) &&
-               !string.IsNullOrEmpty(CriteriaId) &&
+               CriteriaId != Guid.Empty &&
                (IsMatch ? !string.IsNullOrEmpty(MatchReason) : !string.IsNullOrEmpty(NotMatchReason));
     }
 
@@ -361,12 +361,12 @@ public class MatchResult : ValueObject
     /// <summary>
     /// 验证输入参数
     /// </summary>
-    private static void ValidateInputs(string criteriaType, string criteriaId, decimal matchScore, decimal weight)
+    private static void ValidateInputs(string criteriaType, Guid criteriaId, decimal matchScore, decimal weight)
     {
         if (string.IsNullOrWhiteSpace(criteriaType))
             throw new ArgumentException("条件类型不能为空", nameof(criteriaType));
 
-        if (string.IsNullOrWhiteSpace(criteriaId))
+        if (criteriaId == Guid.Empty)
             throw new ArgumentException("条件ID不能为空", nameof(criteriaId));
 
         if (matchScore < 0m || matchScore > 1m)

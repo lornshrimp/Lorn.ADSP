@@ -9,6 +9,12 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public interface ITargetingContext
     {
         /// <summary>
+        /// 上下文名称
+        /// 用于标识和描述上下文的友好名称
+        /// </summary>
+        string ContextName { get; }
+
+        /// <summary>
         /// 上下文类型标识
         /// 例如：AdRequest、UserProfile、DeviceInfo等
         /// </summary>
@@ -30,7 +36,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// 上下文的唯一标识
         /// 用于缓存键生成和调试追踪
         /// </summary>
-        string ContextId { get; }
+        Guid ContextId { get; }
 
         /// <summary>
         /// 上下文数据来源

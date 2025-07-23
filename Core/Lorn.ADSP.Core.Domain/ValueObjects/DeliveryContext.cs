@@ -11,11 +11,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 用户ID
         /// </summary>
-        public string? UserId { get; private set; }
-
-        /// <summary>
-        /// 设备ID
-        /// </summary>
+        public Guid? UserId { get; private set; }        /// <summary>
+                                                         /// 设备ID
+                                                         /// </summary>
         public string? DeviceId { get; private set; }
 
         /// <summary>
@@ -78,7 +76,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// </summary>
         public DeliveryContext(
             MediaType mediaType,
-            string? userId = null,
+            Guid? userId = null,
             string? deviceId = null,
             string? ipAddress = null,
             string? userAgent = null,
@@ -109,7 +107,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// </summary>
         protected override IEnumerable<object> GetEqualityComponents()
         {
-            yield return UserId ?? string.Empty;
+            yield return UserId?.ToString() ?? string.Empty;
             yield return DeviceId ?? string.Empty;
             yield return IpAddress ?? string.Empty;
             yield return UserAgent ?? string.Empty;

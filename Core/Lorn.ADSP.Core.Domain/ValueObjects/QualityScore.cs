@@ -11,7 +11,7 @@ public class QualityScore : ValueObject
     /// <summary>
     /// 广告ID
     /// </summary>
-    public string AdId { get; private set; }
+    public Guid AdId { get; private set; }
 
     /// <summary>
     /// 总体质量分（0-10）
@@ -91,7 +91,7 @@ public class QualityScore : ValueObject
     /// </summary>
     private QualityScore()
     {
-        AdId = string.Empty;
+        AdId = Guid.Empty;
         OverallScore = 0;
         RelevanceScore = 0;
         UserExperienceScore = 0;
@@ -108,7 +108,7 @@ public class QualityScore : ValueObject
     /// 构造函数
     /// </summary>
     public QualityScore(
-        string adId,
+        Guid adId,
         decimal relevanceScore,
         decimal userExperienceScore,
         decimal expectedCtr,
@@ -143,7 +143,7 @@ public class QualityScore : ValueObject
     /// 创建质量评分
     /// </summary>
     public static QualityScore Create(
-        string adId,
+        Guid adId,
         decimal relevanceScore,
         decimal userExperienceScore,
         decimal expectedCtr,
@@ -166,7 +166,7 @@ public class QualityScore : ValueObject
     /// <summary>
     /// 创建默认质量评分
     /// </summary>
-    public static QualityScore CreateDefault(string adId)
+    public static QualityScore CreateDefault(Guid adId)
     {
         return new QualityScore(
             adId,
@@ -331,7 +331,7 @@ public class QualityScore : ValueObject
     /// 验证输入参数
     /// </summary>
     private static void ValidateInput(
-        string adId,
+        Guid adId,
         decimal relevanceScore,
         decimal userExperienceScore,
         decimal expectedCtr,
@@ -341,7 +341,7 @@ public class QualityScore : ValueObject
         decimal landingPageQualityScore,
         decimal confidence)
     {
-        if (string.IsNullOrWhiteSpace(adId))
+        if (adId == Guid.Empty)
             throw new ArgumentException("广告ID不能为空", nameof(adId));
 
         ValidateScore(relevanceScore, nameof(relevanceScore));

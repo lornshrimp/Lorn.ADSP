@@ -12,11 +12,6 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects;
 public class TargetingContext : ValueObject
 {
     /// <summary>
-    /// 上下文标识
-    /// </summary>
-    public string ContextId { get; private set; }
-
-    /// <summary>
     /// 关联的请求ID
     /// </summary>
     public string RequestId { get; private set; }
@@ -41,13 +36,11 @@ public class TargetingContext : ValueObject
     /// 私有构造函数
     /// </summary>
     private TargetingContext(
-        string contextId,
         string requestId,
         IEnumerable<ITargetingContext>? targetingContexts,
         DateTime createdAt,
         IDictionary<string, object>? contextMetadata)
     {
-        ContextId = contextId;
         RequestId = requestId;
         TargetingContexts = targetingContexts?.ToList() ?? new List<ITargetingContext>();
         CreatedAt = createdAt;
@@ -76,11 +69,9 @@ public class TargetingContext : ValueObject
     {
         ValidateInputs(requestId);
 
-        var contextId = Guid.NewGuid().ToString();
         var createdAt = DateTime.UtcNow;
 
         return new TargetingContext(
-            contextId,
             requestId,
             targetingContexts,
             createdAt,
@@ -112,7 +103,6 @@ public class TargetingContext : ValueObject
                                           .ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             newContexts,
             CreatedAt,
@@ -131,7 +121,6 @@ public class TargetingContext : ValueObject
         var newContexts = TargetingContexts.Where(c => c.ContextType != contextType).ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             newContexts,
             CreatedAt,
@@ -150,7 +139,6 @@ public class TargetingContext : ValueObject
         var newContexts = TargetingContexts.Where(c => !ReferenceEquals(c, targetingContext)).ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             newContexts,
             CreatedAt,
@@ -260,7 +248,6 @@ public class TargetingContext : ValueObject
                                                     .ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             TargetingContexts,
             CreatedAt,
@@ -279,7 +266,6 @@ public class TargetingContext : ValueObject
         var newProperties = ContextMetadataProperties.Where(p => p.PropertyKey != key).ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             TargetingContexts,
             CreatedAt,
@@ -292,7 +278,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     public bool IsValid()
     {
-        return !string.IsNullOrEmpty(ContextId) &&
+        return Id != Guid.Empty &&
                !string.IsNullOrEmpty(RequestId) &&
                TargetingContexts.Any();
     }
@@ -308,7 +294,7 @@ public class TargetingContext : ValueObject
 
         return new Dictionary<string, object>
         {
-            ["ContextId"] = ContextId,
+            ["ContextId"] = Id,
             ["RequestId"] = RequestId,
             ["TargetingContextsCount"] = TargetingContexts.Count,
             ["TargetingContextTypes"] = GetTargetingContextTypes(),
@@ -334,7 +320,6 @@ public class TargetingContext : ValueObject
             .ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             filteredContexts,
             CreatedAt,
@@ -350,7 +335,6 @@ public class TargetingContext : ValueObject
         var filteredContexts = TargetingContexts.OfType<T>().Cast<ITargetingContext>().ToList();
 
         return new TargetingContext(
-            ContextId,
             RequestId,
             filteredContexts,
             CreatedAt,
@@ -405,7 +389,6 @@ public class TargetingContext : ValueObject
         }
 
         return new TargetingContext(
-            ContextId, // 保持原有的ContextId
             RequestId, // 保持原有的RequestId
             mergedContexts,
             CreatedAt, // 保持原有的创建时间
@@ -418,7 +401,7 @@ public class TargetingContext : ValueObject
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return ContextId;
+        yield return Id;
         yield return RequestId;
         yield return CreatedAt;
 

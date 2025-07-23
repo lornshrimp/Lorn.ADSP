@@ -10,6 +10,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 public class UserPreference : TargetingContextBase
 {
     /// <summary>
+    /// 上下文名称
+    /// </summary>
+    public override string ContextName => "用户偏好上下文";
+
+    /// <summary>
     /// 每日广告曝光次数限制
     /// </summary>
     public int? MaxDailyAdImpressions => GetPropertyValue<int?>("MaxDailyAdImpressions");

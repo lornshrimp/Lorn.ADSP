@@ -12,7 +12,7 @@ public class OverallMatchResult : ValueObject
     /// <summary>
     /// 关联的广告候选ID
     /// </summary>
-    public string AdCandidateId { get; }
+    public Guid AdCandidateId { get; }
 
     /// <summary>
     /// 关联的广告上下文ID
@@ -63,7 +63,7 @@ public class OverallMatchResult : ValueObject
     /// 私有构造函数，强制使用工厂方法创建
     /// </summary>
     private OverallMatchResult(
-        string adCandidateId,
+        Guid adCandidateId,
         string adContextId,
         decimal overallScore,
         bool isOverallMatch,
@@ -90,12 +90,12 @@ public class OverallMatchResult : ValueObject
     /// 创建匹配结果
     /// </summary>
     public static OverallMatchResult Create(
-        string adCandidateId,
+        Guid adCandidateId,
         string adContextId,
         IList<MatchResult> individualResults,
         MatchConfidence? confidence = null)
     {
-        if (string.IsNullOrWhiteSpace(adCandidateId))
+        if (adCandidateId == Guid.Empty)
             throw new ArgumentException("广告候选ID不能为空", nameof(adCandidateId));
 
         if (string.IsNullOrWhiteSpace(adContextId))
@@ -129,12 +129,12 @@ public class OverallMatchResult : ValueObject
     /// 创建不匹配的结果
     /// </summary>
     public static OverallMatchResult CreateNotMatched(
-        string adCandidateId,
+        Guid adCandidateId,
         string adContextId,
         string reasonCode,
         MatchConfidence? confidence = null)
     {
-        if (string.IsNullOrWhiteSpace(adCandidateId))
+        if (adCandidateId == Guid.Empty)
             throw new ArgumentException("广告候选ID不能为空", nameof(adCandidateId));
 
         if (string.IsNullOrWhiteSpace(adContextId))
@@ -157,12 +157,12 @@ public class OverallMatchResult : ValueObject
     /// 创建完全匹配的结果
     /// </summary>
     public static OverallMatchResult CreateFullMatch(
-        string adCandidateId,
+        Guid adCandidateId,
         string adContextId,
         decimal score = 1.0m,
         MatchConfidence? confidence = null)
     {
-        if (string.IsNullOrWhiteSpace(adCandidateId))
+        if (adCandidateId == Guid.Empty)
             throw new ArgumentException("广告候选ID不能为空", nameof(adCandidateId));
 
         if (string.IsNullOrWhiteSpace(adContextId))
@@ -285,7 +285,7 @@ public class OverallMatchResult : ValueObject
     /// </summary>
     public bool IsValid()
     {
-        return !string.IsNullOrWhiteSpace(AdCandidateId) &&
+        return AdCandidateId != Guid.Empty &&
                !string.IsNullOrWhiteSpace(AdContextId) &&
                OverallScore >= 0 && OverallScore <= 1 &&
                CalculatedAt > DateTime.MinValue &&
@@ -295,9 +295,9 @@ public class OverallMatchResult : ValueObject
     /// <summary>
     /// 创建匹配结果的副本，用于不同的候选广告
     /// </summary>
-    public OverallMatchResult CloneForCandidate(string newAdCandidateId)
+    public OverallMatchResult CloneForCandidate(Guid newAdCandidateId)
     {
-        if (string.IsNullOrWhiteSpace(newAdCandidateId))
+        if (newAdCandidateId == Guid.Empty)
             throw new ArgumentException("新的广告候选ID不能为空", nameof(newAdCandidateId));
 
         return new OverallMatchResult(

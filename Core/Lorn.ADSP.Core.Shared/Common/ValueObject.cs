@@ -6,6 +6,11 @@ namespace Lorn.ADSP.Core.Domain.Common;
 public abstract class ValueObject
 {
     /// <summary>
+    /// 唯一标识符
+    /// </summary>
+    public Guid Id { get; protected set; } = Guid.CreateVersion7();
+
+    /// <summary>
     /// 获取相等性比较的组件
     /// </summary>
     /// <returns>用于相等性比较的组件集合</returns>

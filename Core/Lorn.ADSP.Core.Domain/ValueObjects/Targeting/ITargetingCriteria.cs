@@ -7,6 +7,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public interface ITargetingCriteria
     {
         /// <summary>
+        /// 条件唯一标识
+        /// 用于条件识别和数据库关联
+        /// </summary>
+        Guid CriteriaId { get; }
+
+        /// <summary>
+        /// 条件名称
+        /// 用于标识和描述定向条件的友好名称
+        /// </summary>
+        string CriteriaName { get; }
+
+        /// <summary>
         /// 条件类型标识
         /// 例如：Geo、Demographic、Device、Time、Behavior
         /// </summary>

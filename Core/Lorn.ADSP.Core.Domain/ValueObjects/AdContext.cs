@@ -18,7 +18,7 @@ public class AdContext : ValueObject
     /// <summary>
     /// 用户标识
     /// </summary>
-    public string? UserId { get; }
+    public Guid? UserId { get; }
 
     /// <summary>
     /// 请求时间
@@ -51,7 +51,7 @@ public class AdContext : ValueObject
     /// </summary>
     private AdContext(
         string requestId,
-        string? userId,
+        Guid? userId,
         DateTime requestTime,
         TargetingContext? targetingContext,
         UserProfile? userProfile,
@@ -70,7 +70,7 @@ public class AdContext : ValueObject
     /// <summary>
     /// 创建空的广告上下文
     /// </summary>
-    public static AdContext CreateEmpty(string requestId, string? userId = null)
+    public static AdContext CreateEmpty(string requestId, Guid? userId = null)
     {
         if (string.IsNullOrWhiteSpace(requestId))
             throw new ArgumentException("请求ID不能为空", nameof(requestId));
@@ -90,7 +90,7 @@ public class AdContext : ValueObject
     /// </summary>
     public static AdContext Create(
         string requestId,
-        string? userId,
+        Guid? userId,
         TargetingContext? targetingContext,
         UserProfile? userProfile,
         IDictionary<string, object>? environmentInfo = null)
@@ -268,7 +268,7 @@ public class AdContext : ValueObject
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return RequestId;
-        yield return UserId ?? string.Empty;
+        yield return UserId?.ToString() ?? string.Empty;
         yield return RequestTime;
         yield return TargetingContext ?? new object();
         yield return UserProfile?.ToString() ?? string.Empty;

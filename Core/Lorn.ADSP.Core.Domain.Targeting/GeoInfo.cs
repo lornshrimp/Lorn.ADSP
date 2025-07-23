@@ -7,6 +7,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public class GeoInfo : TargetingContextBase
     {
         /// <summary>
+        /// 上下文名称
+        /// </summary>
+        public override string ContextName => "地理位置上下文";
+
+        /// <summary>
         /// 国家代码
         /// </summary>
         public string? CountryCode => GetPropertyValue<string>("CountryCode");

@@ -10,12 +10,12 @@ namespace Lorn.ADSP.Core.Domain.Requests
         /// <summary>
         /// 用户ID
         /// </summary>
-        public string? UserId { get; init; }
+        public Guid? UserId { get; init; }
 
         /// <summary>
         /// 上下文ID
         /// </summary>
-        public string? ContextId { get; init; }
+        public Guid? ContextId { get; init; }
 
         /// <summary>
         /// 特征类型

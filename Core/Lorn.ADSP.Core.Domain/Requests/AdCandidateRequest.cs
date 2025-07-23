@@ -15,12 +15,12 @@ namespace Lorn.ADSP.Core.Domain.Requests
         /// <summary>
         /// 广告位ID
         /// </summary>
-        public required string PlacementId { get; init; }
+        public required Guid PlacementId { get; init; }
 
         /// <summary>
         /// 用户ID
         /// </summary>
-        public string? UserId { get; init; }
+        public Guid? UserId { get; init; }
 
         /// <summary>
         /// 请求数量

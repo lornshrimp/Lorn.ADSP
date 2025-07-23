@@ -9,6 +9,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public class DeviceInfo : TargetingContextBase
     {
         /// <summary>
+        /// 上下文名称
+        /// </summary>
+        public override string ContextName => "设备信息上下文";
+
+        /// <summary>
         /// 设备类型
         /// </summary>
         public DeviceType DeviceType => GetPropertyValue("DeviceType", DeviceType.PersonalComputer);

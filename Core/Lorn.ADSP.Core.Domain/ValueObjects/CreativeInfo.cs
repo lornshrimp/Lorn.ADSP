@@ -9,11 +9,6 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects;
 public class CreativeInfo : ValueObject
 {
     /// <summary>
-    /// 创意ID
-    /// </summary>
-    public string CreativeId { get; private set; }
-
-    /// <summary>
     /// 创意标题
     /// </summary>
     public string Title { get; private set; }
@@ -67,7 +62,6 @@ public class CreativeInfo : ValueObject
     /// 私有构造函数
     /// </summary>
     private CreativeInfo(
-        string creativeId,
         string title,
         string materialUrl,
         string clickUrl,
@@ -79,7 +73,6 @@ public class CreativeInfo : ValueObject
         string? description = null,
         IReadOnlyList<ContextProperty>? attributes = null)
     {
-        CreativeId = creativeId;
         Title = title;
         Description = description;
         MaterialUrl = materialUrl;
@@ -96,7 +89,6 @@ public class CreativeInfo : ValueObject
     /// 工厂方法：创建创意信息
     /// </summary>
     public static CreativeInfo Create(
-        string creativeId,
         string title,
         string materialUrl,
         string clickUrl,
@@ -108,7 +100,6 @@ public class CreativeInfo : ValueObject
         string? description = null,
         IReadOnlyList<ContextProperty>? attributes = null)
     {
-        ValidateCreativeId(creativeId);
         ValidateTitle(title);
         ValidateUrl(materialUrl, nameof(materialUrl));
         ValidateUrl(clickUrl, nameof(clickUrl));
@@ -117,7 +108,6 @@ public class CreativeInfo : ValueObject
         ValidateFileSize(fileSize);
 
         return new CreativeInfo(
-            creativeId,
             title,
             materialUrl,
             clickUrl,
@@ -134,7 +124,6 @@ public class CreativeInfo : ValueObject
     /// 创建图片创意
     /// </summary>
     public static CreativeInfo CreateImageBanner(
-        string creativeId,
         string title,
         string imageUrl,
         string clickUrl,
@@ -143,7 +132,6 @@ public class CreativeInfo : ValueObject
         string? description = null)
     {
         return Create(
-            creativeId,
             title,
             imageUrl,
             clickUrl,
@@ -159,7 +147,6 @@ public class CreativeInfo : ValueObject
     /// 创建视频创意
     /// </summary>
     public static CreativeInfo CreateVideoAd(
-        string creativeId,
         string title,
         string videoUrl,
         string clickUrl,
@@ -169,7 +156,6 @@ public class CreativeInfo : ValueObject
         string? description = null)
     {
         return Create(
-            creativeId,
             title,
             videoUrl,
             clickUrl,
@@ -185,7 +171,6 @@ public class CreativeInfo : ValueObject
     /// 创建原生广告创意
     /// </summary>
     public static CreativeInfo CreateNativeAd(
-        string creativeId,
         string title,
         string materialUrl,
         string clickUrl,
@@ -193,7 +178,6 @@ public class CreativeInfo : ValueObject
         IReadOnlyList<ContextProperty>? nativeAttributes = null)
     {
         return Create(
-            creativeId,
             title,
             materialUrl,
             clickUrl,
@@ -212,7 +196,6 @@ public class CreativeInfo : ValueObject
     public CreativeInfo WithDescription(string? description)
     {
         return new CreativeInfo(
-            CreativeId,
             Title,
             MaterialUrl,
             ClickUrl,
@@ -231,7 +214,6 @@ public class CreativeInfo : ValueObject
     public CreativeInfo WithAttributes(IReadOnlyList<ContextProperty> attributes)
     {
         return new CreativeInfo(
-            CreativeId,
             Title,
             MaterialUrl,
             ClickUrl,
@@ -371,15 +353,6 @@ public class CreativeInfo : ValueObject
 
     #region 参数校验
 
-    private static void ValidateCreativeId(string creativeId)
-    {
-        if (string.IsNullOrWhiteSpace(creativeId))
-            throw new ArgumentException("创意ID不能为空", nameof(creativeId));
-
-        if (creativeId.Length > 50)
-            throw new ArgumentException("创意ID长度不能超过50个字符", nameof(creativeId));
-    }
-
     private static void ValidateTitle(string title)
     {
         if (string.IsNullOrWhiteSpace(title))
@@ -443,7 +416,7 @@ public class CreativeInfo : ValueObject
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return CreativeId;
+        yield return Id;
         yield return Title;
         yield return Description ?? string.Empty;
         yield return MaterialUrl;

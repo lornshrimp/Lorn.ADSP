@@ -9,6 +9,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public class PolygonGeoFenceTargeting : TargetingCriteriaBase
     {
         /// <summary>
+        /// 条件名称
+        /// </summary>
+        public override string CriteriaName => "多边形地理围栏定向";
+
+        /// <summary>
         /// 条件类型标识
         /// </summary>
         public override string CriteriaType => "PolygonGeoFence";

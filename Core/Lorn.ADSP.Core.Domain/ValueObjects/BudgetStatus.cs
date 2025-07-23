@@ -11,7 +11,7 @@ public class BudgetStatus : ValueObject
     /// <summary>
     /// 活动ID
     /// </summary>
-    public string CampaignId { get; private set; }
+    public Guid CampaignId { get; private set; }
 
     /// <summary>
     /// 总预算（分）
@@ -68,7 +68,7 @@ public class BudgetStatus : ValueObject
     /// </summary>
     private BudgetStatus()
     {
-        CampaignId = string.Empty;
+        CampaignId = Guid.Empty;
         TotalBudget = 0;
         DailyBudget = 0;
         SpentBudget = 0;
@@ -81,7 +81,7 @@ public class BudgetStatus : ValueObject
     /// 构造函数
     /// </summary>
     public BudgetStatus(
-        string campaignId,
+        Guid campaignId,
         decimal totalBudget,
         decimal dailyBudget,
         decimal spentBudget = 0,
@@ -108,7 +108,7 @@ public class BudgetStatus : ValueObject
     /// 创建预算状态
     /// </summary>
     public static BudgetStatus Create(
-        string campaignId,
+        Guid campaignId,
         decimal totalBudget,
         decimal dailyBudget)
     {
@@ -285,13 +285,13 @@ public class BudgetStatus : ValueObject
     /// 验证输入参数
     /// </summary>
     private static void ValidateInput(
-        string campaignId,
+        Guid campaignId,
         decimal totalBudget,
         decimal dailyBudget,
         decimal spentBudget,
         decimal todaySpent)
     {
-        if (string.IsNullOrWhiteSpace(campaignId))
+        if (campaignId == Guid.Empty)
             throw new ArgumentException("活动ID不能为空", nameof(campaignId));
 
         if (totalBudget < 0)

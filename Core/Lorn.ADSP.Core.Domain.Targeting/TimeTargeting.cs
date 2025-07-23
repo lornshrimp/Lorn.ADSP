@@ -7,6 +7,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public class TimeTargeting : TargetingCriteriaBase
     {
         /// <summary>
+        /// 条件名称
+        /// </summary>
+        public override string CriteriaName => "时间定向";
+
+        /// <summary>
         /// 条件类型标识
         /// </summary>
         public override string CriteriaType => "Time";

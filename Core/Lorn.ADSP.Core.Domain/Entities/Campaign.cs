@@ -192,7 +192,7 @@ public class Campaign : AggregateRoot
     {
         if (policy == null) throw new ArgumentNullException(nameof(policy));
 
-        var config = TargetingConfig.CreateFromPolicy(policy, Id.ToString());
+        var config = TargetingConfig.CreateFromPolicy(policy, Id);
 
         TargetingConfig = config;
         UpdateLastModifiedTime();

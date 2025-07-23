@@ -10,7 +10,7 @@ public record BlacklistCheckRequest
     /// <summary>
     /// 用户ID
     /// </summary>
-    public string? UserId { get; init; }
+    public Guid? UserId { get; init; }
 
     /// <summary>
     /// 设备ID
@@ -25,12 +25,12 @@ public record BlacklistCheckRequest
     /// <summary>
     /// 广告ID
     /// </summary>
-    public string? AdId { get; init; }
+    public Guid? AdId { get; init; }
 
     /// <summary>
     /// 广告主ID
     /// </summary>
-    public string? AdvertiserId { get; init; }
+    public Guid? AdvertiserId { get; init; }
 
     /// <summary>
     /// 检查类型
@@ -46,12 +46,12 @@ public record FrequencyControlRequest
     /// <summary>
     /// 用户ID
     /// </summary>
-    public required string UserId { get; init; }
+    public required Guid UserId { get; init; }
 
     /// <summary>
     /// 广告ID
     /// </summary>
-    public required string AdId { get; init; }
+    public required Guid AdId { get; init; }
 
     /// <summary>
     /// 请求时间

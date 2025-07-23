@@ -10,6 +10,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     public class AdministrativeGeoTargeting : TargetingCriteriaBase
     {
         /// <summary>
+        /// 条件名称
+        /// </summary>
+        public override string CriteriaName => "行政地理定向";
+
+        /// <summary>
         /// �������ͱ�ʶ
         /// </summary>
         public override string CriteriaType => "AdministrativeGeo";

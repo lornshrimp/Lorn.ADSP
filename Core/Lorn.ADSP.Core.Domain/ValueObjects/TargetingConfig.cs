@@ -15,19 +15,14 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects;
 public class TargetingConfig : ValueObject
 {
     /// <summary>
-    /// 配置标识
-    /// </summary>
-    public string ConfigId { get; private set; }
-
-    /// <summary>
     /// 关联的广告ID
     /// </summary>
-    public string AdvertisementId { get; private set; }
+    public Guid AdvertisementId { get; private set; }
 
     /// <summary>
     /// 来源策略ID（如果从TargetingPolicy创建）
     /// </summary>
-    public string? SourcePolicyId { get; private set; }
+    public Guid? SourcePolicyId { get; private set; }
 
     /// <summary>
     /// 定向条件集合
@@ -80,9 +75,8 @@ public class TargetingConfig : ValueObject
     /// 私有构造函数
     /// </summary>
     private TargetingConfig(
-        string configId,
-        string advertisementId,
-        string? sourcePolicyId = null,
+        Guid advertisementId,
+        Guid? sourcePolicyId = null,
         IEnumerable<ITargetingCriteria>? criteria = null,
         IDictionary<string, object>? dynamicParameters = null,
         IReadOnlyList<string>? keywords = null,
@@ -91,7 +85,6 @@ public class TargetingConfig : ValueObject
         bool isEnabled = true,
         string createdFrom = "Manual")
     {
-        ConfigId = configId;
         AdvertisementId = advertisementId;
         SourcePolicyId = sourcePolicyId;
         Criteria = criteria?.ToList() ?? new List<ITargetingCriteria>();
@@ -126,20 +119,17 @@ public class TargetingConfig : ValueObject
     /// <returns>定向配置实例</returns>
     public static TargetingConfig CreateFromPolicy(
         TargetingPolicy policy,
-        string advertisementId,
+        Guid advertisementId,
         IDictionary<string, object>? runtimeParameters = null)
     {
         if (policy == null)
             throw new ArgumentNullException(nameof(policy));
-        if (string.IsNullOrWhiteSpace(advertisementId))
+        if (advertisementId == Guid.Empty)
             throw new ArgumentException("广告ID不能为空", nameof(advertisementId));
 
-        var configId = $"{policy.PolicyId}_{advertisementId}_{DateTime.UtcNow:yyyyMMddHHmmss}";
-
         return new TargetingConfig(
-            configId: configId,
             advertisementId: advertisementId,
-            sourcePolicyId: policy.PolicyId,
+            sourcePolicyId: policy.Id,
             criteria: policy.CriteriaTemplates,
             dynamicParameters: runtimeParameters,
             keywords: new List<string>(),
@@ -153,8 +143,7 @@ public class TargetingConfig : ValueObject
     /// 手工创建定向配置
     /// </summary>
     public static TargetingConfig Create(
-        string configId,
-        string advertisementId,
+        Guid advertisementId,
         IEnumerable<ITargetingCriteria>? criteria = null,
         IDictionary<string, object>? dynamicParameters = null,
         IReadOnlyList<string>? keywords = null,
@@ -163,7 +152,6 @@ public class TargetingConfig : ValueObject
         bool isEnabled = true)
     {
         return new TargetingConfig(
-            configId: configId,
             advertisementId: advertisementId,
             criteria: criteria,
             dynamicParameters: dynamicParameters,
@@ -189,7 +177,6 @@ public class TargetingConfig : ValueObject
                                  .ToList();
 
         return new TargetingConfig(
-            ConfigId,
             AdvertisementId,
             SourcePolicyId,
             newCriteria,
@@ -214,7 +201,6 @@ public class TargetingConfig : ValueObject
         var newCriteria = Criteria.Where(c => c.CriteriaType != criteriaType).ToList();
 
         return new TargetingConfig(
-            ConfigId,
             AdvertisementId,
             SourcePolicyId,
             newCriteria,
@@ -276,7 +262,6 @@ public class TargetingConfig : ValueObject
                                                      }).ToList();
 
         return new TargetingConfig(
-            ConfigId,
             AdvertisementId,
             SourcePolicyId,
             Criteria,
@@ -395,14 +380,13 @@ public class TargetingConfig : ValueObject
     /// <summary>
     /// 创建配置副本
     /// </summary>
-    /// <param name="newConfigId">新的配置ID</param>
+    /// <param name="newConfigId">新的配置ID（不再使用）</param>
     /// <returns>配置副本</returns>
     public TargetingConfig Clone(string? newConfigId = null)
     {
         var clonedCriteria = Criteria.ToList();
 
         return new TargetingConfig(
-            configId: newConfigId ?? $"{ConfigId}_copy_{DateTime.UtcNow:yyyyMMddHHmmss}",
             advertisementId: AdvertisementId,
             sourcePolicyId: SourcePolicyId,
             criteria: clonedCriteria,
@@ -421,9 +405,9 @@ public class TargetingConfig : ValueObject
     public string GenerateConfigSummary()
     {
         var summary = new System.Text.StringBuilder();
-        summary.AppendLine($"配置ID: {ConfigId}");
+        summary.AppendLine($"配置ID: {Id}");
         summary.AppendLine($"广告ID: {AdvertisementId}");
-        summary.AppendLine($"来源策略: {SourcePolicyId ?? "手工创建"}");
+        summary.AppendLine($"来源策略: {(SourcePolicyId.HasValue ? SourcePolicyId.ToString() : "手工创建")}");
         summary.AppendLine($"启用状态: {(IsEnabled ? "启用" : "禁用")}");
         summary.AppendLine($"权重: {Weight}");
         summary.AppendLine($"条件数量: {Criteria.Count}");
@@ -498,9 +482,9 @@ public class TargetingConfig : ValueObject
     /// </summary>
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return ConfigId;
+        yield return Id;
         yield return AdvertisementId;
-        yield return SourcePolicyId ?? string.Empty;
+        yield return SourcePolicyId ?? Guid.Empty;
         yield return Weight;
         yield return IsEnabled;
         yield return CreatedFrom;

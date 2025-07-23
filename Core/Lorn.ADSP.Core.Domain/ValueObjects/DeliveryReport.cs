@@ -10,7 +10,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 投放记录ID
         /// </summary>
-        public string DeliveryRecordId { get; }
+        public Guid DeliveryRecordId { get; }
 
         /// <summary>
         /// 请求ID
@@ -20,17 +20,17 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 广告活动ID
         /// </summary>
-        public string CampaignId { get; }
+        public Guid CampaignId { get; }
 
         /// <summary>
         /// 媒体资源ID
         /// </summary>
-        public string MediaResourceId { get; }
+        public Guid MediaResourceId { get; }
 
         /// <summary>
         /// 广告位ID
         /// </summary>
-        public string PlacementId { get; }
+        public Guid PlacementId { get; }
 
         /// <summary>
         /// 投放时间
@@ -72,11 +72,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// </summary>
         private DeliveryReport()
         {
-            DeliveryRecordId = string.Empty;
+            DeliveryRecordId = Guid.Empty;
             RequestId = string.Empty;
-            CampaignId = string.Empty;
-            MediaResourceId = string.Empty;
-            PlacementId = string.Empty;
+            CampaignId = Guid.Empty;
+            MediaResourceId = Guid.Empty;
+            PlacementId = Guid.Empty;
             DeliveredAt = DateTime.MinValue;
             Cost = 0;
             Metrics = null!;
@@ -102,11 +102,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <param name="country">国家</param>
         /// <param name="city">城市</param>
         public DeliveryReport(
-            string deliveryRecordId,
+            Guid deliveryRecordId,
             string requestId,
-            string campaignId,
-            string mediaResourceId,
-            string placementId,
+            Guid campaignId,
+            Guid mediaResourceId,
+            Guid placementId,
             DateTime deliveredAt,
             decimal cost,
             PerformanceMetrics metrics,
@@ -116,19 +116,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             string city)
         {
             // 验证输入参数
-            if (string.IsNullOrWhiteSpace(deliveryRecordId))
+            if (deliveryRecordId == Guid.Empty)
                 throw new ArgumentException("投放记录ID不能为空", nameof(deliveryRecordId));
 
             if (string.IsNullOrWhiteSpace(requestId))
                 throw new ArgumentException("请求ID不能为空", nameof(requestId));
 
-            if (string.IsNullOrWhiteSpace(campaignId))
+            if (campaignId == Guid.Empty)
                 throw new ArgumentException("广告活动ID不能为空", nameof(campaignId));
 
-            if (string.IsNullOrWhiteSpace(mediaResourceId))
+            if (mediaResourceId == Guid.Empty)
                 throw new ArgumentException("媒体资源ID不能为空", nameof(mediaResourceId));
 
-            if (string.IsNullOrWhiteSpace(placementId))
+            if (placementId == Guid.Empty)
                 throw new ArgumentException("广告位ID不能为空", nameof(placementId));
 
             if (deliveredAt == default)
@@ -140,11 +140,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
             if (metrics == null)
                 throw new ArgumentNullException(nameof(metrics), "性能指标不能为空");
 
-            DeliveryRecordId = deliveryRecordId.Trim();
+            DeliveryRecordId = deliveryRecordId;
             RequestId = requestId.Trim();
-            CampaignId = campaignId.Trim();
-            MediaResourceId = mediaResourceId.Trim();
-            PlacementId = placementId.Trim();
+            CampaignId = campaignId;
+            MediaResourceId = mediaResourceId;
+            PlacementId = placementId;
             DeliveredAt = deliveredAt;
             Cost = cost;
             Metrics = metrics;
@@ -171,11 +171,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <param name="city">城市</param>
         /// <returns>投放报表实例</returns>
         public static DeliveryReport Create(
-            string deliveryRecordId,
+            Guid deliveryRecordId,
             string requestId,
-            string campaignId,
-            string mediaResourceId,
-            string placementId,
+            Guid campaignId,
+            Guid mediaResourceId,
+            Guid placementId,
             DateTime deliveredAt,
             decimal cost,
             PerformanceMetrics metrics,

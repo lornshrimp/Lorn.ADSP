@@ -10,11 +10,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 策略ID
         /// </summary>
-        public string PolicyId { get; }
-
-        /// <summary>
-        /// 总配置数量
-        /// </summary>
+        public Guid PolicyId { get; }        /// <summary>
+                                             /// 总配置数量
+                                             /// </summary>
         public int TotalConfigs { get; }
 
         /// <summary>
@@ -36,13 +34,13 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// 构造函数
         /// </summary>
         private PolicyUsageStats(
-            string policyId,
+            Guid policyId,
             int totalConfigs,
             int activeConfigs,
             DateTime? lastUsedAt,
             decimal averagePerformance)
         {
-            PolicyId = policyId ?? throw new ArgumentNullException(nameof(policyId));
+            PolicyId = policyId == Guid.Empty ? throw new ArgumentException("策略ID不能为空", nameof(policyId)) : policyId;
             TotalConfigs = totalConfigs >= 0 ? totalConfigs : throw new ArgumentException("总配置数量不能为负数", nameof(totalConfigs));
             ActiveConfigs = activeConfigs >= 0 ? activeConfigs : throw new ArgumentException("活跃配置数量不能为负数", nameof(activeConfigs));
             LastUsedAt = lastUsedAt;
@@ -58,7 +56,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// 创建策略使用统计
         /// </summary>
         public static PolicyUsageStats Create(
-            string policyId,
+            Guid policyId,
             int totalConfigs,
             int activeConfigs,
             DateTime? lastUsedAt = null,
