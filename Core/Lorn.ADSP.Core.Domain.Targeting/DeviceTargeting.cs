@@ -1,3 +1,4 @@
+using Lorn.ADSP.Core.Domain.Targeting;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting

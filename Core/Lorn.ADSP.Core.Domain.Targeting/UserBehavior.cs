@@ -1,6 +1,4 @@
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
-
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+namespace Lorn.ADSP.Core.Domain.Targeting;
 
 /// <summary>
 /// 用户行为上下文
@@ -99,7 +97,7 @@ public class UserBehavior : TargetingContextBase
     /// <summary>
     /// 行为记录集合 - 存储多个行为记录
     /// </summary>
-    public IReadOnlyList<BehaviorRecord> BehaviorRecords => 
+    public IReadOnlyList<BehaviorRecord> BehaviorRecords =>
         GetPropertyValue<List<BehaviorRecord>>("BehaviorRecords") ?? new List<BehaviorRecord>();
 
     /// <summary>
@@ -477,8 +475,8 @@ public record BehaviorRecord(
     /// <summary>
     /// 是否为转化行为
     /// </summary>
-    public bool IsConversionBehavior => BehaviorType.ToLower().Contains("conversion") || 
-                                       BehaviorType.ToLower().Contains("purchase") || 
+    public bool IsConversionBehavior => BehaviorType.ToLower().Contains("conversion") ||
+                                       BehaviorType.ToLower().Contains("purchase") ||
                                        BehaviorType.ToLower().Contains("signup");
 
     /// <summary>
@@ -492,13 +490,13 @@ public record BehaviorRecord(
     public decimal GetImportanceScore()
     {
         var baseScore = Weight * Frequency;
-        
+
         if (IsConversionBehavior)
             baseScore *= 2;
-            
+
         if (IsRecentBehavior)
             baseScore *= 1.5m;
-            
+
         return Math.Min(10m, baseScore);
     }
 }

@@ -1,5 +1,5 @@
 using Lorn.ADSP.Core.Domain.Common;
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using Lorn.ADSP.Core.Domain.Targeting;
 using System.Text.Json;
 
 namespace Lorn.ADSP.Core.Domain.ValueObjects;

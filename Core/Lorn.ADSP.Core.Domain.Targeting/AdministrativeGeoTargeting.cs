@@ -1,11 +1,12 @@
 using Lorn.ADSP.Core.Domain.Enums;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
-    /// ��������������������
-    /// ʵ�ֻ��ڹ��ҡ�ʡ�ݡ����е���������ĵ��������������
-    /// ���ó������������α߽�Ĺ��Ͷ�ţ�������ض����С�ʡ�ݻ���ҵ�Ӫ���
+    /// 行政地理定向条件类
+    /// 实现基于国家、省份、城市等行政区划的地理定向功能
+    /// 支持复杂的地理边界管控和投放，适用于特定区域、省份或国家的营销
     /// </summary>
     public class AdministrativeGeoTargeting : TargetingCriteriaBase
     {
@@ -15,55 +16,55 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         public override string CriteriaName => "行政地理定向";
 
         /// <summary>
-        /// �������ͱ�ʶ
+        /// 条件类型标识
         /// </summary>
         public override string CriteriaType => "AdministrativeGeo";
 
         /// <summary>
-        /// ���������������б�
-        /// ֧�ֹ��ҡ�ʡ�ݡ����еȲ�ͬ�㼶������������
+        /// 包含的地理位置列表
+        /// 支持国家、省份、城市等不同层级的地理位置
         /// </summary>
-        public IReadOnlyList<GeoInfo> IncludedLocations => GetRule<List<GeoInfo>>("IncludedLocations") ?? new List<GeoInfo>();
+        public IReadOnlyList<GeoInfo> IncludedLocations => GetRule<List<GeoInfo>>("IncludedLocations") ?? [];
 
         /// <summary>
-        /// �ų������������б�
-        /// �����ڴ�Χ�������ų��ض�����
+        /// 排除的地理位置列表
+        /// 用于在大范围内排除特定区域
         /// </summary>
-        public IReadOnlyList<GeoInfo> ExcludedLocations => GetRule<List<GeoInfo>>("ExcludedLocations") ?? new List<GeoInfo>();
+        public IReadOnlyList<GeoInfo> ExcludedLocations => GetRule<List<GeoInfo>>("ExcludedLocations") ?? [];
 
         /// <summary>
-        /// ��������ģʽ
-        /// Include: ������ָ������
-        /// Exclude: �ų�ָ�����򣬶���������������
+        /// 地理定向模式
+        /// Include: 仅投放指定区域
+        /// Exclude: 排除指定区域，对其他区域投放
         /// </summary>
         public GeoTargetingMode Mode => GetRule<GeoTargetingMode>("Mode", GeoTargetingMode.Include);
 
         /// <summary>
-        /// �����չ���루���
-        /// ��������������߽��������չ����Χ
-        /// ���磺���򱱾��У�����չ���ܱ�50���ﷶΧ
+        /// 最大扩展距离（公里）
+        /// 在行政边界基础上扩展投放范围
+        /// 例如：针对北京市，可以扩展到周边50公里范围
         /// </summary>
         public double? MaxDistance => GetRule<double?>("MaxDistance");
 
         /// <summary>
-        /// ����㼶���ȼ�
-        /// ���û�λ��ƥ������������ʱ�����ȼ�����
-        /// Higher: ����ʹ�ø��߲㼶����ʡ�������ڳ��У�
-        /// Lower: ����ʹ�ø��Ͳ㼶�������������ʡ�ݣ�
-        /// Exact: ��ȷƥ��ָ���㼶
+        /// 行政层级优先级
+        /// 当用户位置匹配多个层级时的优先级规则
+        /// Higher: 优先使用更高层级（省份优先于城市）
+        /// Lower: 优先使用更低层级（城市优先于省份）
+        /// Exact: 精确匹配指定层级
         /// </summary>
         public AdministrativeLevel? LevelPriority => GetRule<AdministrativeLevel?>("LevelPriority");
 
         /// <summary>
-        /// ���캯��
+        /// 构造函数
         /// </summary>
-        /// <param name="includedLocations">��������������</param>
-        /// <param name="excludedLocations">�ų�����������</param>
-        /// <param name="mode">����ģʽ</param>
-        /// <param name="maxDistance">�����չ���루���</param>
-        /// <param name="levelPriority">����㼶���ȼ�</param>
-        /// <param name="weight">Ȩ��</param>
-        /// <param name="isEnabled">�Ƿ�����</param>
+        /// <param name="includedLocations">包含的地理位置</param>
+        /// <param name="excludedLocations">排除的地理位置</param>
+        /// <param name="mode">定向模式</param>
+        /// <param name="maxDistance">最大扩展距离（公里）</param>
+        /// <param name="levelPriority">行政层级优先级</param>
+        /// <param name="weight">权重</param>
+        /// <param name="isEnabled">是否启用</param>
         public AdministrativeGeoTargeting(
             IList<GeoInfo>? includedLocations = null,
             IList<GeoInfo>? excludedLocations = null,
@@ -76,9 +77,9 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���������ֵ�
+        /// 创建规则字典
         /// </summary>
-        private static IEnumerable<TargetingRule> CreateRules(
+        private static List<TargetingRule> CreateRules(
             IList<GeoInfo>? includedLocations,
             IList<GeoInfo>? excludedLocations,
             GeoTargetingMode mode,
@@ -88,12 +89,12 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
             var rules = new List<TargetingRule>();
 
             // 添加包含的位置列表
-            var includedLocationsList = includedLocations?.ToList() ?? new List<GeoInfo>();
+            var includedLocationsList = includedLocations?.ToList() ?? [];
             var includedLocationsRule = new TargetingRule("IncludedLocations", string.Empty, "Json").WithValue(includedLocationsList);
             rules.Add(includedLocationsRule);
 
             // 添加排除的位置列表
-            var excludedLocationsList = excludedLocations?.ToList() ?? new List<GeoInfo>();
+            var excludedLocationsList = excludedLocations?.ToList() ?? [];
             var excludedLocationsRule = new TargetingRule("ExcludedLocations", string.Empty, "Json").WithValue(excludedLocationsList);
             rules.Add(excludedLocationsRule);
 
@@ -119,7 +120,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ������������������������
+        /// 创建行政地理定向条件实例
         /// </summary>
         public static AdministrativeGeoTargeting Create(
             IList<GeoInfo>? includedLocations = null,
@@ -134,14 +135,12 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���Ӱ�������������
+        /// 添加包含的地理位置
         /// </summary>
-        /// <param name="geoInfo">����������Ϣ</param>
+        /// <param name="geoInfo">地理位置信息</param>
         public void AddIncludedLocation(GeoInfo geoInfo)
         {
-            if (geoInfo == null)
-                throw new ArgumentNullException(nameof(geoInfo));
-
+            ArgumentNullException.ThrowIfNull(geoInfo);
             ValidateAdministrativeLocation(geoInfo);
 
             var currentList = IncludedLocations.ToList();
@@ -150,14 +149,12 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// �����ų�����������
+        /// 添加排除的地理位置
         /// </summary>
-        /// <param name="geoInfo">����������Ϣ</param>
+        /// <param name="geoInfo">地理位置信息</param>
         public void AddExcludedLocation(GeoInfo geoInfo)
         {
-            if (geoInfo == null)
-                throw new ArgumentNullException(nameof(geoInfo));
-
+            ArgumentNullException.ThrowIfNull(geoInfo);
             ValidateAdministrativeLocation(geoInfo);
 
             var currentList = ExcludedLocations.ToList();
@@ -166,10 +163,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���������������򣨰����ң�
+        /// 批量添加国家定向（包含或排除）
         /// </summary>
-        /// <param name="countryCodes">���Ҵ����б�</param>
-        /// <param name="include">�Ƿ�Ϊ����ģʽ</param>
+        /// <param name="countryCodes">国家代码列表</param>
+        /// <param name="include">是否为包含模式</param>
         public void AddCountries(IEnumerable<string> countryCodes, bool include = true)
         {
             foreach (var countryCode in countryCodes)
@@ -183,11 +180,11 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���������������򣨰����У�
+        /// 批量添加城市定向（包含或排除）
         /// </summary>
-        /// <param name="cityNames">���������б�</param>
-        /// <param name="countryCode">�������Ҵ���</param>
-        /// <param name="include">�Ƿ�Ϊ����ģʽ</param>
+        /// <param name="cityNames">城市名称列表</param>
+        /// <param name="countryCode">所属国家代码</param>
+        /// <param name="include">是否为包含模式</param>
         public void AddCities(IEnumerable<string> cityNames, string countryCode, bool include = true)
         {
             foreach (var cityName in cityNames)
@@ -201,18 +198,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���������չ����
+        /// 设置最大扩展距离
         /// </summary>
-        /// <param name="maxDistance">�����չ���루���</param>
+        /// <param name="maxDistance">最大扩展距离（公里）</param>
         public void SetMaxDistance(double? maxDistance)
         {
             if (maxDistance.HasValue)
             {
                 if (maxDistance.Value <= 0)
-                    throw new ArgumentException("�����չ����������0", nameof(maxDistance));
+                    throw new ArgumentException("最大扩展距离必须大于0", nameof(maxDistance));
 
                 if (maxDistance.Value > 1000)
-                    throw new ArgumentException("������������������չ���벻Ӧ����1000����", nameof(maxDistance));
+                    throw new ArgumentException("出于性能考虑，最大扩展距离不应超过1000公里", nameof(maxDistance));
 
                 SetRule("MaxDistance", maxDistance.Value);
             }
@@ -223,18 +220,18 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���ö���ģʽ
+        /// 设置定向模式
         /// </summary>
-        /// <param name="mode">����ģʽ</param>
+        /// <param name="mode">定向模式</param>
         public void SetMode(GeoTargetingMode mode)
         {
             SetRule("Mode", mode);
         }
 
         /// <summary>
-        /// ��������㼶���ȼ�
+        /// 设置行政层级优先级
         /// </summary>
-        /// <param name="levelPriority">����㼶���ȼ�</param>
+        /// <param name="levelPriority">行政层级优先级</param>
         public void SetLevelPriority(AdministrativeLevel? levelPriority)
         {
             if (levelPriority.HasValue)
@@ -248,10 +245,10 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ����û�λ���Ƿ�ƥ�䶨������
+        /// 检查用户位置是否匹配定向条件
         /// </summary>
-        /// <param name="userLocation">�û�����λ����Ϣ</param>
-        /// <returns>�Ƿ�ƥ��</returns>
+        /// <param name="userLocation">用户当前位置信息</param>
+        /// <returns>是否匹配</returns>
         public bool IsLocationMatched(GeoInfo userLocation)
         {
             if (userLocation == null)
@@ -269,19 +266,19 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ��֤�����������������ض��������Ч��
+        /// 验证条件配置的特定规则有效性
         /// </summary>
         protected override bool ValidateSpecificRules()
         {
-            // ��֤�����չ����
+            // 验证最大扩展距离
             if (MaxDistance.HasValue && (MaxDistance.Value <= 0 || MaxDistance.Value > 1000))
                 return false;
 
-            // ��֤�������ų��б����ܶ�Ϊ�գ���Includeģʽ�£�
+            // 验证包含和排除列表不能都为空（在Include模式下）
             if (Mode == GeoTargetingMode.Include && !IncludedLocations.Any() && !ExcludedLocations.Any())
                 return false;
 
-            // ��֤����������Ϣ����Ч��
+            // 验证地理位置信息的有效性
             foreach (var location in IncludedLocations.Concat(ExcludedLocations))
             {
                 if (!IsValidAdministrativeLocation(location))
@@ -292,7 +289,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ��ȡ����ժҪ��Ϣ
+        /// 获取配置摘要信息
         /// </summary>
         public override string GetConfigurationSummary()
         {
@@ -309,23 +306,23 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ��֤��������λ����Ϣ
+        /// 验证行政区位置信息
         /// </summary>
         private static void ValidateAdministrativeLocation(GeoInfo geoInfo)
         {
             if (!IsValidAdministrativeLocation(geoInfo))
-                throw new ArgumentException("������������Ҫ�����λ����Ϣ������Ч�����������ʶ�����Ҵ��롢ʡ�ݴ����������ƣ�", nameof(geoInfo));
+                throw new ArgumentException("行政地理定向需要有效位置信息，至少包含有效的地理标识符（国家代码、省份代码或城市名称）", nameof(geoInfo));
         }
 
         /// <summary>
-        /// ����Ƿ�Ϊ��Ч����������λ����Ϣ
+        /// 检查是否为有效的行政区位置信息
         /// </summary>
         private static bool IsValidAdministrativeLocation(GeoInfo geoInfo)
         {
             if (geoInfo == null)
                 return false;
 
-            // ������������Ҫ��������һ�����������ʶ
+            // 行政地理定向需要至少包含一个行政区标识符
             return !string.IsNullOrEmpty(geoInfo.CountryCode) ||
                    !string.IsNullOrEmpty(geoInfo.ProvinceCode) ||
                    !string.IsNullOrEmpty(geoInfo.CityName) ||
@@ -333,7 +330,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ����û�λ���Ƿ���ָ�������������б���
+        /// 检查用户位置是否在指定的地理位置列表中
         /// </summary>
         private bool IsLocationInList(GeoInfo userLocation, IReadOnlyList<GeoInfo> locationList)
         {
@@ -347,32 +344,24 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���������������λ���Ƿ�ƥ��
+        /// 检查两个行政区位置是否匹配
         /// </summary>
         private bool IsAdministrativeLocationMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
-            // ���㼶���ȼ�����ƥ��
-            switch (LevelPriority)
+            // 根据层级优先级进行匹配
+            return LevelPriority switch
             {
-                case AdministrativeLevel.Country:
-                    return IsCountryMatched(userLocation, targetLocation);
-
-                case AdministrativeLevel.Province:
-                    return IsProvinceMatched(userLocation, targetLocation);
-
-                case AdministrativeLevel.City:
-                    return IsCityMatched(userLocation, targetLocation);
-
-                default:
-                    // Ĭ�ϰ���ϸ���ֵ�˳��ƥ��
-                    return IsCityMatched(userLocation, targetLocation) ||
-                           IsProvinceMatched(userLocation, targetLocation) ||
-                           IsCountryMatched(userLocation, targetLocation);
-            }
+                AdministrativeLevel.Country => IsCountryMatched(userLocation, targetLocation),
+                AdministrativeLevel.Province => IsProvinceMatched(userLocation, targetLocation),
+                AdministrativeLevel.City => IsCityMatched(userLocation, targetLocation),
+                _ => IsCityMatched(userLocation, targetLocation) ||
+                     IsProvinceMatched(userLocation, targetLocation) ||
+                     IsCountryMatched(userLocation, targetLocation)
+            };
         }
 
         /// <summary>
-        /// �������Ƿ�ƥ��
+        /// 检查国家是否匹配
         /// </summary>
         private static bool IsCountryMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -382,7 +371,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// ���ʡ���Ƿ�ƥ��
+        /// 检查省份是否匹配
         /// </summary>
         private static bool IsProvinceMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -392,7 +381,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         }
 
         /// <summary>
-        /// �������Ƿ�ƥ��
+        /// 检查城市是否匹配
         /// </summary>
         private static bool IsCityMatched(GeoInfo userLocation, GeoInfo targetLocation)
         {
@@ -403,22 +392,22 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
     }
 
     /// <summary>
-    /// ��������㼶ö��
+    /// 行政区层级枚举
     /// </summary>
     public enum AdministrativeLevel
     {
         /// <summary>
-        /// ���Ҽ���
+        /// 国家级别
         /// </summary>
         Country = 1,
 
         /// <summary>
-        /// ʡ��/�ݼ���
+        /// 省份/州级别
         /// </summary>
         Province = 2,
 
         /// <summary>
-        /// ���м���
+        /// 城市级别
         /// </summary>
         City = 3
     }

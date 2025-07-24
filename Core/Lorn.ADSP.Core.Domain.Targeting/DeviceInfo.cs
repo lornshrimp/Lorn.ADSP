@@ -1,6 +1,6 @@
 using Lorn.ADSP.Core.Shared.Enums;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
     /// 设备信息定向上下文

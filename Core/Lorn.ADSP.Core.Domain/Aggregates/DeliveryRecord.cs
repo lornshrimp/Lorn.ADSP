@@ -1,7 +1,7 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.Events;
+using Lorn.ADSP.Core.Domain.Targeting;
 using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 using Lorn.ADSP.Core.Shared.Enums;
 
 namespace Lorn.ADSP.Core.Domain.Aggregates;

@@ -1,6 +1,6 @@
 using Lorn.ADSP.Core.AdEngine.Abstractions.Enums;
 using Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces;
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using Lorn.ADSP.Core.Domain.Targeting;
 using Lorn.ADSP.Core.Shared.Entities;
 
 namespace Lorn.ADSP.Core.AdEngine.Abstractions.Models;

@@ -1,6 +1,6 @@
 using Lorn.ADSP.Core.Domain.Common;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
     /// 定向条件基础实现类

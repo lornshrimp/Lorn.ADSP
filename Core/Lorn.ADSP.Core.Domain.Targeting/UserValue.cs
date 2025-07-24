@@ -1,69 +1,71 @@
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+
+namespace Lorn.ADSP.Core.Domain.Targeting;
 
 /// <summary>
-/// �û���ֵ����������
-/// �̳���TargetingContextBase���ṩ�û���ֵ�������ݵĶ��������Ĺ���
-/// רע�ڻ����û���ֵ�Ĺ�涨�����
+/// 用户价值定向上下文
+/// 继承自TargetingContextBase，提供用户价值相关数据的定向上下文功能
+/// 专注于基于用户价值的广告定向策略
 /// </summary>
 public class UserValue : TargetingContextBase
 {
     /// <summary>
-    /// ������������
+    /// 上下文类型名称
     /// </summary>
-    public override string ContextName => "�û���ֵ������";
+    public override string ContextName => "用户价值上下文";
 
     /// <summary>
-    /// ��������� (0-100)
+    /// 参与度评分 (0-100)
     /// </summary>
     public int EngagementScore => GetPropertyValue("EngagementScore", 0);
 
     /// <summary>
-    /// �ҳ϶����� (0-100)
+    /// 忠诚度评分 (0-100)
     /// </summary>
     public int LoyaltyScore => GetPropertyValue("LoyaltyScore", 0);
 
     /// <summary>
-    /// ���Ҽ�ֵ���� (0-100)
+    /// 消费价值评分 (0-100)
     /// </summary>
     public int MonetaryScore => GetPropertyValue("MonetaryScore", 0);
 
     /// <summary>
-    /// Ǳ������ (0-100)
+    /// 潜力评分 (0-100)
     /// </summary>
     public int PotentialScore => GetPropertyValue("PotentialScore", 0);
 
     /// <summary>
-    /// �ۺ����� (0-100)
+    /// 综合评分 (0-100)
     /// </summary>
     public int OverallScore => GetPropertyValue("OverallScore", 0);
 
     /// <summary>
-    /// �������ڼ�ֵ����
+    /// 预估生命周期价值（元）
     /// </summary>
     public decimal EstimatedLTV => GetPropertyValue("EstimatedLTV", 0.0m);
 
     /// <summary>
-    /// ���������ȼ�
+    /// 消费能力等级
     /// </summary>
     public SpendingLevel SpendingLevel => GetPropertyValue("SpendingLevel", SpendingLevel.Medium);
 
     /// <summary>
-    /// �û���ֵ�ȼ�
+    /// 用户价值等级
     /// </summary>
     public ValueTier ValueTier => GetPropertyValue("ValueTier", ValueTier.Standard);
 
     /// <summary>
-    /// ת������ (0.0-1.0)
+    /// 转化概率 (0.0-1.0)
     /// </summary>
     public decimal ConversionProbability => GetPropertyValue("ConversionProbability", 0.0m);
 
     /// <summary>
-    /// ˽�й��캯��
+    /// 私有构造函数
     /// </summary>
     private UserValue() : base("UserValue") { }
 
     /// <summary>
-    /// ���캯��
+    /// 构造函数
     /// </summary>
     public UserValue(
         int engagementScore = 50,
@@ -80,7 +82,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ���������ֵ�
+    /// 创建属性字典
     /// </summary>
     private static Dictionary<string, object> CreateProperties(
         int engagementScore,
@@ -92,20 +94,20 @@ public class UserValue : TargetingContextBase
         ValueTier valueTier,
         decimal conversionProbability)
     {
-        // �������ַ�Χ
+        // 限制评分范围
         engagementScore = Math.Max(0, Math.Min(100, engagementScore));
         loyaltyScore = Math.Max(0, Math.Min(100, loyaltyScore));
         monetaryScore = Math.Max(0, Math.Min(100, monetaryScore));
         potentialScore = Math.Max(0, Math.Min(100, potentialScore));
 
-        // �����ۺ����֣���Ȩƽ����
+        // 计算综合评分（加权平均）
         var overallScore = (int)Math.Round(
             engagementScore * 0.3 +
             loyaltyScore * 0.3 +
             monetaryScore * 0.25 +
             potentialScore * 0.15);
 
-        // ����ת�����ʷ�Χ
+        // 限制转化概率范围
         conversionProbability = Math.Max(0.0m, Math.Min(1.0m, conversionProbability));
 
         return new Dictionary<string, object>
@@ -123,7 +125,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ����Ĭ�ϼ�ֵ������
+    /// 创建默认价值上下文
     /// </summary>
     public static UserValue CreateDefault(string? dataSource = null)
     {
@@ -131,7 +133,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// �����߼�ֵ�û�������
+    /// 创建高价值用户上下文
     /// </summary>
     public static UserValue CreateHighValue(
         int engagementScore = 85,
@@ -154,7 +156,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ����Ǳ�ڼ�ֵ�û�������
+    /// 创建潜在价值用户上下文
     /// </summary>
     public static UserValue CreatePotential(
         int engagementScore = 70,
@@ -175,57 +177,57 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// �Ƿ�Ϊ�߼�ֵ�û�
+    /// 是否为高价值用户
     /// </summary>
     public bool IsHighValueUser => OverallScore >= 80 || ValueTier >= ValueTier.Premium;
 
     /// <summary>
-    /// �Ƿ�Ϊ��Ծ�û�
+    /// 是否为活跃用户
     /// </summary>
     public bool IsActiveUser => EngagementScore >= 60;
 
     /// <summary>
-    /// �Ƿ�Ϊ�ҳ��û�
+    /// 是否为忠诚用户
     /// </summary>
     public bool IsLoyalUser => LoyaltyScore >= 70;
 
     /// <summary>
-    /// �Ƿ��������Ǳ��
+    /// 是否具有消费潜力
     /// </summary>
     public bool HasSpendingPotential => MonetaryScore >= 50 || PotentialScore >= 70;
 
     /// <summary>
-    /// ��ȡ�û���ֵ�ȼ�����
+    /// 获取用户价值等级描述
     /// </summary>
     public string GetValueDescription()
     {
         return ValueTier switch
         {
-            ValueTier.Basic => "�����û�",
-            ValueTier.Standard => "��׼�û�",
-            ValueTier.Growth => "�ɳ��û�",
-            ValueTier.Premium => "�����û�",
-            ValueTier.VIP => "VIP�û�",
-            _ => "δ�����û�"
+            ValueTier.Basic => "基础用户",
+            ValueTier.Standard => "标准用户",
+            ValueTier.Growth => "成长用户",
+            ValueTier.Premium => "优质用户",
+            ValueTier.VIP => "VIP用户",
+            _ => "未知类用户"
         };
     }
 
     /// <summary>
-    /// ��ȡ������������
+    /// 获取消费能力描述
     /// </summary>
     public string GetSpendingDescription()
     {
         return SpendingLevel switch
         {
-            SpendingLevel.Low => "������",
-            SpendingLevel.Medium => "�е�����",
-            SpendingLevel.High => "������",
-            _ => "δ֪��������"
+            SpendingLevel.Low => "低消费",
+            SpendingLevel.Medium => "中等消费",
+            SpendingLevel.High => "高消费",
+            _ => "未知消费水平"
         };
     }
 
     /// <summary>
-    /// �����ֵƥ���
+    /// 计算价值匹配度
     /// </summary>
     public decimal CalculateValueMatchScore(ValueTier targetTier, SpendingLevel? targetSpendingLevel = null)
     {
@@ -241,7 +243,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ��ȡ�����۽���ϵ��
+    /// 获取竞价调整系数
     /// </summary>
     public decimal GetBidMultiplier()
     {
@@ -257,7 +259,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ��ȡת������ֵ
+    /// 获取转化期望价值
     /// </summary>
     public decimal GetExpectedConversionValue()
     {
@@ -265,7 +267,7 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ��ȡ������Ϣ
+    /// 获取调试信息
     /// </summary>
     public override string GetDebugInfo()
     {
@@ -275,23 +277,23 @@ public class UserValue : TargetingContextBase
     }
 
     /// <summary>
-    /// ��֤�����ĵ���Ч��
+    /// 验证上下文的有效性
     /// </summary>
     public override bool IsValid()
     {
         if (!base.IsValid())
             return false;
 
-        // ��֤���ַ�Χ
+        // 验证评分范围
         var scores = new[] { EngagementScore, LoyaltyScore, MonetaryScore, PotentialScore, OverallScore };
         if (scores.Any(score => score < 0 || score > 100))
             return false;
 
-        // ��֤ת�����ʷ�Χ
+        // 验证转化概率范围
         if (ConversionProbability < 0.0m || ConversionProbability > 1.0m)
             return false;
 
-        // ��֤LTV��Ϊ����
+        // 验证LTV不为负数
         if (EstimatedLTV < 0.0m)
             return false;
 
@@ -300,7 +302,7 @@ public class UserValue : TargetingContextBase
 }
 
 /// <summary>
-/// ���������ȼ�ö��
+/// 消费能力等级枚举
 /// </summary>
 public enum SpendingLevel
 {
@@ -310,7 +312,7 @@ public enum SpendingLevel
 }
 
 /// <summary>
-/// �û���ֵ�ȼ�ö��
+/// 用户价值等级枚举
 /// </summary>
 public enum ValueTier
 {

@@ -1,5 +1,4 @@
 ﻿using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.Requests
 {

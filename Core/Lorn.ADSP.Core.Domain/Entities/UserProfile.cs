@@ -1,8 +1,8 @@
 using Lorn.ADSP.Core.Domain.Common;
 using Lorn.ADSP.Core.Domain.ValueObjects;
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
 using Lorn.ADSP.Core.Domain.Enums;
 using Lorn.ADSP.Core.Shared.Enums;
+using Lorn.ADSP.Core.Domain.Targeting;
 
 namespace Lorn.ADSP.Core.Domain.Entities;
 

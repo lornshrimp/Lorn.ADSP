@@ -1,6 +1,4 @@
-using Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
-
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting;
+namespace Lorn.ADSP.Core.Domain.Targeting;
 
 /// <summary>
 /// 用户兴趣上下文

@@ -1,6 +1,6 @@
 using Lorn.ADSP.Core.Domain.ValueObjects;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
     /// 定向上下文抽象接口
