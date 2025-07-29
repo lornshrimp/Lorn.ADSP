@@ -314,7 +314,8 @@ public enum PrivacyLevel
 {
     Low = 1,
     Standard = 2,
-    High = 3
+    High = 3,
+    Maximum = 4
 }
 
 /// <summary>
@@ -325,7 +326,8 @@ public enum ContentMaturityLevel
     General = 1,
     Teen = 2,
     Mature = 3,
-    Adult = 4
+    Adult = 4,
+    Restricted = 5
 }
 
 /// <summary>

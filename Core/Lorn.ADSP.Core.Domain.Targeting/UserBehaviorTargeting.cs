@@ -1,12 +1,12 @@
 using Lorn.ADSP.Core.Domain.Targeting;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
     /// 行为定向条件
     /// 实现基于用户行为的定向规则配置
     /// </summary>
-    public class BehaviorTargeting : TargetingCriteriaBase
+    public class UserBehaviorTargeting : TargetingCriteriaBase
     {
         /// <summary>
         /// 条件名称
@@ -31,7 +31,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 构造函数
         /// </summary>
-        public BehaviorTargeting(
+        public UserBehaviorTargeting(
             IList<string>? interestTags = null,
             IList<string>? behaviorTypes = null,
             decimal weight = 1.0m,
@@ -80,13 +80,13 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
         /// <summary>
         /// 创建行为定向条件
         /// </summary>
-        public static BehaviorTargeting Create(
+        public static UserBehaviorTargeting Create(
             IList<string>? interestTags = null,
             IList<string>? behaviorTypes = null,
             decimal weight = 1.0m,
             bool isEnabled = true)
         {
-            return new BehaviorTargeting(interestTags, behaviorTypes, weight, isEnabled);
+            return new UserBehaviorTargeting(interestTags, behaviorTypes, weight, isEnabled);
         }
 
         /// <summary>

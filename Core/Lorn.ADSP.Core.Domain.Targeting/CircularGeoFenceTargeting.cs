@@ -1,6 +1,7 @@
 using Lorn.ADSP.Core.Domain.Targeting;
+using Lorn.ADSP.Core.Domain.ValueObjects;
 
-namespace Lorn.ADSP.Core.Domain.ValueObjects.Targeting
+namespace Lorn.ADSP.Core.Domain.Targeting
 {
     /// <summary>
     /// 圆形地理围栏定向条件
