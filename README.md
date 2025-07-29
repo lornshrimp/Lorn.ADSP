@@ -128,23 +128,101 @@ Build an intelligent, one-stop digital advertising platform that helps advertise
 
 ## 技术栈
 
-本项目采用C#和F#编写而成，支持部署于Azure云平台，技术架构包括：
+本项目基于.NET 9技术栈构建，采用C#和F#混合编程，支持多云平台部署，技术架构包括：
 
-- **分布式服务架构**：微服务架构、容器化部署、服务网格
-- **AI大模型技术栈**：OpenAI GPT集成、Hugging Face Transformers、Azure OpenAI Service、自研AI模型训练平台
-- **关系型数据库 + 缓存 + 消息队列**：SQL Server、Redis、RabbitMQ
-- **全链路监控系统**：应用性能监控、AI模型性能监控、业务指标监控
-- **容器化部署支持**：Docker、Kubernetes、AI模型容器化部署
+### 核心开发框架
+- **.NET 9**: 主要开发框架，支持现代C#特性和高性能运行时
+- **ASP.NET Core 9.0**: 高性能Web API和MVC框架，支持跨平台部署
+- **Entity Framework Core 9.0**: ORM框架，支持Code First和Database First
+- **F# 9.0**: 函数式编程语言，用于广告投放策略算法实现
+- **WPF (.NET 9)**: 桌面应用开发，用于监控和管理工具
+
+### 客户端SDK技术栈
+- **.NET MAUI**: 跨平台移动应用开发，支持iOS、Android、Windows
+- **Blazor**: Web应用开发，支持Server、WebAssembly、Hybrid模式
+- **TypeScript**: 小程序SDK开发，支持微信、支付宝、快应用等平台
+
+### 多云数据存储架构
+- **关系型数据库**: 
+  - 阿里云：RDS MySQL/PostgreSQL、PolarDB
+  - Azure：Azure SQL Database、Azure Database for MySQL/PostgreSQL
+  - AWS：RDS SQL Server/MySQL/PostgreSQL、Aurora
+- **分布式缓存**: Redis 7.0集群，支持阿里云Redis、Azure Cache、AWS ElastiCache
+- **搜索引擎**: Elasticsearch 8.0，支持全文搜索和日志分析
+- **消息队列**: Apache Kafka、RabbitMQ，支持多云托管服务
+
+### 微服务与容器化
+- **微服务架构**: 基于领域驱动设计(DDD)的微服务拆分
+- **API网关**: Ocelot网关，支持路由、限流、熔断
+- **服务治理**: Consul服务发现和配置中心
+- **容器化部署**: Docker容器化，Kubernetes编排
+
+### 广告引擎核心技术
+- **管道模式**: 可配置的广告处理流程，支持策略动态组合
+- **F#策略引擎**: 召回、筛选、排序策略的函数式实现
+- **OpenRTB协议**: 严格遵循IAB标准的实时竞价实现
+- **VAST/VMAP**: 视频广告服务模板标准支持
+
+### 监控与运维
+- **指标监控**: Prometheus + Grafana监控体系
+- **链路追踪**: Jaeger分布式追踪系统
+- **日志分析**: ELK Stack (Elasticsearch + Logstash + Kibana)
+- **性能测试**: NBomber负载测试框架
+
+### 测试与质量保证
+- **单元测试**: xUnit测试框架，Moq Mock框架
+- **集成测试**: TestContainers容器化测试
+- **性能测试**: NBomber压力测试
+- **代码质量**: SonarQube静态代码分析
 
 ## Technology Stack
 
-This project is developed using C# and F#, supports deployment on Azure cloud platform, and the technical architecture includes:
+This project is built on the .NET 9 technology stack, using a hybrid of C# and F# programming, supporting multi-cloud platform deployment. The technical architecture includes:
 
-- **Distributed Service Architecture**: Microservice architecture, containerized deployment, service mesh
-- **AI Large Model Technology Stack**: OpenAI GPT integration, Hugging Face Transformers, Azure OpenAI Service, proprietary AI model training platform
-- **Relational Database + Cache + Message Queue**: SQL Server, Redis, RabbitMQ
-- **Full-Link Monitoring System**: Application performance monitoring, AI model performance monitoring, business metrics monitoring
-- **Containerized Deployment Support**: Docker, Kubernetes, AI model containerized deployment
+### Core Development Framework
+- **.NET 9**: Primary development framework supporting modern C# features and high-performance runtime
+- **ASP.NET Core 9.0**: High-performance Web API and MVC framework with cross-platform deployment support
+- **Entity Framework Core 9.0**: ORM framework supporting Code First and Database First approaches
+- **F# 9.0**: Functional programming language for advertising delivery strategy algorithm implementation
+- **WPF (.NET 9)**: Desktop application development for monitoring and management tools
+
+### Client SDK Technology Stack
+- **.NET MAUI**: Cross-platform mobile development supporting iOS, Android, Windows
+- **Blazor**: Web application development supporting Server, WebAssembly, Hybrid modes
+- **TypeScript**: Mini-program SDK development supporting WeChat, Alipay, QuickApp platforms
+
+### Multi-Cloud Data Storage Architecture
+- **Relational Databases**: 
+  - Alibaba Cloud: RDS MySQL/PostgreSQL, PolarDB
+  - Azure: Azure SQL Database, Azure Database for MySQL/PostgreSQL
+  - AWS: RDS SQL Server/MySQL/PostgreSQL, Aurora
+- **Distributed Cache**: Redis 7.0 clusters supporting Alibaba Cloud Redis, Azure Cache, AWS ElastiCache
+- **Search Engine**: Elasticsearch 8.0 supporting full-text search and log analysis
+- **Message Queues**: Apache Kafka, RabbitMQ with multi-cloud managed service support
+
+### Microservices & Containerization
+- **Microservice Architecture**: Domain-driven design (DDD) based microservice decomposition
+- **API Gateway**: Ocelot gateway supporting routing, rate limiting, circuit breaking
+- **Service Governance**: Consul service discovery and configuration center
+- **Containerized Deployment**: Docker containerization with Kubernetes orchestration
+
+### Ad Engine Core Technologies
+- **Pipeline Pattern**: Configurable ad processing workflows supporting dynamic strategy composition
+- **F# Strategy Engine**: Functional implementation of recall, filtering, and ranking strategies
+- **OpenRTB Protocol**: Real-time bidding implementation strictly following IAB standards
+- **VAST/VMAP**: Video Ad Serving Template standard support
+
+### Monitoring & Operations
+- **Metrics Monitoring**: Prometheus + Grafana monitoring system
+- **Distributed Tracing**: Jaeger distributed tracing system
+- **Log Analysis**: ELK Stack (Elasticsearch + Logstash + Kibana)
+- **Performance Testing**: NBomber load testing framework
+
+### Testing & Quality Assurance
+- **Unit Testing**: xUnit testing framework, Moq mocking framework
+- **Integration Testing**: TestContainers containerized testing
+- **Performance Testing**: NBomber stress testing
+- **Code Quality**: SonarQube static code analysis
 
 ## 项目文档
 
