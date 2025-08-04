@@ -172,24 +172,24 @@ public enum ExecutionStatus
     Running = 2,
 
     /// <summary>
+    /// 成功
+    /// </summary>
+    Success = 3,
+
+    /// <summary>
     /// 已完成
     /// </summary>
-    Completed = 3,
+    Completed = 4,
 
     /// <summary>
     /// 已失败
     /// </summary>
-    Failed = 4,
+    Failed = 5,
 
     /// <summary>
     /// 已取消
     /// </summary>
-    Cancelled = 5,
-
-    /// <summary>
-    /// 超时
-    /// </summary>
-    Timeout = 6,
+    Cancelled = 6,
 
     /// <summary>
     /// 已跳过
@@ -197,36 +197,7 @@ public enum ExecutionStatus
     Skipped = 7
 }
 
-/// <summary>
-/// 错误级别
-/// </summary>
-public enum ErrorLevel
-{
-    /// <summary>
-    /// 信息
-    /// </summary>
-    Info = 1,
 
-    /// <summary>
-    /// 警告
-    /// </summary>
-    Warning = 2,
-
-    /// <summary>
-    /// 错误
-    /// </summary>
-    Error = 3,
-
-    /// <summary>
-    /// 严重错误
-    /// </summary>
-    Critical = 4,
-
-    /// <summary>
-    /// 致命错误
-    /// </summary>
-    Fatal = 5
-}
 
 /// <summary>
 /// 告警级别

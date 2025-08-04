@@ -16,12 +16,17 @@ local.properties
 .settings/
 .loadpath
 .github/
+.vscode/
 视频课程/
 免费专栏/
 收费专栏/
 .vscode/
 .sarif/
 .kiro/
+.superdesign/
+CLAUDE.md
+.windsurfrules
+.roomodes
 
 # External tool builders
 .externalToolBuilders/
