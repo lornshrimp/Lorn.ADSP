@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>FS0025</WarningsNotAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Core/TargetingTypes.fs" />
+    <Compile Include="Core/MatchingAlgorithms.fs" />
+    <Compile Include="Utils/DataValidation.fs" />
+    <Compile Include="Utils/CacheHelpers.fs" />
+    <Compile Include="Utils/WeightConfiguration.fs" />
+    <Compile Include="Utils/MetricsCollector.fs" />
+    <Compile Include="Matchers/DemographicMatcher.fs" />
+    <Compile Include="Interop/TypeConverters.fs" />
+    <Compile Include="Interop/CSharpInterop.fs" />
+    <Compile Include="Library.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Collections.ParallelSeq" Version="1.2.0" />
+    <PackageReference Include="FSharp.Data" Version="6.4.0" />
+    <PackageReference Include="FSharp.Control.AsyncSeq" Version="3.2.1" />
+    <PackageReference Include="MathNet.Numerics.FSharp" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.AdEngine.Abstractions\Lorn.ADSP.Core.AdEngine.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Domain\Lorn.ADSP.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Domain.Targeting\Lorn.ADSP.Core.Domain.Targeting.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Shared\Lorn.ADSP.Core.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

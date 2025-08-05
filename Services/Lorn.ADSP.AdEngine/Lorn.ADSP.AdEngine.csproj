@@ -9,6 +9,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.AdEngine.Abstractions\Lorn.ADSP.Core.AdEngine.Abstractions.csproj" />
     <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Domain\Lorn.ADSP.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Domain.Targeting\Lorn.ADSP.Core.Domain.Targeting.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Shared\Lorn.ADSP.Core.Shared.csproj" />
+    <ProjectReference Include="..\..\Strategies\Lorn.ADSP.Strategies.Targeting\Lorn.ADSP.Strategies.Targeting.fsproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>FS0025</WarningsNotAsErrors>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Core/MatchingAlgorithmsTests.fs" />
+    <Compile Include="Core/DemographicEnumTests.fs" />
+    <Compile Include="TestRunner.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="FsUnit.xUnit" Version="5.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Strategies\Lorn.ADSP.Strategies.Targeting\Lorn.ADSP.Strategies.Targeting.fsproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.AdEngine.Abstractions\Lorn.ADSP.Core.AdEngine.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Domain.Targeting\Lorn.ADSP.Core.Domain.Targeting.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.Shared\Lorn.ADSP.Core.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
