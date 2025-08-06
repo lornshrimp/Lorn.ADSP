@@ -602,7 +602,10 @@ module DemographicMatcher =
                 matchedResults.Length > 0
 
         let weightedScore =
-            if totalWeight > 0.0m then
+            if requireAllMatch && not isOverallMatch then
+                // 当要求全部匹配但有失败时，分数应该为0
+                0.0m
+            elif totalWeight > 0.0m then
                 attributeResults
                 |> List.map (fun r -> r.Score * r.Weight)
                 |> List.sum
@@ -628,7 +631,7 @@ module DemographicMatcher =
             if not isOverallMatch then
                 attributeResults
                 |> List.filter (fun r -> not r.IsMatch)
-                |> List.map (fun r -> r.Reason)
+                |> List.map (fun r -> $"{r.AttributeName}: {r.Reason}")
                 |> String.concat "; "
             else
                 ""
