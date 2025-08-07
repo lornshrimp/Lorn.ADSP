@@ -15,6 +15,7 @@
     <Compile Include="Utils/WeightConfiguration.fs" />
     <Compile Include="Utils/MetricsCollector.fs" />
     <Compile Include="Matchers/DemographicMatcher.fs" />
+    <Compile Include="Matchers/GeoLocationMatcher.fs" />
     <Compile Include="Interop/TypeConverters.fs" />
     <Compile Include="Interop/CSharpInterop.fs" />
     <Compile Include="Library.fs" />

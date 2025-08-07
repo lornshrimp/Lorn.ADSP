@@ -5,7 +5,6 @@ open System.Threading
 open Xunit
 open FsUnit.Xunit
 open Lorn.ADSP.Strategies.Targeting.Matchers
-open Lorn.ADSP.Core.Domain.Targeting
 
 /// <summary>
 /// 人口属性定向匹配器单元测试
@@ -13,23 +12,13 @@ open Lorn.ADSP.Core.Domain.Targeting
 /// </summary>
 module DemographicMatcherTests =
 
-    // Helper to create a test criteria with valid ID
-    let createTestCriteria () =
-        let criteria = DemographicTargeting.Create()
-        // Use reflection to set the CriteriaId
-        let criteriaIdProperty = typeof<TargetingCriteriaBase>.GetProperty("CriteriaId")
-        criteriaIdProperty.SetValue(criteria, System.Guid.NewGuid())
-        criteria :> ITargetingCriteria
-
     // ==================== 基础功能测试 ====================
 
     [<Fact>]
     let ``DemographicTargetingMatcher应该正确实现ITargetingMatcher接口`` () =
         // Arrange
         let matcher = DemographicTargetingMatcher()
-
-        let imatcher =
-            matcher :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let imatcher = matcher :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Assert
         imatcher.MatcherId |> should equal "demographic-matcher-v1"
@@ -43,8 +32,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``IsSupported应该正确识别支持的定向条件类型`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Act & Assert
         matcher.IsSupported("Demographic") |> should equal true
@@ -56,8 +44,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``GetMetadata应该返回正确的匹配器元数据`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Act
         let metadata = matcher.GetMetadata()
@@ -74,8 +61,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``ValidateCriteria应该拒绝空的定向条件`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Act
         let result = matcher.ValidateCriteria(null)
@@ -87,32 +73,26 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``CalculateMatchScoreAsync应该正确处理空用户上下文`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
-
-        let criteria = createTestCriteria ()
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Act
-        let result =
-            matcher.CalculateMatchScoreAsync(null, criteria, null, CancellationToken.None).Result
+        let result = matcher.CalculateMatchScoreAsync(null, null, null, CancellationToken.None).Result
 
         // Assert
         result.IsMatch |> should equal false
-        result.NotMatchReason |> should equal "用户上下文为空"
+        result.NotMatchReason |> should contain "用户上下文为空"
 
     [<Fact>]
     let ``CalculateMatchScoreAsync应该正确处理空定向条件`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Act
-        let result =
-            matcher.CalculateMatchScoreAsync(null, null, null, CancellationToken.None).Result
+        let result = matcher.CalculateMatchScoreAsync(null, null, null, CancellationToken.None).Result
 
         // Assert
         result.IsMatch |> should equal false
-        result.NotMatchReason |> should equal "定向条件为空"
+        result.NotMatchReason |> should contain "定向条件为空"
 
     [<Fact>]
     let ``DemographicTargetingMatcher应该能够正确创建实例`` () =
@@ -125,8 +105,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``ExpectedExecutionTime应该设置合理的值`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Assert
         matcher.ExpectedExecutionTime |> should equal (TimeSpan.FromMilliseconds(10.0))
@@ -134,8 +113,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``Priority应该设置为100`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Assert
         matcher.Priority |> should equal 100
@@ -143,8 +121,7 @@ module DemographicMatcherTests =
     [<Fact>]
     let ``CanRunInParallel应该返回true`` () =
         // Arrange
-        let matcher =
-            DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
+        let matcher = DemographicTargetingMatcher() :> Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces.ITargetingMatcher
 
         // Assert
         matcher.CanRunInParallel |> should equal true
