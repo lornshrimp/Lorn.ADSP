@@ -74,7 +74,7 @@ public class ConfigurableComponentBaseTests
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(
-            () => component.Configure(null));
+            () => component.Configure((object)null!));
 
         exception.Message.Should().Contain("Invalid configuration type");
         exception.Message.Should().Contain("Expected: TestConfiguration");
@@ -189,7 +189,7 @@ public class ConfigurableComponentBaseTests
     /// 测试可配置组件基类的线程安全性
     /// </summary>
     [Fact]
-    public void Configure_Method_Should_Be_Thread_Safe()
+    public async Task Configure_Method_Should_Be_Thread_Safe()
     {
         // Arrange
         var component = new TestConfigurableComponent();
@@ -200,7 +200,7 @@ public class ConfigurableComponentBaseTests
                              .Select(_ => Task.Run(() => component.Configure(configuration)))
                              .ToArray();
 
-        Task.WaitAll(tasks);
+        await Task.WhenAll(tasks);
 
         // Assert
         component.ConfigurationChangedCallCount.Should().Be(10);
@@ -243,11 +243,18 @@ public class ConfigurableComponentBaseTests
     {
         // Arrange
         var component = new TestConfigurableComponent();
-        var wrongConfiguration = Activator.CreateInstance(wrongType);
+        // 对于没有默认构造函数的类型(如string)避免Activator失败，提供一个代表性的值
+        object? wrongConfiguration = wrongType == typeof(string)
+            ? "abc"
+            : (wrongType == typeof(int)
+                ? 123
+                : (wrongType == typeof(bool)
+                    ? (object)true
+                    : Activator.CreateInstance(wrongType)));
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(
-            () => component.Configure(wrongConfiguration));
+            () => component.Configure(wrongConfiguration ?? new object()));
 
         exception.Message.Should().Contain("Invalid configuration type");
     }

@@ -156,7 +156,7 @@ public class IHealthCheckableTests
                           });
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => mockHealthCheckable.Object.CheckHealthAsync(cancellationToken));
 
         mockHealthCheckable.Verify(x => x.CheckHealthAsync(cancellationToken), Times.Once);

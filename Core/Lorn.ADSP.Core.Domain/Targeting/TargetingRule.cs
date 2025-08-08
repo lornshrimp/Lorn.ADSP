@@ -107,7 +107,22 @@ namespace Lorn.ADSP.Core.Domain.Targeting
                     return System.Text.Json.JsonSerializer.Deserialize<T>(RuleValue);
                 }
 
-                return (T)Convert.ChangeType(RuleValue, typeof(T));
+                // 处理可空类型
+                var targetType = typeof(T);
+                var isNullable = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+                if (isNullable)
+                {
+                    // 获取可空类型的基础类型
+                    var underlyingType = Nullable.GetUnderlyingType(targetType);
+                    if (underlyingType != null)
+                    {
+                        var convertedValue = Convert.ChangeType(RuleValue, underlyingType);
+                        return (T)convertedValue;
+                    }
+                }
+
+                return (T)Convert.ChangeType(RuleValue, targetType);
             }
             catch
             {

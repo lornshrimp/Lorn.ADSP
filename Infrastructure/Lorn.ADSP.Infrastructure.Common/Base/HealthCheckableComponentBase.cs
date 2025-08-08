@@ -25,6 +25,11 @@ public abstract class HealthCheckableComponentBase : ComponentBase, IHealthCheck
             // 执行具体的健康检查逻辑
             return await OnCheckHealthAsync(cancellationToken);
         }
+        catch (OperationCanceledException)
+        {
+            // 超时/取消应向上传播，便于调用方区分真正的取消场景
+            throw;
+        }
         catch (Exception)
         {
             return HealthStatus.Unhealthy;

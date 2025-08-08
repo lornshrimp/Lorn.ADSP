@@ -63,6 +63,7 @@ namespace Lorn.ADSP.Core.Domain.Targeting
             IsEnabled = isEnabled;
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+            CriteriaId = Guid.NewGuid(); // 自动生成唯一ID
 
             ValidateWeight(weight);
         }

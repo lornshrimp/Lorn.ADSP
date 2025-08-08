@@ -247,8 +247,13 @@ type DemographicTargetingMatcher() =
             let userKeywords = this.ExtractUserKeywords(context)
 
             // 从定向条件中提取目标条件
-            let targetMinAge = criteria.GetRule<int option>("MinAge")
-            let targetMaxAge = criteria.GetRule<int option>("MaxAge")
+            let targetMinAge =
+                let nullable = criteria.GetRule<Nullable<int>>("MinAge")
+                if nullable.HasValue then Some nullable.Value else None
+
+            let targetMaxAge =
+                let nullable = criteria.GetRule<Nullable<int>>("MaxAge")
+                if nullable.HasValue then Some nullable.Value else None
 
             let targetGenders =
                 let genders = criteria.GetRule<List<Gender>>("TargetGenders")
@@ -264,17 +269,16 @@ type DemographicTargetingMatcher() =
             let keywordMatch: MatchRecord = this.MatchKeywords(userKeywords, targetKeywords)
 
             // 计算综合匹配结果
-            let matches =
-                [ ageMatch; genderMatch; keywordMatch ] |> List.filter (fun m -> m.IsMatch)
+            let allItems = [ ageMatch; genderMatch; keywordMatch ]
 
-            let totalMatches = matches.Length
+            let itemsWithCondition = allItems |> List.filter (fun m -> m.HasCondition)
+            let matchedItems = itemsWithCondition |> List.filter (fun m -> m.IsMatch)
 
-            let totalConditions =
-                [ ageMatch; genderMatch; keywordMatch ]
-                |> List.filter (fun m -> m.HasCondition)
-                |> List.length
+            let totalMatches = matchedItems.Length
+            let totalConditions = itemsWithCondition.Length
 
-            let isMatch = totalMatches > 0 && totalConditions > 0
+            // 所有有条件的项都必须匹配才算成功
+            let isMatch = totalConditions > 0 && totalMatches = totalConditions
 
             let matchScore =
                 if totalConditions > 0 then
@@ -285,7 +289,7 @@ type DemographicTargetingMatcher() =
             let matchReason =
                 if isMatch then
                     let matchedItems =
-                        matches |> List.map (fun m -> m.AttributeName) |> String.concat ", "
+                        matchedItems |> List.map (fun m -> m.AttributeName) |> String.concat ", "
 
                     $"匹配的人口属性: {matchedItems}"
                 else
@@ -294,8 +298,8 @@ type DemographicTargetingMatcher() =
             let notMatchReason =
                 if not isMatch then
                     let unmatchedItems =
-                        [ ageMatch; genderMatch; keywordMatch ]
-                        |> List.filter (fun m -> m.HasCondition && not m.IsMatch)
+                        itemsWithCondition
+                        |> List.filter (fun m -> not m.IsMatch)
                         |> List.map (fun m -> m.AttributeName)
                         |> String.concat ", "
 
@@ -304,8 +308,7 @@ type DemographicTargetingMatcher() =
                     ""
 
             let matchDetails =
-                [ ageMatch; genderMatch; keywordMatch ]
-                |> List.filter (fun m -> m.HasCondition)
+                itemsWithCondition
                 |> List.map (fun m ->
                     ContextProperty(
                         m.AttributeName,
@@ -324,24 +327,24 @@ type DemographicTargetingMatcher() =
             return
                 if isMatch then
                     MatchResult.CreateMatch(
-                        "Demographic",
-                        Guid.NewGuid(),
+                        criteria.CriteriaType,
+                        criteria.CriteriaId,
                         matchScore,
                         matchReason,
                         TimeSpan.Zero,
                         0,
-                        1.0m,
+                        criteria.Weight,
                         false,
                         matchDetails
                     )
                 else
                     MatchResult.CreateNoMatch(
-                        "Demographic",
-                        Guid.NewGuid(),
+                        criteria.CriteriaType,
+                        criteria.CriteriaId,
                         notMatchReason,
                         TimeSpan.Zero,
                         0,
-                        1.0m,
+                        criteria.Weight,
                         false,
                         matchDetails
                     )
@@ -352,7 +355,11 @@ type DemographicTargetingMatcher() =
     /// </summary>
     member private this.ExtractUserAge(context: ITargetingContext) =
         try
-            context.GetPropertyValue<int option>("Age")
+            if context.HasProperty("Age") then
+                let ageValue = context.GetPropertyValue<int>("Age")
+                if ageValue > 0 then Some ageValue else None
+            else
+                None
         with _ ->
             None
 
@@ -382,7 +389,9 @@ type DemographicTargetingMatcher() =
         try
             let keywords =
                 context.GetPropertiesByCategory("Interest")
-                |> Seq.map (fun p -> p.PropertyKey)
+                // 测试中 Keyword 属性的值在 PropertyValue 中，这里应读取值
+                |> Seq.map (fun p -> p.PropertyValue)
+                |> Seq.filter (fun v -> not (String.IsNullOrWhiteSpace v))
                 |> Seq.toList
 
             keywords

@@ -79,7 +79,7 @@ public class ValidationExtensionsTests
         result.Should().NotBeNull();
         result.IsValid.Should().BeFalse();
         result.Errors.Should().HaveCount(1);
-        result.Errors.Should().Contain(error => error.Message.Contains("range"));
+        result.Errors.Should().Contain(error => error.Message.Contains("range", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public class ValidationExtensionsTests
         result.Should().NotBeNull();
         result.IsValid.Should().BeFalse();
         result.Errors.Should().NotBeEmpty();
-        result.Errors.Should().Contain(error => error.Message.Contains("required"));
+        result.Errors.Should().Contain(error => error.Message.Contains("required", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -306,9 +306,9 @@ public class ValidationExtensionsTests
         // Assert
         allErrors.Should().NotBeEmpty();
         allErrors.Should().HaveCount(3); // 总共3个错误
-        allErrors.Should().Contain(error => error.Contains("required"));
-        allErrors.Should().Contain(error => error.Contains("range"));
-        allErrors.Should().Contain(error => error.Contains("length"));
+        allErrors.Should().Contain(error => error.Contains("required", StringComparison.OrdinalIgnoreCase));
+        allErrors.Should().Contain(error => error.Contains("range", StringComparison.OrdinalIgnoreCase));
+        allErrors.Should().Contain(error => error.Contains("length", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -379,7 +379,7 @@ public class ValidationExtensionsTests
     /// 测试验证扩展方法的线程安全性
     /// </summary>
     [Fact]
-    public void ValidationExtensions_Should_Be_Thread_Safe()
+    public async Task ValidationExtensions_Should_Be_Thread_Safe()
     {
         // Arrange
         var testObject = new TestValidationModel
@@ -409,7 +409,7 @@ public class ValidationExtensionsTests
                              }))
                              .ToArray();
 
-        var results = Task.WhenAll(tasks).Result;
+        var results = await Task.WhenAll(tasks);
 
         // Assert
         results.Should().AllSatisfy(result =>

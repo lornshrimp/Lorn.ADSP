@@ -222,7 +222,7 @@ public class HealthCheckableComponentBaseTests
         var cancellationToken = cancellationTokenSource.Token;
 
         // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => component.CheckHealthAsync(cancellationToken));
     }
 

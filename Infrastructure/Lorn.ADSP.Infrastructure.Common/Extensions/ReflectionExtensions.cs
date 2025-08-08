@@ -66,7 +66,8 @@ public static class ReflectionExtensions
     /// <returns>带有特性的类型列表</returns>
     public static IEnumerable<Type> GetTypesWithAttribute(this Assembly assembly, Type attributeType)
     {
-        return assembly.GetConcreteTypes().Where(t => t.GetCustomAttribute(attributeType) != null);
+        // 使用 IsDefined 以避免当同一特性允许多次应用时触发 AmbiguousMatchException
+        return assembly.GetConcreteTypes().Where(t => t.IsDefined(attributeType, inherit: false));
     }
 
     /// <summary>
@@ -92,7 +93,8 @@ public static class ReflectionExtensions
     {
         try
         {
-            return type.GetCustomAttribute<TAttribute>();
+            // 当存在多个相同特性时，GetCustomAttribute 可能抛出歧义异常，这里改为获取第一个
+            return type.GetCustomAttributes(typeof(TAttribute), inherit: false).FirstOrDefault() as TAttribute;
         }
         catch
         {
@@ -111,7 +113,8 @@ public static class ReflectionExtensions
     {
         try
         {
-            return type.GetCustomAttributes<TAttribute>();
+            // 使用非泛型重载，避免个别运行时实现上的异常情况
+            return type.GetCustomAttributes(typeof(TAttribute), inherit: false).Cast<TAttribute>();
         }
         catch
         {

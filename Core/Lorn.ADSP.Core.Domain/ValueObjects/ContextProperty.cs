@@ -52,7 +52,7 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// <summary>
         /// 私有构造函数（用于序列化）
         /// </summary>
-        private ContextProperty() 
+        private ContextProperty()
         {
             PropertyKey = string.Empty;
             PropertyValue = string.Empty;
@@ -65,8 +65,8 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
         /// 构造函数
         /// </summary>
         public ContextProperty(
-            string propertyKey, 
-            string propertyValue, 
+            string propertyKey,
+            string propertyValue,
             string dataType = "String",
             string category = "",
             bool isSensitive = false,
@@ -99,15 +99,105 @@ namespace Lorn.ADSP.Core.Domain.ValueObjects
 
             try
             {
-                if (typeof(T) == typeof(string))
+                var targetType = typeof(T);
+
+                // Direct string
+                if (targetType == typeof(string))
                     return (T)(object)PropertyValue;
 
+                // Nullable<TUnderlying>
+                var isNullable = Nullable.GetUnderlyingType(targetType) != null;
+                var underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+                // JSON payloads
                 if (DataType == "Json")
                 {
                     return System.Text.Json.JsonSerializer.Deserialize<T>(PropertyValue);
                 }
 
-                return (T)Convert.ChangeType(PropertyValue, typeof(T));
+                object? converted = null;
+
+                // Enums
+                if (underlying.IsEnum)
+                {
+                    if (int.TryParse(PropertyValue, out var enumInt))
+                    {
+                        converted = Enum.ToObject(underlying, enumInt);
+                    }
+                    else
+                    {
+                        converted = Enum.Parse(underlying, PropertyValue, true);
+                    }
+                }
+                // Guid
+                else if (underlying == typeof(Guid))
+                {
+                    if (Guid.TryParse(PropertyValue, out var guid))
+                        converted = guid;
+                }
+                // DateTime / DateTimeOffset with invariant culture and round-trip when possible
+                else if (underlying == typeof(DateTime))
+                {
+                    if (DateTime.TryParse(PropertyValue, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+                        converted = dt;
+                }
+                else if (underlying == typeof(DateTimeOffset))
+                {
+                    if (DateTimeOffset.TryParse(PropertyValue, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dto))
+                        converted = dto;
+                }
+                // Numerics with invariant culture (important for decimal, double, etc.)
+                else if (underlying == typeof(decimal))
+                {
+                    if (decimal.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dec))
+                        converted = dec;
+                }
+                else if (underlying == typeof(double))
+                {
+                    if (double.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
+                        converted = dbl;
+                }
+                else if (underlying == typeof(float))
+                {
+                    if (float.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var fl))
+                        converted = fl;
+                }
+                else if (underlying == typeof(long))
+                {
+                    if (long.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var l))
+                        converted = l;
+                }
+                else if (underlying == typeof(int))
+                {
+                    if (int.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var i))
+                        converted = i;
+                }
+                else if (underlying == typeof(short))
+                {
+                    if (short.TryParse(PropertyValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s))
+                        converted = s;
+                }
+                else if (underlying == typeof(bool))
+                {
+                    if (bool.TryParse(PropertyValue, out var b))
+                        converted = b;
+                }
+                else
+                {
+                    // Fallback to Convert.ChangeType with invariant culture
+                    converted = Convert.ChangeType(PropertyValue, underlying, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                if (converted == null)
+                    return default;
+
+                // If T is nullable, box into Nullable<TUnderlying>
+                if (isNullable)
+                {
+                    return (T)converted;
+                }
+
+                return (T)converted;
             }
             catch
             {

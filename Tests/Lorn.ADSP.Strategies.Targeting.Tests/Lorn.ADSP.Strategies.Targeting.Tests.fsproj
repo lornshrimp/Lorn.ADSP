@@ -13,6 +13,7 @@
     <Compile Include="Core/MatchingAlgorithmsTests.fs" />
     <Compile Include="Core/DemographicEnumTests.fs" />
     <Compile Include="Matchers/DemographicMatcherTests.fs" />
+    <Compile Include="Matchers/GeoLocationMatcherTests.fs" />
     <Compile Include="TestRunner.fs" />
   </ItemGroup>
 

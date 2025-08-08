@@ -136,7 +136,7 @@ public class ReflectionExtensionsTests
         typesWithAttribute.Should().Contain(typeof(TestAttributedClass));
         typesWithAttribute.Should().AllSatisfy(type =>
         {
-            type.GetCustomAttribute(attributeType).Should().NotBeNull();
+            type.IsDefined(attributeType, inherit: false).Should().BeTrue();
         });
     }
 
@@ -157,7 +157,7 @@ public class ReflectionExtensionsTests
         typesWithAttribute.Should().Contain(typeof(TestAttributedClass));
         typesWithAttribute.Should().AllSatisfy(type =>
         {
-            type.GetCustomAttribute<TestReflectionAttribute>().Should().NotBeNull();
+            type.GetCustomAttributes(typeof(TestReflectionAttribute), inherit: false).Any().Should().BeTrue();
         });
     }
 
@@ -342,7 +342,7 @@ public class ReflectionExtensionsTests
     /// 测试反射扩展方法的线程安全性
     /// </summary>
     [Fact]
-    public void ReflectionExtensions_Should_Be_Thread_Safe()
+    public async Task ReflectionExtensions_Should_Be_Thread_Safe()
     {
         // Arrange
         var assembly = Assembly.GetExecutingAssembly();
@@ -366,7 +366,7 @@ public class ReflectionExtensionsTests
                              }))
                              .ToArray();
 
-        var results = Task.WhenAll(tasks).Result;
+        var results = await Task.WhenAll(tasks);
 
         // Assert
         results.Should().AllSatisfy(result =>

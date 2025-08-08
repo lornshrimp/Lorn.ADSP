@@ -21,7 +21,7 @@ public static class TypeExtensions
             var genericArgNames = string.Join(",", genericArgs.Select(x => x.GetFriendlyName()));
             return $"{typeName}<{genericArgNames}>";
         }
-        
+
         return type.Name;
     }
 
@@ -57,6 +57,9 @@ public static class TypeExtensions
     /// <returns>是否为具体类</returns>
     public static bool IsConcreteClass(this Type type)
     {
+        // 具体类型：非抽象、非开放泛型；同时将值类型(例如DateTime, decimal, 自定义struct)视为具体可用类型
+        if (type.IsValueType)
+            return true;
         return type.IsClass && !type.IsAbstract && !type.IsGenericTypeDefinition;
     }
 
@@ -68,7 +71,7 @@ public static class TypeExtensions
     public static IEnumerable<Type> GetAllInterfaces(this Type type)
     {
         var interfaces = new HashSet<Type>();
-        
+
         foreach (var iface in type.GetInterfaces())
         {
             interfaces.Add(iface);
@@ -77,7 +80,7 @@ public static class TypeExtensions
                 interfaces.Add(baseIface);
             }
         }
-        
+
         return interfaces;
     }
 

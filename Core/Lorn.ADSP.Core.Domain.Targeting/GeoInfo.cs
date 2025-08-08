@@ -143,10 +143,10 @@ namespace Lorn.ADSP.Core.Domain.Targeting
                 properties["PostalCode"] = postalCode;
 
             if (latitude.HasValue)
-                properties["Latitude"] = latitude.Value;
+                properties["Latitude"] = latitude;
 
             if (longitude.HasValue)
-                properties["Longitude"] = longitude.Value;
+                properties["Longitude"] = longitude;
 
             if (accuracy.HasValue)
                 properties["Accuracy"] = accuracy.Value;
