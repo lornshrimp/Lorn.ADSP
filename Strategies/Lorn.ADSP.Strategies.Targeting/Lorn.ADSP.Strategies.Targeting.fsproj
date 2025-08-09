@@ -14,8 +14,11 @@
     <Compile Include="Utils/CacheHelpers.fs" />
     <Compile Include="Utils/WeightConfiguration.fs" />
     <Compile Include="Utils/MetricsCollector.fs" />
+  <Compile Include="Utils/TimePrecomputeCache.fs" />
+  <Compile Include="Utils/HolidayProvider.fs" />
     <Compile Include="Matchers/DemographicMatcher.fs" />
     <Compile Include="Matchers/GeoLocationMatcher.fs" />
+  <Compile Include="Matchers/TimeTargetingMatcher.fs" />
     <Compile Include="Interop/TypeConverters.fs" />
     <Compile Include="Interop/CSharpInterop.fs" />
     <Compile Include="Library.fs" />
