@@ -1,3 +1,5 @@
+using Lorn.ADSP.Core.Domain.ValueObjects;
+
 namespace Lorn.ADSP.Core.Domain.Targeting;
 
 /// <summary>
@@ -65,7 +67,7 @@ public class UserInterest : TargetingContextBase
         IList<string>? subCategories = null,
         IList<string>? tags = null,
         string? dataSource = null)
-        : base("UserInterest", CreateProperties(category, score, weight, confidence, lastUpdated, subCategories, tags), dataSource)
+        : base("UserInterest", CreatePropertyObjects(category, score, weight, confidence, lastUpdated, subCategories, tags), dataSource)
     {
         ValidateInput(category, score, weight, confidence);
     }
@@ -73,7 +75,7 @@ public class UserInterest : TargetingContextBase
     /// <summary>
     /// 创建属性字典
     /// </summary>
-    private static Dictionary<string, object> CreateProperties(
+    private static IEnumerable<ContextProperty> CreatePropertyObjects(
         string category,
         decimal score,
         decimal weight,
@@ -82,22 +84,30 @@ public class UserInterest : TargetingContextBase
         IList<string>? subCategories,
         IList<string>? tags)
     {
-        var properties = new Dictionary<string, object>
+        // 基础标量属性保持 String/Decimal 等简单类型
+        var props = new List<ContextProperty>
         {
-            ["Category"] = category,
-            ["Score"] = Math.Max(0, Math.Min(1, score)),
-            ["Weight"] = Math.Max(0, weight),
-            ["Confidence"] = Math.Max(0, Math.Min(1, confidence)),
-            ["LastUpdated"] = lastUpdated ?? DateTime.UtcNow
+            new ContextProperty("Category", category, "String", "UserInterest"),
+            new ContextProperty("Score", Math.Max(0, Math.Min(1, score)).ToString(System.Globalization.CultureInfo.InvariantCulture), "Decimal", "UserInterest"),
+            new ContextProperty("Weight", Math.Max(0, weight).ToString(System.Globalization.CultureInfo.InvariantCulture), "Decimal", "UserInterest"),
+            new ContextProperty("Confidence", Math.Max(0, Math.Min(1, confidence)).ToString(System.Globalization.CultureInfo.InvariantCulture), "Decimal", "UserInterest"),
+            new ContextProperty("LastUpdated", (lastUpdated ?? DateTime.UtcNow).ToString("O"), "DateTime", "UserInterest")
         };
 
+        // 复杂集合属性以 JSON 方式存储，便于后续反序列化
         if (subCategories != null && subCategories.Any())
-            properties["SubCategories"] = subCategories.ToList();
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(subCategories.ToList());
+            props.Add(new ContextProperty("SubCategories", json, "Json", "UserInterest"));
+        }
 
         if (tags != null && tags.Any())
-            properties["Tags"] = tags.ToList();
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(tags.ToList());
+            props.Add(new ContextProperty("Tags", json, "Json", "UserInterest"));
+        }
 
-        return properties;
+        return props;
     }
 
     /// <summary>
