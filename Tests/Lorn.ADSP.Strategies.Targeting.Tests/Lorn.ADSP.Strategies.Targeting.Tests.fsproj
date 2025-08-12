@@ -15,6 +15,7 @@
     <Compile Include="Matchers/DemographicMatcherTests.fs" />
     <Compile Include="Matchers/GeoLocationMatcherTests.fs" />
   <Compile Include="Matchers/UserInterestMatcherTests.fs" />
+  <Compile Include="Matchers/UserBehaviorMatcherTests.fs" />
     <Compile Include="TestRunner.fs" />
   </ItemGroup>
 
