@@ -99,30 +99,105 @@ namespace Lorn.ADSP.Core.Domain.Targeting
 
             try
             {
-                if (typeof(T) == typeof(string))
+                var targetType = typeof(T);
+
+                // Direct string
+                if (targetType == typeof(string))
                     return (T)(object)RuleValue;
 
+                // Nullable<TUnderlying>
+                var isNullable = Nullable.GetUnderlyingType(targetType) != null;
+                var underlying = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+                // JSON payloads
                 if (DataType == "Json")
                 {
                     return System.Text.Json.JsonSerializer.Deserialize<T>(RuleValue);
                 }
 
-                // 处理可空类型
-                var targetType = typeof(T);
-                var isNullable = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
+                object? converted = null;
 
-                if (isNullable)
+                // Enums
+                if (underlying.IsEnum)
                 {
-                    // 获取可空类型的基础类型
-                    var underlyingType = Nullable.GetUnderlyingType(targetType);
-                    if (underlyingType != null)
+                    if (int.TryParse(RuleValue, out var enumInt))
                     {
-                        var convertedValue = Convert.ChangeType(RuleValue, underlyingType);
-                        return (T)convertedValue;
+                        converted = Enum.ToObject(underlying, enumInt);
+                    }
+                    else
+                    {
+                        converted = Enum.Parse(underlying, RuleValue, true);
                     }
                 }
+                // Guid
+                else if (underlying == typeof(Guid))
+                {
+                    if (Guid.TryParse(RuleValue, out var guid))
+                        converted = guid;
+                }
+                // DateTime / DateTimeOffset with invariant culture and round-trip when possible
+                else if (underlying == typeof(DateTime))
+                {
+                    if (DateTime.TryParse(RuleValue, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+                        converted = dt;
+                }
+                else if (underlying == typeof(DateTimeOffset))
+                {
+                    if (DateTimeOffset.TryParse(RuleValue, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dto))
+                        converted = dto;
+                }
+                // Numerics with invariant culture
+                else if (underlying == typeof(decimal))
+                {
+                    if (decimal.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dec))
+                        converted = dec;
+                }
+                else if (underlying == typeof(double))
+                {
+                    if (double.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var dbl))
+                        converted = dbl;
+                }
+                else if (underlying == typeof(float))
+                {
+                    if (float.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var fl))
+                        converted = fl;
+                }
+                else if (underlying == typeof(long))
+                {
+                    if (long.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var l))
+                        converted = l;
+                }
+                else if (underlying == typeof(int))
+                {
+                    if (int.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var i))
+                        converted = i;
+                }
+                else if (underlying == typeof(short))
+                {
+                    if (short.TryParse(RuleValue, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var s))
+                        converted = s;
+                }
+                else if (underlying == typeof(bool))
+                {
+                    if (bool.TryParse(RuleValue, out var b))
+                        converted = b;
+                }
+                else
+                {
+                    // Fallback to Convert.ChangeType with invariant culture
+                    converted = Convert.ChangeType(RuleValue, underlying, System.Globalization.CultureInfo.InvariantCulture);
+                }
 
-                return (T)Convert.ChangeType(RuleValue, targetType);
+                if (converted == null)
+                    return default;
+
+                // If T is nullable, box into Nullable<TUnderlying>
+                if (isNullable)
+                {
+                    return (T)converted;
+                }
+
+                return (T)converted;
             }
             catch
             {

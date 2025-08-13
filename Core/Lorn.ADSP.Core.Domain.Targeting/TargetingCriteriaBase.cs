@@ -96,7 +96,14 @@ namespace Lorn.ADSP.Core.Domain.Targeting
         public virtual T GetRule<T>(string ruleKey, T defaultValue)
         {
             var result = GetRule<T>(ruleKey);
-            return result ?? defaultValue;
+            // 对于引用类型，result 可能为 null；对于值类型（含枚举），当解析失败通常为 default(T)
+            if (result is null)
+                return defaultValue;
+
+            if (EqualityComparer<T>.Default.Equals(result, default!))
+                return defaultValue;
+
+            return result;
         }
 
         /// <summary>

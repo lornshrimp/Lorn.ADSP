@@ -23,6 +23,7 @@
   <Compile Include="Matchers/DeviceTargetingMatcher.fs" />
   <Compile Include="Matchers/UserInterestMatcher.fs" />
   <Compile Include="Matchers/UserBehaviorMatcher.fs" />
+  <Compile Include="Matchers/UserPreferenceMatcher.fs" />
     <Compile Include="Interop/TypeConverters.fs" />
     <Compile Include="Interop/CSharpInterop.fs" />
     <Compile Include="Library.fs" />

@@ -9,6 +9,7 @@ open Lorn.ADSP.Core.AdEngine.Abstractions.Interfaces
 open Lorn.ADSP.Core.AdEngine.Abstractions.Models
 open Lorn.ADSP.Core.Domain.Targeting
 open Lorn.ADSP.Core.Domain.ValueObjects
+open System.Collections.Generic
 
 // 复用与兴趣测试类似的极简 ITargetingContext stub
 type SimpleContext(props: (string * obj) list) =
@@ -77,37 +78,54 @@ type SimpleContext(props: (string * obj) list) =
         member this.CreateCategorizedCopy(categories) = upcast this
         member this.Merge(other, overwriteExisting) = upcast this
 
-let mkRecord t v ts freq w ctx =
+let mkRecord (t: string) (v: string) (ts: DateTime) (freq: int) (w: decimal) (ctx: string) =
     Lorn.ADSP.Core.Domain.Targeting.BehaviorRecord(t, v, ts, freq, w, ctx)
+
+let toIList
+    (items: Lorn.ADSP.Core.Domain.Targeting.BehaviorRecord list)
+    : IList<Lorn.ADSP.Core.Domain.Targeting.BehaviorRecord> =
+    upcast new List<Lorn.ADSP.Core.Domain.Targeting.BehaviorRecord>(items)
 
 [<Fact>]
 let ``Behavior type filter works`` () =
     let ub =
         UserBehavior(
             behaviorRecords =
-                upcast
-                    [ mkRecord
-                          "click"
-                          "home"
-                          DateTime.UtcNow
-                          3
-                          1.0m
-                          null
-                          mkRecord
-                          "view"
-                          "detail"
-                          DateTime.UtcNow
-                          2
-                          1.0m
-                          null ],
+                toIList
+                    [ mkRecord "click" "home" DateTime.UtcNow 3 1.0m null
+                      mkRecord "view" "detail" DateTime.UtcNow 2 1.0m null ],
             dataSource = "UnitTest"
         )
 
-    let criteria = UserBehaviorTargeting.Create(behaviorTypes = upcast [ "click" ])
+    // extra debug
+    let prop = (ub :> ITargetingContext).GetProperty("BehaviorRecords")
+
+    printfn
+        "UB.BehaviorRecords.Count=%d; Prop.DataType=%s; JSON.Length=%d"
+        (ub.BehaviorRecords |> Seq.length)
+        (if obj.ReferenceEquals(prop, null) then
+             "<null>"
+         else
+             prop.DataType)
+        (if obj.ReferenceEquals(prop, null) then
+             0
+         else
+             prop.PropertyValue.Length)
+
+    let behaviorTypes: IList<string> = upcast List<string>([ "click" ])
+    let criteria = UserBehaviorTargeting.Create(behaviorTypes = behaviorTypes)
     let matcher = UserBehaviorMatcher() :> ITargetingMatcher
 
     let r =
         matcher.CalculateMatchScoreAsync(ub, criteria, null, CancellationToken.None).Result
+
+    // Debug output for failure analysis
+    printfn
+        "Behavior type filter -> IsMatch=%b, Score=%M, Reason=%s, Not=%s"
+        r.IsMatch
+        r.MatchScore
+        r.MatchReason
+        r.NotMatchReason
 
     r.IsMatch |> should equal true
     r.MatchScore |> should be (greaterThan 0m)
@@ -117,50 +135,85 @@ let ``Frequency window prefers recent`` () =
     let ub =
         UserBehavior(
             behaviorRecords =
-                upcast
-                    [ mkRecord
-                          "click"
-                          "home"
-                          (DateTime.UtcNow.AddDays(-10))
-                          5
-                          1.0m
-                          null
-                          mkRecord
-                          "click"
-                          "home"
-                          DateTime.UtcNow
-                          2
-                          1.0m
-                          null ],
+                toIList
+                    [ mkRecord "click" "home" (DateTime.UtcNow.AddDays(-10)) 5 1.0m null
+                      mkRecord "click" "home" DateTime.UtcNow 2 1.0m null ],
             dataSource = "UnitTest"
         )
 
-    let criteria = UserBehaviorTargeting.Create(behaviorTypes = upcast [ "click" ])
+    // extra debug
+    let prop = (ub :> ITargetingContext).GetProperty("BehaviorRecords")
+
+    printfn
+        "UB.BehaviorRecords.Count=%d; Prop.DataType=%s; JSON.Length=%d"
+        (ub.BehaviorRecords |> Seq.length)
+        (if obj.ReferenceEquals(prop, null) then
+             "<null>"
+         else
+             prop.DataType)
+        (if obj.ReferenceEquals(prop, null) then
+             0
+         else
+             prop.PropertyValue.Length)
+
+    let behaviorTypes: IList<string> = upcast List<string>([ "click" ])
+    let criteria = UserBehaviorTargeting.Create(behaviorTypes = behaviorTypes)
     let matcher = UserBehaviorMatcher() :> ITargetingMatcher
 
     let r =
         matcher.CalculateMatchScoreAsync(ub, criteria, null, CancellationToken.None).Result
+
+    // Debug output for failure analysis
+    printfn
+        "Frequency window -> IsMatch=%b, Score=%M, Reason=%s, Not=%s"
+        r.IsMatch
+        r.MatchScore
+        r.MatchReason
+        r.NotMatchReason
 
     r.IsMatch |> should equal true
     r.MatchScore |> should be (greaterThan 0m)
 
 [<Fact>]
 let ``Context boost when tag hits interest`` () =
-    let ctxJson = "{" "tag" ": " "sports" "}"
+    let ctxJson = "{\"tag\":\"sports\"}"
 
     let ub =
         UserBehavior(
-            behaviorRecords = upcast [ mkRecord "view" "article" DateTime.UtcNow 1 1.0m (Some ctxJson) ],
+            behaviorRecords = toIList [ mkRecord "view" "article" DateTime.UtcNow 1 1.0m ctxJson ],
             dataSource = "UnitTest"
         )
 
-    let criteria =
-        UserBehaviorTargeting.Create(interestTags = upcast [ "sports"; "news" ])
+    // extra debug
+    let prop = (ub :> ITargetingContext).GetProperty("BehaviorRecords")
+
+    printfn
+        "UB.BehaviorRecords.Count=%d; Prop.DataType=%s; JSON.Length=%d"
+        (ub.BehaviorRecords |> Seq.length)
+        (if obj.ReferenceEquals(prop, null) then
+             "<null>"
+         else
+             prop.DataType)
+        (if obj.ReferenceEquals(prop, null) then
+             0
+         else
+             prop.PropertyValue.Length)
+
+    let interestTags: IList<string> = upcast List<string>([ "sports"; "news" ])
+    let criteria = UserBehaviorTargeting.Create(interestTags = interestTags)
 
     let matcher = UserBehaviorMatcher() :> ITargetingMatcher
 
     let r =
         matcher.CalculateMatchScoreAsync(ub, criteria, null, CancellationToken.None).Result
+
+    // Debug output for failure analysis
+    printfn
+        "Context boost -> IsMatch=%b, Score=%M, Reason=%s, Not=%s"
+        r.IsMatch
+        r.MatchScore
+        r.MatchReason
+        r.NotMatchReason
 
     r.IsMatch |> should equal true
     r.MatchScore |> should be (greaterThan 0m)
@@ -168,7 +221,8 @@ let ``Context boost when tag hits interest`` () =
 [<Fact>]
 let ``No behavior returns no match`` () =
     let ub = UserBehavior.CreateDefault()
-    let criteria = UserBehaviorTargeting.Create(behaviorTypes = upcast [ "purchase" ])
+    let behaviorTypes: IList<string> = upcast List<string>([ "purchase" ])
+    let criteria = UserBehaviorTargeting.Create(behaviorTypes = behaviorTypes)
     let matcher = UserBehaviorMatcher() :> ITargetingMatcher
 
     let r =

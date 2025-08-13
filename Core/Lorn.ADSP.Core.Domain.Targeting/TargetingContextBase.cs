@@ -92,7 +92,40 @@ namespace Lorn.ADSP.Core.Domain.Targeting
             {
                 foreach (var kvp in properties)
                 {
-                    var property = new ContextProperty(kvp.Key, kvp.Value?.ToString() ?? string.Empty);
+                    string valueStr;
+                    string dataType;
+
+                    if (kvp.Value is null)
+                    {
+                        valueStr = string.Empty;
+                        dataType = "String";
+                    }
+                    else
+                    {
+                        var t = kvp.Value.GetType();
+                        // Simple primitives we can store as plain strings
+                        if (t.IsPrimitive || kvp.Value is decimal || kvp.Value is DateTime || kvp.Value is DateTimeOffset || kvp.Value is Guid || kvp.Value is string)
+                        {
+                            if (kvp.Value is IFormattable formattable && kvp.Value is not string)
+                            {
+                                valueStr = formattable.ToString(null, System.Globalization.CultureInfo.InvariantCulture);
+                            }
+                            else
+                            {
+                                valueStr = kvp.Value.ToString() ?? string.Empty;
+                            }
+
+                            dataType = t == typeof(string) ? "String" : t.Name;
+                        }
+                        else
+                        {
+                            // Complex types / collections -> JSON
+                            valueStr = System.Text.Json.JsonSerializer.Serialize(kvp.Value);
+                            dataType = "Json";
+                        }
+                    }
+
+                    var property = new ContextProperty(kvp.Key, valueStr, dataType, category: ContextType, isSensitive: false, weight: 1.0m, expiresAt: null, dataSource: DataSource);
                     _properties.Add(property);
                 }
             }
