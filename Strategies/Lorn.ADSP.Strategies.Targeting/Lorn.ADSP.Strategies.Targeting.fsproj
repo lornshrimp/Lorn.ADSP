@@ -25,6 +25,7 @@
   <Compile Include="Matchers/UserBehaviorMatcher.fs" />
   <Compile Include="Matchers/UserPreferenceMatcher.fs" />
   <Compile Include="Matchers/UserTagMatcher.fs" />
+  <Compile Include="Matchers/UserValueMatcher.fs" />
     <Compile Include="Interop/TypeConverters.fs" />
     <Compile Include="Interop/CSharpInterop.fs" />
     <Compile Include="Library.fs" />

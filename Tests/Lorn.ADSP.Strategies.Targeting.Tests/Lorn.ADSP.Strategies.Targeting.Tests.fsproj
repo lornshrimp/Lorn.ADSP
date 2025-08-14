@@ -18,6 +18,7 @@
   <Compile Include="Matchers/UserBehaviorMatcherTests.fs" />
   <Compile Include="Matchers/UserPreferenceMatcherTests.fs" />
   <Compile Include="Matchers/UserTagMatcherTests.fs" />
+  <Compile Include="Matchers/UserValueMatcherTests.fs" />
     <Compile Include="TestRunner.fs" />
   </ItemGroup>
 
