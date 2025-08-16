@@ -9,12 +9,16 @@
   <ItemGroup>
     <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Common\Lorn.ADSP.Infrastructure.Common.csproj" />
     <ProjectReference Include="..\Lorn.ADSP.Infrastructure.Configuration\Lorn.ADSP.Infrastructure.Configuration.csproj" />
+    <ProjectReference Include="..\..\Core\Lorn.ADSP.Core.AdEngine.Abstractions\Lorn.ADSP.Core.AdEngine.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Strategies\Lorn.ADSP.Strategies.Targeting\Lorn.ADSP.Strategies.Targeting.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.0" />
   </ItemGroup>
 
 </Project>
