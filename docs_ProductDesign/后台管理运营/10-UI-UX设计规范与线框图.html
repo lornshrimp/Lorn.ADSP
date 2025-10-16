@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Lorn.ADSP 后台管理运营 UI/UX 设计规范与线框图</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root {
+            /* 视觉风格指南 - 企业级中性色 & 品牌色 */
+            --color-brand-primary: #1F65D6;
+            /* 主品牌色：专业、可信 */
+            --color-brand-secondary: #2674F0;
+            /* 渐变/高亮 */
+            --color-accent-success: #1FAD66;
+            /* 成功 */
+            --color-accent-warning: #F5A623;
+            /* 警告 */
+            --color-accent-danger: #E54848;
+            /* 危险 */
+            --color-accent-info: #2CB4C9;
+            /* 信息 */
+            --color-neutral-900: #111826;
+            --color-neutral-800: #1E2936;
+            --color-neutral-700: #334155;
+            --color-neutral-600: #4B5C70;
+            --color-neutral-500: #64758B;
+            --color-neutral-400: #94A3B8;
+            --color-neutral-300: #CBD5E1;
+            --color-neutral-200: #E2E8F0;
+            --color-neutral-150: #EBF1F7;
+            --color-neutral-100: #F1F5F9;
+            --color-neutral-50: #F8FAFC;
+            --color-elevation-1: #FFFFFF;
+            --color-elevation-2: #FFFFFF;
+            /* 可加阴影区分层级 */
+            --gradient-brand: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-secondary));
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 10px;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, .06), 0 0 0 1px rgba(0, 0, 0, .04);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, .08), 0 2px 4px rgba(0, 0, 0, .06);
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            --duration-fast: .15s;
+            --duration-normal: .25s;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            margin: 0;
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-800);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-weight: 600;
+            line-height: 1.25;
+            margin: 1.2em 0 .6em;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+        }
+
+        h4 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        p,
+        li {
+            line-height: 1.55;
+        }
+
+        code {
+            background: var(--color-neutral-150);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: .85em;
+        }
+
+        section {
+            padding: 1.2rem 2rem;
+        }
+
+        header.page-intro {
+            background: var(--gradient-brand);
+            color: #fff;
+            padding: 2rem 2.5rem;
+            border-bottom: 4px solid var(--color-brand-secondary);
+        }
+
+        header.page-intro h1 {
+            margin: 0 0 .6rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, .2);
+            padding: 4px 10px;
+            margin: 0 6px 6px 0;
+            border-radius: 20px;
+            font-size: .75rem;
+            letter-spacing: .05em;
+        }
+
+        /* Wireframe container */
+        .wireframes-nav {
+            position: sticky;
+            top: 0;
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            background: var(--color-neutral-50);
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--color-neutral-200);
+            z-index: 20;
+        }
+
+        .wireframes-nav button {
+            background: var(--color-neutral-200);
+            border: 0;
+            padding: .5rem .9rem;
+            border-radius: var(--radius-sm);
+            font-size: .8rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-neutral-700);
+            transition: all var(--duration-fast);
+        }
+
+        .wireframes-nav button.active,
+        .wireframes-nav button:hover {
+            background: var(--color-brand-primary);
+            color: #fff;
+        }
+
+        .wf-canvas {
+            padding: 1.5rem;
+            background: var(--color-neutral-50);
+            min-height: 600px;
+        }
+
+        .wf-screen {
+            display: none;
+        }
+
+        .wf-screen.active {
+            display: grid;
+            gap: 12px;
+        }
+
+        .wf-box {
+            border: 1.5px dashed var(--color-neutral-300);
+            background: rgba(255, 255, 255, .6);
+            border-radius: var(--radius-sm);
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            text-align: center;
+            padding: 4px;
+            color: var(--color-neutral-600);
+        }
+
+        .wf-box:before {
+            content: attr(data-label);
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: .65rem;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+        }
+
+        .layout--dashboard {
+            grid-template-areas: "topbar topbar" "sidebar main" "sidebar main";
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: 56px 1fr;
+        }
+
+        .layout--dashboard .topbar {
+            grid-area: topbar;
+        }
+
+        .layout--dashboard .sidebar {
+            grid-area: sidebar;
+        }
+
+        .layout--dashboard .main {
+            grid-area: main;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 12px;
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .chart {
+            height: 180px;
+        }
+
+        .timeline {
+            height: 140px;
+        }
+
+        .panel {
+            border: 1px solid var(--color-neutral-200);
+            background: var(--color-elevation-1);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            position: relative;
+        }
+
+        .panel h3 {
+            margin: .2rem 0 .8rem;
+            font-size: .85rem;
+            color: var(--color-neutral-600);
+            font-weight: 600;
+            letter-spacing: .05em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-600);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: .65rem;
+            margin-left: 4px;
+        }
+
+        /* Interaction patterns demo */
+        .multi-account-switch {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .multi-account-switch select {
+            padding: .35rem .6rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--radius-sm);
+            background: #fff;
+        }
+
+        .quick-switch-pop {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            background: #fff;
+            border: 1px solid var(--color-neutral-200);
+            box-shadow: var(--shadow-md);
+            border-radius: var(--radius-sm);
+            padding: .5rem;
+            min-width: 220px;
+            display: none;
+        }
+
+        .multi-account-switch:focus-within .quick-switch-pop {
+            display: block;
+        }
+
+        .quick-switch-pop input {
+            width: 100%;
+            padding: .4rem .5rem;
+            border: 1px solid var(--color-neutral-300);
+            border-radius: var(--radius-sm);
+            margin-bottom: .4rem;
+        }
+
+        .quick-switch-pop ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 180px;
+            overflow: auto;
+        }
+
+        .quick-switch-pop li {
+            padding: .35rem .4rem;
+            border-radius: 4px;
+            font-size: .75rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quick-switch-pop li:hover {
+            background: var(--color-neutral-150);
+        }
+
+        /* Status tokens */
+        .status-token {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: .65rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            line-height: 1;
+        }
+
+        .st-live {
+            background: var(--color-accent-success);
+            color: #fff;
+        }
+
+        .st-paused {
+            background: var(--color-neutral-400);
+            color: #fff;
+        }
+
+        .st-alert {
+            background: var(--color-accent-danger);
+            color: #fff;
+        }
+
+        .st-warn {
+            background: var(--color-accent-warning);
+            color: #fff;
+        }
+
+        /* Empty state */
+        .empty-state {
+            border: 1.5px dashed var(--color-neutral-300);
+            background: var(--color-neutral-50);
+            padding: 2rem;
+            text-align: center;
+            border-radius: var(--radius-md);
+        }
+
+        .empty-state h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            color: var(--color-neutral-600);
+        }
+
+        .empty-state p {
+            margin: .5rem 0 1.2rem;
+            color: var(--color-neutral-500);
+        }
+
+        .empty-state button {
+            background: var(--color-brand-primary);
+            color: #fff;
+            border: 0;
+            padding: .6rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: .8rem;
+        }
+
+        /* Report layout */
+        .layout--report {
+            grid-template-areas: "topbar topbar" "filters main";
+            grid-template-columns: 300px 1fr;
+            grid-template-rows: 56px 1fr;
+        }
+
+        .layout--report .filters {
+            grid-area: filters;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .report-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 14px;
+        }
+
+        /* Batch operations bar */
+        .batch-bar {
+            position: sticky;
+            top: 0;
+            background: var(--color-neutral-900);
+            color: #fff;
+            padding: .4rem .8rem;
+            font-size: .7rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 30;
+        }
+
+        .batch-bar button {
+            background: var(--color-accent-success);
+            border: 0;
+            color: #fff;
+            padding: .35rem .7rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: .7rem;
+        }
+
+        /* Alert center preview */
+        .alert-center {
+            display: grid;
+            gap: 8px;
+        }
+
+        .alert {
+            padding: .6rem .8rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            font-size: .7rem;
+            line-height: 1.3;
+        }
+
+        .alert.high {
+            background: linear-gradient(135deg, var(--color-accent-danger), #FF6B6B);
+            color: #fff;
+        }
+
+        .alert.medium {
+            background: var(--color-accent-warning);
+            color: #222;
+        }
+
+        .alert.low {
+            background: var(--color-neutral-200);
+        }
+
+        .alert .meta {
+            font-size: .6rem;
+            opacity: .8;
+        }
+
+        .refresh-hint {
+            font-size: .6rem;
+            color: var(--color-neutral-500);
+            margin-left: auto;
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+
+        .token-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: .75rem;
+        }
+
+        .token-table th,
+        .token-table td {
+            border: 1px solid var(--color-neutral-200);
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .token-table th {
+            background: var(--color-neutral-150);
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: .6rem;
+            border-radius: 12px;
+            background: var(--color-neutral-200);
+            margin: 0 2px 2px 0;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: .5rem;
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: .6rem;
+            background: var(--color-neutral-200);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .legend span i {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .legend .b1 i {
+            background: var(--color-brand-primary);
+        }
+
+        .legend .b2 i {
+            background: var(--color-accent-success);
+        }
+
+        .legend .b3 i {
+            background: var(--color-accent-info);
+        }
+
+        .legend .b4 i {
+            background: var(--color-accent-warning);
+        }
+
+        .legend .b5 i {
+            background: var(--color-accent-danger);
+        }
+
+        footer {
+            margin: 4rem 0 2rem;
+            text-align: center;
+            font-size: .6rem;
+            color: var(--color-neutral-500);
+        }
+    </style>
+    <script>
+        function show(id) { document.querySelectorAll('.wf-screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.wireframes-nav button').forEach(b => b.classList.remove('active')); document.querySelector('.wireframes-nav button[data-target="' + id + '"]').classList.add('active'); }
+        document.addEventListener('DOMContentLoaded', () => { show('wf-dashboard'); });
+    </script>
+</head>
+
+<body>
+    <header class="page-intro">
+        <h1>Lorn.ADSP 后台管理运营 UI/UX 设计规范与线框图</h1>
+        <div class="tag">专业高效</div>
+        <div class="tag">数据清晰</div>
+        <div class="tag">操作便捷</div>
+        <p>目标用户：企业营销团队、广告优化师 | 设计目标：以数据为中心的决策闭环 + 高效投放操作面板 + 统一跨模块体验。</p>
+    </header>
+
+    <nav class="wireframes-nav">
+        <button data-target="wf-dashboard" onclick="show('wf-dashboard')">仪表盘</button>
+        <button data-target="wf-account" onclick="show('wf-account')">账户管理</button>
+        <button data-target="wf-campaign" onclick="show('wf-campaign')">投放管理流程</button>
+        <button data-target="wf-report" onclick="show('wf-report')">报表中心</button>
+        <button data-target="wf-alert" onclick="show('wf-alert')">告警与实时</button>
+        <button data-target="wf-empty" onclick="show('wf-empty')">空白状态</button>
+    </nav>
+
+    <section class="wf-canvas" id="wireframes">
+        <!-- 仪表盘布局与数据可视化 -->
+        <div class="wf-screen layout--dashboard" id="wf-dashboard">
+            <div class="wf-box topbar" data-label="TopBar 顶部导航">LOGO / 产品名 | <span class="multi-account-switch">
+                    <strong style="font-size:.6rem;">账户:</strong>
+                    <select aria-label="账户快捷切换">
+                        <option>品牌A</option>
+                        <option>品牌B</option>
+                        <option>代理商C</option>
+                    </select>
+                    <div class="quick-switch-pop" aria-label="智能筛选">
+                        <input placeholder="搜索账户..." />
+                        <ul>
+                            <li>品牌A <span class="status-token st-live">LIVE</span></li>
+                            <li>品牌B <span class="status-token st-paused">PAUSED</span></li>
+                            <li>代理商C <span class="status-token st-alert">ALERT</span></li>
+                        </ul>
+                    </div>
+                </span> | 全局搜索 | 用户 / 通知 / 设置</div>
+            <div class="wf-box sidebar" data-label="Sidebar 菜单">概览<br />投放计划<br />创意管理<br />受众与定向<br />报表中心<br />系统配置
+            </div>
+            <div class="wf-box main" data-label="Main 主工作区">
+                <div class="panel" style="grid-column:1/-1;">
+                    <h3>关键KPI 总览 (本期 vs 上期)</h3>
+                    <div class="kpi-row">
+                        <div class="wf-box" data-label="KPI">消耗 (↑12%)</div>
+                        <div class="wf-box" data-label="KPI">展示 (↓3%)</div>
+                        <div class="wf-box" data-label="KPI">点击率 CTR</div>
+                        <div class="wf-box" data-label="KPI">转化 CPA</div>
+                        <div class="wf-box" data-label="KPI">ROI</div>
+                        <div class="wf-box" data-label="KPI">告警数</div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h3>实时监控 (延迟 ≤ 1min)</h3>
+                    <div class="wf-box chart" data-label="曲线">展示/点击/消耗 多轴</div>
+                    <div class="refresh-hint">刷新策略: WebSocket + 30s 差异补偿</div>
+                </div>
+                <div class="panel">
+                    <h3>投放漏斗</h3>
+                    <div class="wf-box chart" data-label="漏斗">曝光→点击→落地页→转化</div>
+                </div>
+                <div class="panel">
+                    <h3>高价值告警</h3>
+                    <div class="alert-center">
+                        <div class="alert high">账户预算今日消耗 90%<div class="meta">触发 10:12</div>
+                        </div>
+                        <div class="alert medium">计划 CTR 低于阈值<div class="meta">10:05</div>
+                        </div>
+                        <div class="alert low">无创意待审批<div class="meta">09:55</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" style="grid-column:1/-1;">
+                    <h3>操作活动流</h3>
+                    <div class="wf-box timeline" data-label="时间线">最近变更：新建计划 / 调整预算 / 暂停创意 ...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 账户管理信息层级 -->
+        <div class="wf-screen" id="wf-account" style="grid-template-columns:280px 1fr;display:grid;">
+            <div class="wf-box" data-label="账户列表">搜索 + 筛选 + 分组<br />账户树(品牌/子账户)</div>
+            <div class="wf-box" data-label="主信息面板" style="display:grid;grid-template-rows:auto auto 1fr;gap:12px;">
+                <div class="panel">
+                    <h3>账户 Summary (L1)</h3>
+                    <div class="wf-box" data-label="核心指标">预算 | 状态 | 今日消耗 | 余额 | 标签</div>
+                </div>
+                <div class="panel">
+                    <h3>结构与权限 (L2)</h3>
+                    <div class="data-grid">
+                        <div class="wf-box" data-label="组织">组织 & 角色</div>
+                        <div class="wf-box" data-label="用户">成员与权限</div>
+                        <div class="wf-box" data-label="关联">关联站点/App</div>
+                        <div class="wf-box" data-label="标签">账户标签维护</div>
+                    </div>
+                </div>
+                <div class="panel" style="overflow:auto;">
+                    <h3>运营维度 (L3) - 可切分Tab</h3>
+                    <div class="wf-box" data-label="Tab">计划(23) | 预算分配 | 准入资质 | 历史记录 | 日志</div>
+                    <div class="wf-box" data-label="内容表格">表格: 计划列表 + 状态 + KPI + 快捷操作</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 投放管理操作流程 -->
+        <div class="wf-screen" id="wf-campaign" style="display:grid;gap:16px;grid-template-rows:auto 1fr;">
+            <div class="batch-bar">已选择 5 条计划 <button>批量修改预算</button><button>批量暂停</button><button class="st-alert"
+                    style="background:var(--color-accent-danger);">批量删除</button></div>
+            <div class="wf-box" data-label="分步流程向导" style="display:grid;grid-template-columns:160px 1fr;gap:12px;">
+                <div class="panel" style="display:flex;flex-direction:column;gap:6px;">
+                    <h3>创建/编辑步骤</h3>
+                    <div class="wf-box" data-label="Step">1 基础信息 ✔</div>
+                    <div class="wf-box" data-label="Step">2 定向设置 50%</div>
+                    <div class="wf-box" data-label="Step">3 出价与预算</div>
+                    <div class="wf-box" data-label="Step">4 投放日程</div>
+                    <div class="wf-box" data-label="Step">5 创意素材</div>
+                    <div class="wf-box" data-label="Step">6 监测与转化</div>
+                    <div class="wf-box" data-label="Step">7 复核&提交</div>
+                </div>
+                <div class="panel" style="display:grid;grid-template-rows:auto 1fr auto;gap:10px;">
+                    <h3>当前步骤：定向设置</h3>
+                    <div class="data-grid">
+                        <div class="wf-box" data-label="地域定向">地图/层级选择</div>
+                        <div class="wf-box" data-label="人群包">标签 / Lookalike</div>
+                        <div class="wf-box" data-label="设备参数">设备&网络</div>
+                        <div class="wf-box" data-label="频控">频次控制</div>
+                    </div>
+                    <div style="display:flex;gap:8px;justify-content:flex-end;">
+                        <div class="wf-box" style="flex:1;text-align:left;" data-label="校验提示">实时校验: 定向冲突/预算不足</div>
+                        <button
+                            style="background:var(--color-neutral-300);border:0;padding:.6rem 1rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.7rem;">上一步</button>
+                        <button
+                            style="background:var(--color-brand-primary);color:#fff;border:0;padding:.6rem 1rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.7rem;">下一步
+                            →</button>
+                    </div>
+                </div>
+            </div>
+            <div class="wf-box" data-label="计划列表批量面板" style="display:grid;grid-template-columns:1fr 320px;gap:12px;">
+                <div class="panel" style="display:grid;gap:8px;">
+                    <h3>计划列表 (批量模式)</h3>
+                    <div class="wf-box" data-label="工具条">筛选 | 视图保存 | 列配置 | 分组统计</div>
+                    <div class="wf-box" data-label="表格">勾选框 | 计划名称 | 状态 | 日预算 | 出价 | CTR | CPA | 操作</div>
+                </div>
+                <div class="panel">
+                    <h3>批量编辑侧栏</h3>
+                    <div class="wf-box" data-label="字段">统一调增预算 +10%</div>
+                    <div class="wf-box" data-label="字段">批量出价策略</div>
+                    <div class="wf-box" data-label="字段">统一投放时段</div>
+                    <div class="wf-box" data-label="预览">影响行预览 / 冲突提示</div>
+                    <button
+                        style="background:var(--color-accent-success);color:#fff;border:0;width:100%;padding:.6rem;border-radius:var(--radius-sm);cursor:pointer;font-size:.7rem;">应用修改</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 报表页面图表布局 -->
+        <div class="wf-screen layout--report" id="wf-report">
+            <div class="wf-box topbar" data-label="TopBar">报表中心顶部：日期选择 / 维度 / 指标 / 导出</div>
+            <div class="wf-box filters" data-label="侧栏过滤器">
+                <div class="panel">
+                    <h3>维度选择</h3>
+                    <div class="wf-box" data-label="维度">日 / 账户 / 计划 / 创意</div>
+                </div>
+                <div class="panel">
+                    <h3>指标集</h3>
+                    <div class="wf-box" data-label="指标">展示 / 点击 / 消耗 / 转化 / ROI</div>
+                </div>
+                <div class="panel">
+                    <h3>分组与排序</h3>
+                    <div class="wf-box" data-label="配置">分组 / 排序 / TopN</div>
+                </div>
+                <div class="panel">
+                    <h3>图表模板</h3>
+                    <div class="wf-box" data-label="模板">保存 / 管理</div>
+                </div>
+                <div class="panel">
+                    <h3>刷新策略</h3>
+                    <div class="wf-box" data-label="策略">实时 | 5m | 手动</div>
+                </div>
+            </div>
+            <div class="wf-box main" data-label="图表主区域" style="display:grid;grid-template-rows:auto 1fr;gap:12px;">
+                <div class="panel" style="grid-column:1/-1;">
+                    <h3>关键指标对比</h3>
+                    <div class="wf-box chart" data-label="多轴曲线">展示 / 点击 / 转化 / ROI</div>
+                </div>
+                <div class="report-charts">
+                    <div class="panel">
+                        <h3>按广告位分布</h3>
+                        <div class="wf-box chart" data-label="柱状图">Bar</div>
+                    </div>
+                    <div class="panel">
+                        <h3>地域热力</h3>
+                        <div class="wf-box chart" data-label="地图">Map</div>
+                    </div>
+                    <div class="panel">
+                        <h3>设备占比</h3>
+                        <div class="wf-box chart" data-label="环图">Donut</div>
+                    </div>
+                    <div class="panel">
+                        <h3>小时粒度趋势</h3>
+                        <div class="wf-box chart" data-label="微趋势栅格">Sparklines Grid</div>
+                    </div>
+                    <div class="panel">
+                        <h3>计划绩效 Top10</h3>
+                        <div class="wf-box chart" data-label="表格+条形">Ranked Table</div>
+                    </div>
+                    <div class="panel">
+                        <h3>创意素材对比</h3>
+                        <div class="wf-box chart" data-label="箱型图">Box Plot</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 告警 & 实时刷新策略展示 -->
+        <div class="wf-screen" id="wf-alert" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="panel">
+                <h3>实时刷新策略</h3>
+                <ul style="font-size:.7rem;line-height:1.4;margin:0 0 1rem 1.1rem;">
+                    <li>核心KPI: WebSocket 推送 + 差量补丁 (节省带宽)</li>
+                    <li>长尾列表: 轮询 (默认 120s，可手动刷新)</li>
+                    <li>离开标签页: 页面 Visibility API 降级为 5min </li>
+                    <li>节流: 同一批次多指标合并刷新</li>
+                    <li>防抖: 用户交互后 800ms 合并重算</li>
+                </ul>
+                <div class="wf-box" data-label="刷新演示">KPI -> 渐进亮显 / 值闪烁 200ms / Diff 标识</div>
+            </div>
+            <div class="panel">
+                <h3>异常告警提醒机制</h3>
+                <ol style="font-size:.7rem;line-height:1.4;margin:0 0 1rem 1.1rem;">
+                    <li>多级分类: Critical / Warning / Info</li>
+                    <li>触发来源: 阈值规则 / 异常检测 / 系统事件</li>
+                    <li>渠道: 顶部徽标数字 + 抽屉 + 弹性 Toast + 邮件</li>
+                    <li>降噪: 相似 5 分钟内聚合 / 数量上限</li>
+                    <li>追溯: 告警 → 详情 → 相关计划 → 变更操作</li>
+                </ol>
+                <div class="alert-center">
+                    <div class="alert high">[Critical] 消耗突增 300%<div class="meta">自动关停策略=ON</div>
+                    </div>
+                    <div class="alert medium">[Warn] 转化率低于基线<div class="meta">基线: 1.2%</div>
+                    </div>
+                    <div class="alert low">[Info] 3 条计划待审核<div class="meta">审核 SLA: 2h</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 空白状态引导 -->
+        <div class="wf-screen" id="wf-empty" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div class="panel">
+                <h3>首次无计划</h3>
+                <div class="empty-state">
+                    <h3>还没有任何投放计划</h3>
+                    <p>3 步快速创建：基础信息 → 定向设置 → 预算与创意</p>
+                    <button>新建投放计划</button>
+                    <div style="margin-top:1rem;font-size:.6rem;color:var(--color-neutral-500);">或 <a href="#"
+                            style="color:var(--color-brand-primary);text-decoration:none;">导入历史计划</a></div>
+                </div>
+            </div>
+            <div class="panel">
+                <h3>无筛选结果</h3>
+                <div class="empty-state">
+                    <h3>没有匹配的数据</h3>
+                    <p>尝试调整：时间范围 / 维度 / 指标过滤 或 清除全部筛选。</p>
+                    <button>清除筛选</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="design-spec">
+        <h2>1. 页面结构设计 (信息架构 & 布局)</h2>
+        <h3>1.1 仪表盘布局与数据可视化</h3>
+        <ul>
+            <li>三层信息层级：Top KPI (即时认知) → 分析图表 (趋势/组成) → 行为上下文 (告警 & 活动流)</li>
+            <li>可配置网格：支持 12 列自适应重排，组件“重量”分级 (KPI=1, Chart=2, Table=3)</li>
+            <li>实时模块采用渐进刷新 + Diff 标记 (绿色上涨 / 红色下跌)，峰值时降级刷新频率</li>
+            <li>关联导航：告警项可一键跳转对应计划详情 (Deep Link)</li>
+        </ul>
+        <h3>1.2 账户管理页信息层级</h3>
+        <ol>
+            <li>L1 摘要：财务与运行状态 (预算 / 消耗 / 状态 / 标签)</li>
+            <li>L2 结构与权限：组织 / 用户 / 角色 / 标签实体关系</li>
+            <li>L3 运营维度：计划 / 历史变更 / 日志 / 资质 Tab 切换</li>
+        </ol>
+        <p>列表 + 详情双栏结构：左侧持久导航 (账户树/搜索/过滤)，右侧主区自适应滚动，Tab 内延迟加载。</p>
+        <h3>1.3 投放管理操作流程</h3>
+        <ul>
+            <li>向导式 7 步：支持中途保存草稿 / 步骤校验 / 冲突检测 (预算冲突、定向重叠)</li>
+            <li>批量模式：表格 + 侧栏编辑器，变更模拟 (显示影响条目数 / 冲突预警)</li>
+            <li>即时验证：每步提交触发规则引擎返回校验提示 (Inline + 顶部摘要)</li>
+        </ul>
+        <h3>1.4 报表页面图表布局</h3>
+        <ul>
+            <li>主轴：全局对比区 (关键指标多轴趋势) + 多图栅格 (支持拖拽排序 / 模板保存)</li>
+            <li>侧栏：维度/指标/过滤工具，允许折叠；筛选变化 → 显示“待应用”状态，批量应用</li>
+            <li>图表类型规范：曲线趋势 / 柱状对比 / 热力 (地域) / 环图占比 / 箱型 (创意表现) / Sparkline 网格 (小时粒度)</li>
+        </ul>
+
+        <h2>2. 交互体验设计</h2>
+        <h3>2.1 多账户切换便捷操作</h3>
+        <ul>
+            <li>主导航内联选择器 + 快速过滤弹出层 + 近期访问缓存 (本地优先 + 服务端 Freq 排序)</li>
+            <li>键盘支持：Ctrl + K 呼出全局命令面板，输入账户名模糊匹配 → Enter 切换</li>
+            <li>切换优化：预拉取新账户关键权限 + KPI Skeleton Loading ≤ 400ms 反馈</li>
+        </ul>
+        <h3>2.2 投放计划批量管理</h3>
+        <ul>
+            <li>批量模式激活条件：≥1 勾选 → 顶部浮动批量操作条 (持久可见)</li>
+            <li>冲突策略：批量修改时显示“冲突/不适用”字段 (灰显 + Tooltip 说明)</li>
+            <li>撤销：操作成功后 8 秒内支持 Undo (队列 + 状态回滚)</li>
+        </ul>
+        <h3>2.3 实时数据刷新策略</h3>
+        <table class="token-table">
+            <thead>
+                <tr>
+                    <th>类型</th>
+                    <th>策略</th>
+                    <th>降级规则</th>
+                    <th>备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>KPI 实时</td>
+                    <td>WebSocket 差量</td>
+                    <td>连接断开→30s 轮询</td>
+                    <td>Diff 高亮 1.2s</td>
+                </tr>
+                <tr>
+                    <td>趋势图</td>
+                    <td>30s 合并刷新</td>
+                    <td>浏览器隐藏→暂停</td>
+                    <td>恢复后补帧</td>
+                </tr>
+                <tr>
+                    <td>长列表</td>
+                    <td>120s 轮询</td>
+                    <td>CPU 忙→延迟 60s</td>
+                    <td>手动刷新优先</td>
+                </tr>
+                <tr>
+                    <td>报表导出</td>
+                    <td>手动触发</td>
+                    <td>-</td>
+                    <td>后台任务进度</td>
+                </tr>
+            </tbody>
+        </table>
+        <h3>2.4 异常告警提醒机制</h3>
+        <ul>
+            <li>分级展示：Critical=红 Badge + Toast；Warning=侧边抽屉；Info=消息中心</li>
+            <li>聚合：相同维度 & 规则 ID & 5 分钟内合并计数 ("预算超支 x3")</li>
+            <li>行动引导：告警卡片包含“跳转计划 / 静音 / 创建自动化”次级操作</li>
+        </ul>
+
+        <h2>3. 视觉风格指南</h2>
+        <h3>3.1 色彩搭配方案 (B2B 企业级)</h3>
+        <table class="token-table">
+            <thead>
+                <tr>
+                    <th>用途</th>
+                    <th>Token</th>
+                    <th>颜色</th>
+                    <th>示例</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>主品牌</td>
+                    <td>--color-brand-primary</td>
+                    <td>#1F65D6</td>
+                    <td><span class="chip" style="background:#1F65D6;color:#fff;">Primary</span></td>
+                </tr>
+                <tr>
+                    <td>强调/渐变</td>
+                    <td>--color-brand-secondary</td>
+                    <td>#2674F0</td>
+                    <td><span class="chip" style="background:#2674F0;color:#fff;">Secondary</span></td>
+                </tr>
+                <tr>
+                    <td>成功</td>
+                    <td>--color-accent-success</td>
+                    <td>#1FAD66</td>
+                    <td><span class="chip" style="background:#1FAD66;color:#fff;">Success</span></td>
+                </tr>
+                <tr>
+                    <td>警告</td>
+                    <td>--color-accent-warning</td>
+                    <td>#F5A623</td>
+                    <td><span class="chip" style="background:#F5A623;">Warning</span></td>
+                </tr>
+                <tr>
+                    <td>危险</td>
+                    <td>--color-accent-danger</td>
+                    <td>#E54848</td>
+                    <td><span class="chip" style="background:#E54848;color:#fff;">Danger</span></td>
+                </tr>
+                <tr>
+                    <td>信息</td>
+                    <td>--color-accent-info</td>
+                    <td>#2CB4C9</td>
+                    <td><span class="chip" style="background:#2CB4C9;color:#fff;">Info</span></td>
+                </tr>
+                <tr>
+                    <td>背景层次</td>
+                    <td>Neutral 50-900</td>
+                    <td>#F8FAFC~#111826</td>
+                    <td><span class="chip" style="background:#F1F5F9;">BG</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>配色策略：主色 ≤ 15% 面积，用于主操作与聚焦；中性色承担信息密度；状态色仅用于语义真实状态，不做品牌装饰。</p>
+        <h3>3.2 数据图表统一规范</h3>
+        <ul>
+            <li>调色板顺序：Primary → Success → Info → Warning → Danger → Neutral</li>
+            <li>统一留白：左右 16px，图表网格线不超过 30% 不透明度</li>
+            <li>Sparkline 高度固定 40px；多轴曲线主轴加粗 2px</li>
+            <li>单位显示：数值旁统一显示缩写 (K/M)；Tooltip 展示完整值 + 环比/同比</li>
+        </ul>
+        <h3>3.3 图标风格与状态标识</h3>
+        <ul>
+            <li>线性 2px 描边 + 圆角；填充仅用于高强调行动点</li>
+            <li>状态 Token：圆角 12px Pill，对比度满足 WCAG AA (文本≥4.5)</li>
+            <li>Loading：骨架屏 + 条形动画 (线性渐变 1400ms 循环)</li>
+        </ul>
+        <h3>3.4 空白状态引导设计</h3>
+        <ul>
+            <li>结构：图形(可选) / 主文案 (18px/600) / 辅助描述 / 主行动按钮 / 次级替代路径</li>
+            <li>策略：强调“下一步”操作 (创建 / 导入 / 清除筛选) 而非解释性文字堆叠</li>
+            <li>反馈闭环：首次创建成功 → 演示引导 (Coach Marks 3 步)</li>
+        </ul>
+
+        <h2>4. 关键交互模式微规范</h2>
+        <ul>
+            <li>快捷键：? 打开快捷键帮助；G + D (Dashboard)、G + C (Campaigns)</li>
+            <li>可编辑表格：单元格获得焦点时 Enter=编辑, Esc=取消, Tab=提交并到下一个</li>
+            <li>搜索建议：≥2 字符触发；首字母拼音匹配；最多 8 条 + “更多结果...” 链接</li>
+            <li>错误提示：字段下方 12px 文本 + 图标；全局错误聚合在顶部 Summary Bar</li>
+        </ul>
+
+        <h2>5. 可访问性 (A11y) & 性能</h2>
+        <ul>
+            <li>焦点环：统一 2px 品牌色外发光 (outline-offset:2px)</li>
+            <li>对比度：文本与背景对比度≥4.5；装饰性图标 aria-hidden</li>
+            <li>懒加载：首屏关键模块优先；报表区按需渲染 (IntersectionObserver)</li>
+            <li>骨架屏：预计渲染 >300ms 的图表组件使用骨架骨条</li>
+        </ul>
+
+        <h2>6. 设计 Token 总结 (可供前端落地)</h2>
+        <table class="token-table">
+            <thead>
+                <tr>
+                    <th>类别</th>
+                    <th>名称</th>
+                    <th>值/说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Radius</td>
+                    <td>sm / md / lg</td>
+                    <td>4 / 6 / 10 px</td>
+                </tr>
+                <tr>
+                    <td>Shadow</td>
+                    <td>sm / md</td>
+                    <td>轻分层 / 浮层</td>
+                </tr>
+                <tr>
+                    <td>Spacing</td>
+                    <td>基线</td>
+                    <td>4px (栅格增量 4)</td>
+                </tr>
+                <tr>
+                    <td>Font</td>
+                    <td>字号层级</td>
+                    <td>12 / 14 / 16 / 20 / 24</td>
+                </tr>
+                <tr>
+                    <td>Animation</td>
+                    <td>Fast / Normal</td>
+                    <td>.15s / .25s Ease-Out</td>
+                </tr>
+                <tr>
+                    <td>Z-Index</td>
+                    <td>Layering</td>
+                    <td>Nav=100 / Drawer=400 / Modal=1000 / Toast=1200</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>7. 可扩展建议</h2>
+        <ul>
+            <li>未来可接入 AI 优化: KPI 异常根因自动归因 + 建议出价策略</li>
+            <li>跨账户对比模式：添加对比账户列，图表双序列呈现</li>
+            <li>自定义指标组合：用户保存指标集合并共享给团队</li>
+        </ul>
+
+        <details>
+            <summary>实现提示 (供前端工程参考)</summary>
+            <ul>
+                <li>组件分层：Display (KPI/Chart) / Structure (Layout/Grid) / Interaction (Wizard/BatchBar)</li>
+                <li>实时通道：优先 WebSocket，失败回退 SSE，再回退轮询</li>
+                <li>Diff 高亮：新值插入后添加类名 fade-update，CSS 动画渐隐</li>
+                <li>批量编辑：保持不可变数据结构，暂存变更集并显示 Patch Preview</li>
+            </ul>
+        </details>
+    </section>
+
+    <footer>© 2025 Lorn.ADSP UI/UX Draft – 本文档为设计规范与低保真线框示意，供研发与产品协同。</footer>
+</body>
+
+</html>
